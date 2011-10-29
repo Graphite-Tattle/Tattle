@@ -34,6 +34,7 @@ try {
 } catch (fNoRowsException $e) {
 	?>
 	<p class="info">There are currently no Alerts based on your subscriptions. Smile, looks like everything is happy!</p>
+        <p class="warn">This could also mean that you haven't setup the cronjob to poll the processor? <a href="processor.php">Processor</a></p>
 	<?php
 }
 ?>

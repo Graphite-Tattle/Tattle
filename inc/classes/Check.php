@@ -27,7 +27,7 @@ class Check extends fActiveRecord
 	 * @param  string  $sort_dir     The direction to sort the column
 	 * @return fRecordSet  An object containing all meetups
 	 */
-	static function findActive($sort,$sort_by)
+	static function findActive()
 	{
        return fRecordSet::buildFromSQL(
           __CLASS__,

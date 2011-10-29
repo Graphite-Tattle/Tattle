@@ -1,5 +1,5 @@
 <?php
-include realpath(__DIR__ . '/inc/init.php');
+include dirname(__FILE__) . '/inc/init.php';
 $action = fRequest::get('action');
 
 // --------------------------------- //
@@ -21,9 +21,11 @@ if ('log_out' == $action) {
       if (!$valid_pass) {
         throw new fValidationException('The login or password entered is invalid');	
       }
-      fAuthorization::setUserToken('1');
+      fAuthorization::setUserToken($user->getEmail());
+      fAuthorization::setUserAuthLevel($user->getRole());
       fSession::set('user_id',$user->getUserId());
       fSession::set('user_name',$user->getUsername());
+      
       fURL::redirect(fAuthorization::getRequestedURL(TRUE,'index.php'));
     } catch (fExpectedException $e) {
       fMessaging::create('error', fURL::get(), $e->getMessage());
@@ -34,7 +36,6 @@ if ('log_out' == $action) {
 	
 } elseif ('register' == $action) {
   $user = new User();
-
   if (fRequest::isPost()) {
     try {
       $user->populate();
@@ -43,8 +44,14 @@ if ('log_out' == $action) {
 
       fMessaging::create('affected',$user_url,$user->getUsername());
       fMessaging::create('success',$user_url,'Welcome ' . $user->getUsername());
-      fURL::redirect($user_url);
- 
+      fCore::expose($user);
+      if ($user->getUserId() == 1){
+        $user = new User;
+        $user->setRole('admin');
+        $user->store();
+      }
+      fCore::expose($user);
+      //fURL::redirect($user_url);
     } catch (fExpectedException $e) {
       fMessaging::create('error',fURL::get(),$e->getMessage());
     }

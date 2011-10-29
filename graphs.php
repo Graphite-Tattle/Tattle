@@ -1,5 +1,5 @@
 <?php
-include realpath(__DIR__ . '/inc/init.php');
+include dirname(__FILE__) . '/inc/init.php';
 
 fAuthorization::requireLoggedIn();
 

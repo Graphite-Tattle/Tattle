@@ -1,6 +1,6 @@
 <?php
 
-  $tmpl->set('title', 'Graphite-Tattle : Self Service Alerts based on Graphite metrics');
+  $tmpl->set('title', 'Tattle : Self Service Alerts based on Graphite metrics');
   $tmpl->set('full_screen', $full_screen);
   $tmpl->place('header');
 ?>

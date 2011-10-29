@@ -5,7 +5,7 @@ class Check extends fActiveRecord
     {
     }
 	/**
-	 * Returns all meetups on the system
+	 * Returns all checks on the system
 	 * 
 	 * @param  string  $sort_column  The column to sort by
 	 * @param  string  $sort_dir     The direction to sort the column
@@ -13,29 +13,21 @@ class Check extends fActiveRecord
 	 */
 	static function findAll($sort_column = 'name', $sort_dir = 'desc')
 	{
-		if (!in_array($sort_column, array('name', 'owner','target','visibility'))) {
-			$sort_column = 'name';
-		} 
-		
-		if (!in_array($sort_dir, array('asc', 'desc'))) {
-			$sort_dir = 'desc';
-		}
-		
        return fRecordSet::build(
           __CLASS__,
-          array('enabled=' => true),
+          array('enabled=' => true,'user_id=|visibility=' => array(fSession::get('user_id'),0)),
           array($sort_column => $sort_dir)
           );
 	}    
 
 	/**
-	 * Returns all meetups on the system
+	 * Returns all active checks on the system
 	 * 
 	 * @param  string  $sort_column  The column to sort by
 	 * @param  string  $sort_dir     The direction to sort the column
 	 * @return fRecordSet  An object containing all meetups
 	 */
-	static function findActive()
+	static function findActive($sort,$sort_by)
 	{
        return fRecordSet::buildFromSQL(
           __CLASS__,
@@ -43,19 +35,11 @@ class Check extends fActiveRecord
           );
 	}    
 
-	static function findUsersActive()
-	{
-       return fRecordSet::buildFromSQL(
-          __CLASS__,
-          array("SELECT checks.* FROM checks WHERE enabled = 1 AND (user_id = " . fSession::get('user_id') . ' OR visibility = 0);')
-          );
-	}    
-
-    /**
+        /**
 	 * Creates all Check related URLs for the site
 	 * 
 	 * @param  string $type  The type of URL to make: 'list', 'add', 'edit', 'delete'
-	 * @param  Meetup $obj   The Check object for the edit and delete URL types
+	 * @param  Check $obj   The Check object for the edit and delete URL types
 	 * @return string  The URL requested
 	 */
 	static public function makeURL($type, $obj=NULL)
@@ -90,7 +74,6 @@ class Check extends fActiveRecord
 
         static public function acknowledgeCheck($check=NULL,$result=NULL,$ackAll=false)
 	{
-//          fCore::expose($this);
 	  if (!is_null($check)) {
             if ($ackAll === true) {
     	      $check_results = CheckResult::findAll($check->getCheckId());
@@ -105,17 +88,15 @@ class Check extends fActiveRecord
 	  }
         }       
         /**
-	 * Creates all Check related URLs for the site
+	 * Requests Graphite Data for check
 	 * 
-	 * @param  string $type  The type of URL to make: 'list', 'add', 'edit', 'delete'
-	 * @param  Meetup $obj   The Check object for the edit and delete URL types
-	 * @return string  The URL requested
+	 * @param  Check $obj   The Check object to get the graphite data for
+	 * @return array either a Graphite json_data array or an empty one  
 	 */
 	static public function getData($obj=NULL)
 	{
           $check_url = GRAPHITE_URL . '/render/?target=' . $obj->prepareTarget() . '&from='. $obj->prepareSample() . '&format=json';
-          //print "url : " . $check_url  . "<br />";
-          $json_data = @file_get_contents($check_url );
+          $json_data = @file_get_contents($check_url);
           if ($json_data) {
             $data = json_decode($json_data);
           } else {

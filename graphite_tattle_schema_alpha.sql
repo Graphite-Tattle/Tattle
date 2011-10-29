@@ -154,6 +154,7 @@ CREATE TABLE `users` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(100) NOT NULL,
   `email` varchar(200) NOT NULL,
+  `role` varchar(100) NOT NULL DEFUALT 'yoyoyo',
   `password` varchar(100) NOT NULL COMMENT 'This hash is generated using fCryptography::hashPassword()',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `username` (`username`),
@@ -170,4 +171,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-10-27  2:55:42
+- Dump completed on 2011-10-27  2:55:42

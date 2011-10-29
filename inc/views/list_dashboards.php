@@ -1,5 +1,5 @@
 <?php
-$tmpl->set('title', 'Graphite-Tattle : Self Service Alerts based on Graphite metrics');
+$tmpl->set('title', 'Tattle : Self Service Alerts based on Graphite metrics');
 $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
 
@@ -37,7 +37,7 @@ try {
     <?
 } catch (fEmptySetException $e) {
 	?>
-	<p class="info">There are currently no Graphite-Tattle Dashboards available for your account. <a href="<?php echo Dashboard::makeURL('add') ?>">Add one now</a></p>
+	<p class="info">There are currently no Tattle Dashboards available for your account. <a href="<?php echo Dashboard::makeURL('add') ?>">Add one now</a></p>
 	<?php
 }
 ?>

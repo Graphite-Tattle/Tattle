@@ -111,7 +111,7 @@ if (isset($dashboard_id)) {
     <?
 } catch (fEmptySetException $e) {
 	?>
-	<p class="info">There are currently no Graphite-Tattle lines available for this graph . <a href="<?php echo Line::makeURL('add',$graph) ?>">Add one now</a></p>
+	<p class="info">There are currently no Tattle lines available for this graph . <a href="<?php echo Line::makeURL('add',$graph) ?>">Add one now</a></p>
 	<?php
 } }
 ?>    

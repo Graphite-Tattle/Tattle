@@ -6,19 +6,39 @@ define('WARN_COLOR','yellow');
 define('GRAPH_WIDTH',586);
 define('GRAPH_HEIGHT',308);
 define('WHISPER_DIR','/opt/graphite/storage/whisper/');
-define('SESSION_FILES_PATH','/var/www/graphite-tattle/inc/storage/session/');
-define('FLOURISHLIB_PATH','/var/www/graphite-tattle/inc/flourish/');
+define('SESSION_FILES_PATH','/tmp');
+define('FLOURISHLIB_PATH','/flourish/');
+define('BOOTSTRAP_PATH','/../bootstrap/');
 $database_name = 'graphite_tattle';
 $database_user = 'root';
 $database_password = 'yoyoyo';
 
 
 //-----------END CONFIGURATION-------------//
+// Help people installing know if we can't find flourishlib or bootstrap
+$config_error = '';
+$config_exit = false;
+if (!file_exists($root_path . FLOURISHLIB_PATH . 'fCore.php')) { 
+  $config_error .= "<br/>Tattle Error <br />" .
+                   "Flourishlib not found : expected at : " . $root_path . FLOURISHLIB_PATH . "<br />" .
+                   "Can be changed in inc/config.php : FLOURISHLIB_PATH";
+  $config_exit = true;
+}
 
+if (!file_exists($root_path . BOOTSTRAP_PATH . 'bootstrap.css')) {
+  $config_error .= "<br/>Tattle Error <br />" .
+                   "Bootstrap library not found : expected at : " . $root_path . BOOTSTRAP_PATH . "<br />" .
+                   "Can be changed in inc/config.php : BOOTSTRAP_PATH";
+  $config_exit = true;
+}
 
-define('VIEW_PATH', realpath(__DIR__ . '/views/'));
+if ($config_exit) {
+  print $config_error;
+  exit;
+}
+
+define('VIEW_PATH', $root_path . '/views/');
 $status_array = array('0' => 'OK', '1'   => 'Error', '2' => 'Warning');
-//$send_methods = array('email' => 'Email','carrier_pidgin' => 'Carrier Pidgin','sms' => 'SMS');
 $visibility_array = array('0'   => 'Public', '1' => 'Private');
 $over_under_array = array('0'   => 'Over', '1' => 'Under');
 $breadcrumbs = array();
@@ -31,7 +51,12 @@ fCore::enableExceptionHandling('html');
 fTimestamp::setDefaultTimezone('America/New_York');
 
 fAuthorization::setLoginPage(User::makeURL('login'));
-
+fAuthorization::setAuthLevels(
+                 array('admin' => 100,
+                       'user'  => 50,
+                       'guest' => 25
+                 )
+                );
 // This prevents cross-site session transfer
 fSession::setPath(SESSION_FILES_PATH);
 
@@ -44,29 +69,4 @@ foreach (glob("plugins/*_plugin.php") as $plugin) {
     $plugin_settings[$plugin_name] = $plugin_config();
     $send_methods[$plugin_name] = $plugin_settings[$plugin_name]['name'];
   }  
-}
-
-/**
- * Automatically includes classes
- * 
- * @throws Exception
- * 
- * @param  string $class  Name of the class to load
- * @return void
- */
-function __autoload($class)
-{
-    
-	$flourish_file = FLOURISHLIB_PATH . $class . '.php';
-	if (file_exists($flourish_file)) {
-		return require $flourish_file;
-	}
-	
-	$file = realpath(__DIR__ . '/classes/' . $class . '.php');
- 
-  	if (file_exists($file)) {
-		return require $file;
-	}
-	
-	throw new Exception('The class ' . $class . ' could not be loaded');
 }

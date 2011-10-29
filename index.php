@@ -1,5 +1,5 @@
 <?
-include realpath(__DIR__ . '/inc/init.php');
+include dirname(__FILE__) . '/inc/init.php';
 
 fAuthorization::requireLoggedIn();
 $breadcrumbs[] = array('name' => 'Alerts', 'url' => '#','active' => false);
@@ -15,4 +15,4 @@ $latest_alerts = 'SELECT c.check_id,name,r.status,count(c.check_id) as count, r.
                  'Group by c.check_id;';
 $results = $mysql_db->query($latest_alerts);
 
-include VIEW_PATH . '/index.php';
+include dirname(__FILE__) . '/inc/views/index.php';

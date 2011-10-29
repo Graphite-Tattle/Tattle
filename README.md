@@ -1,4 +1,4 @@
-Graphite-Tattle
+Tattle  (formely Graphite-Tattle)
 ======
 
 A self service alerting and dashboard frontend for [graphite][graphite]
@@ -21,7 +21,7 @@ Concepts
   A Dashboard is a collection of pre-defined graphs that allows for self service creation and has a fullscreen option.
 
 * *Graph*
-  A Graph in Graphite-Tattle is a combination of "lines" which make up the graph. A graph can have one or more lines, and can set the display type of the graphs (Stacked or Not) and has a weight for ordering on the dashboard.
+  A Graph in Tattle is a combination of "lines" which make up the graph. A graph can have one or more lines, and can set the display type of the graphs (Stacked or Not) and has a weight for ordering on the dashboard.
 
 * *Lines*
   Lines are a combination of an Alias, a graphite Target, and a color.
@@ -62,7 +62,7 @@ Reason for creation
 [graphite][graphite] makes graphing metrics and data self serve and simple for anyone. 
 
 With this tag team in our environment alerting seemed to be the weakest link from an adhoc/self service perspective which is where the idea
-for Graphite-Tattle came from.
+for Tattle came from.
 
 Caution!
 ----------
@@ -72,9 +72,9 @@ Any help smoothing out the edges and adding additional features / functions woul
 How to Contribute
 ---------------------
 
-You're interested in contributing to Graphite-Tattle? Sweet!
+You're interested in contributing to Tattle? Sweet!
 
-fork Graphite-Tattle from here: http://github.com/wayfair/Graphite-Tattle
+fork Tattle from here: http://github.com/wayfair/Graphite-Tattle
 
 1. Clone your fork
 2. Hackit up

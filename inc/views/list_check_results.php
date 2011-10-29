@@ -8,7 +8,7 @@ $tmpl->place('header');
 	$affected = fMessaging::retrieve('affected', fURL::get());
   } catch (fEmptySetException $e) {
 ?>
-        <p class="info">There are currently no Graphite-Tattle checks. <a href="<?php echo Check::makeURL('add') ?>">Add one now</a></p>
+        <p class="info">There are currently no Tattle checks. <a href="<?php echo Check::makeURL('add') ?>">Add one now</a></p>
         <?php
 
   }

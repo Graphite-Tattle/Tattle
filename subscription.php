@@ -1,5 +1,5 @@
 <?
-include realpath(__DIR__ . '/inc/init.php');
+include dirname(__FILE__) . '/inc/init.php';
 
 fAuthorization::requireLoggedIn();
 
@@ -8,8 +8,11 @@ $action = fRequest::getValid('action',
 	array('list', 'add', 'edit', 'delete')
 );
 
-$subscription_id = fRequest::get('subscription_id');
-$check_id = fRequest::get('check_id');
+$sort = fCRUD::getSortColumn(array('name','status','method','state'));
+$sort_order  = fCRUD::getSortDirection('asc');
+
+$subscription_id = fRequest::get('subscription_id', 'integer');
+$check_id = fRequest::get('check_id', 'integer');
 $manage_url = $_SERVER['SCRIPT_NAME'];
 // --------------------------------- //
 if ('delete' == $action) {
@@ -83,7 +86,6 @@ if ('delete' == $action) {
 } else {
   $user = new User(fSession::get('user_id'));
   $subscriptions = $user->buildSubscriptions();
-  //$subscriptions = Subscription::findActive();
 
   include VIEW_PATH . '/list_subscriptions.php';	
 }

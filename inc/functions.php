@@ -20,7 +20,7 @@ function display_header() {
   print '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
   print '<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us">';
   print '<head><link type="text/css" href="assets/main.css" rel="stylesheet" media="screen" /></head>';
-  print '<body><div><h2>Graphite-Tattle</h2></div>';
+  print '<body><div><h2>Tattle</h2></div>';
   print '<div><a href="index.php">Home</a> | ';    
   print '<a href="edit_alert.php">Add Alert</a> | ';    
   print '<a href="check_status.php">Status Page</a> | ';    

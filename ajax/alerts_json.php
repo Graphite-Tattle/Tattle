@@ -1,13 +1,13 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT'] . '/graphite-tattle/inc/init.php');
+include dirname(__FILE__) . '/../inc/init.php';
 
 fAuthorization::requireLoggedIn();
 header('Cache-Control: no-cache, must-revalidate');
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 header('Content-type: application/json');
 
-$check_id = fRequest::get('check_id');
-$page_id = fRequest::get('page_id');
+$check_id = fRequest::get('check_id', 'integer');
+$page_id = fRequest::get('page_id', 'integer');
 
 /*------------------------------------*/
 

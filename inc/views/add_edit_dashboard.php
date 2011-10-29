@@ -110,7 +110,7 @@ if (isset($dashboard_id)) {
     <?
 } catch (fEmptySetException $e) {
 	?>
-	<p class="info">There are currently no Graphite-Tattle graph available for this Dashboard . <a href="<?php echo Graph::makeURL('add',$dashboard) ?>">Add one now</a></p>
+	<p class="info">There are currently no Tattle graph available for this Dashboard . <a href="<?php echo Graph::makeURL('add',$dashboard) ?>">Add one now</a></p>
 	<?php
 } }
 ?>

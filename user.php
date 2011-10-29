@@ -1,5 +1,5 @@
 <?php
-include realpath(__DIR__ . '/inc/init.php');
+include dirname(__FILE__) . '/inc/init.php';
 
 fRequest::overrideAction();
 
@@ -48,7 +48,10 @@ if ('edit' == $action) {
       $user->setPassword($password);			
       fRequest::validateCSRFToken(fRequest::get('token'));
       $user->store();
-			
+      if ($user->getUserId() == 1){
+        $user->setRole('admin');
+        $user->store();
+      }			
       fMessaging::create('affected', User::makeURL('login'), $user->getUsername());
       fMessaging::create('success', User::makeURL('login'), 
                          'The user ' . $user->getUsername() . ' was successfully created');
@@ -72,7 +75,7 @@ if ('edit' == $action) {
   include VIEW_PATH . '/add_edit_user_settings.php';
  
 } else {
-  if (fSession::get('user_id') != 1) {
+  if (!fAuthorization::checkAuthLevel('admin')) {
     fURL::redirect(User::makeURL('edit',fSession::get('user_id')));
   } else {
     $users = User::findAll();

@@ -22,8 +22,8 @@ try {
     	<tr>
         <td><?php echo $user->prepareUsername() ?></td>
         <td><?php echo $user->prepareEmail() ?></td>
-        <td><?php if (fSession::get('user_id') == $user->getUserId() || fSession::get('user_id') == 1) { echo '<a href="' . User::makeUrl('edit',$user) . '">Edit</a>'; } ?>
-       <?php if ($user->getUserId() != 1 && fSession::get('user_id') == 1) {
+        <td><?php if (fSession::get('user_id') == $user->getUserId() || fAuthorization::checkAuthLevel('admin')) { echo '<a href="' . User::makeUrl('edit',$user) . '">Edit</a>'; } ?>
+       <?php if (fAuthorization::checkAuthLevel('admin') || $user->getUserId() != 1) {
            ?> <a href="<?php echo User::makeUrl('delete',$user); ?>">Delete</a></td>
        <?php } ?>
         </tr>
@@ -32,7 +32,7 @@ try {
     <?
 } catch (fEmptySetException $e) {
 	?>
-	<p class="info">There are currently no Graphite-Tattle users? <a href="<?php echo '<a href="'. User::makeUrl('add'); ?>">Add one now</a></p>
+	<p class="info">There are currently no Tattle users? <a href="<?php echo '<a href="'. User::makeUrl('add'); ?>">Add one now</a></p>
 	<?php
 }
 ?>

@@ -1,5 +1,5 @@
 <?php
-include realpath(__DIR__ . '/inc/init.php');
+include dirname(__FILE__) . '/inc/init.php';
 
 fAuthorization::requireLoggedIn();
 
@@ -9,8 +9,11 @@ $action = fRequest::getValid('action',
 	array('list', 'add', 'edit', 'delete', 'view')
 );
 
-$full_screen = fRequest::get('full_screen');
-$dashboard_id = fRequest::get('dashboard_id');
+$full_screen = fRequest::get('full_screen','boolean',false);
+$dashboard_id = fRequest::get('dashboard_id','integer');
+
+$sort = fRequest::getValid('sort',array('name'),'name');
+$sortby = fRequest::getValid('sortby',array('asc','desc'),'asc');
 // --------------------------------- //
 if ('edit' == $action) {
   try {
@@ -62,8 +65,6 @@ if ('edit' == $action) {
   include VIEW_PATH . '/view_dashboard.php';	
 	
 } else {
-  $sortby = fRequest::get('sortby');
-  $sort = fRequest::get('sort');
   $dashboards = Dashboard::findAll();
   include VIEW_PATH . '/list_dashboards.php';
 }

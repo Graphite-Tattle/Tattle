@@ -12,14 +12,14 @@ try {
 <table class="zebra-striped">
           <thead>
 		<tr>
-	<th>Name</th>
-    <th>Target</th>
-    <th>Warn</th>
-    <th>Error</th>
-    <th>Sample</th>
-    <th>Baseline</th>
-    <th>Over/Under</th>
-    <th>Visibility</th>
+    <th><?php fCRUD::printSortableColumn('name','Name'); ?></th>
+    <th><?php fCRUD::printSortableColumn('target','Target'); ?></th>
+    <th><?php fCRUD::printSortableColumn('warn','Warn'); ?></th>
+    <th><?php fCRUD::printSortableColumn('error','Error'); ?></th>
+    <th><?php fCRUD::printSortableColumn('sample','Sample'); ?></th>
+    <th><?php fCRUD::printSortableColumn('baseline','Baseline'); ?></th>
+    <th><?php fCRUD::printSortableColumn('over_under','Over/Under'); ?></th>
+    <th><?php fCRUD::printSortableColumn('visiblity','Visibility'); ?></th>
     <th>Action</th>
        </tr></thead><tbody>    
 	<?php
@@ -46,7 +46,7 @@ try {
     <?
 } catch (fEmptySetException $e) {
 	?>
-	<p class="info">There are currently no Graphite-Tattle checks. <a href="<?php echo Check::makeURL('add') ?>">Add one now</a></p>
+	<p class="info">There are currently no Tattle checks. <a href="<?php echo Check::makeURL('add') ?>">Add one now</a></p>
 	<?php
 }
 ?>

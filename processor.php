@@ -1,13 +1,29 @@
 <?php
 include_once('inc/init.php');
-//$debug = false;
-$debug = true;
-if ($debug) {
-  fCore::enableDebugging(TRUE);
+
+$debug = false;
+
+if (isset($_SERVER['argc'])) {
+    $args = getopt('d::h::',array('debug','help'));
+    if (isset($args['debug']) || isset($args['d'])) {
+      $debug = true;
+    } elseif (isset($args['help']) || isset($args['h'])) {
+      print "Tattle Check Processor: \n".
+            "\n" .
+            "--help, -h : Displays this help \n".
+            "\n" .
+            "--debug, -d : Enables debuging (?debug=true can be used via a web request) \n";
+    } 
+} elseif ($debug = fRequest::get('debug','boolean')) {
+  $debug = true;
 }
 
+if ($debug) {
+  print "debug enabled";
+  fCore::enableDebugging(TRUE);
+} 
+
 $checks = Check::findActive();
-fCore::debug('<pre>',FALSE);
 foreach ($checks as $check) {
   $data = Check::getData($check);
   if (count($data) > 0) {
@@ -53,9 +69,6 @@ foreach ($checks as $check) {
     } else {
       fCore::debug("Skip Notification \n",FALSE);  
     }
-  } else {
-    //echo "Check Failed <br />";    
   }
   fCore::debug("check done moving to next \n\n",FALSE);
 }
-fCore::debug('</pre>',FALSE);

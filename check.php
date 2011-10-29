@@ -1,5 +1,5 @@
 <?php
-include realpath(__DIR__ . '/inc/init.php');
+include dirname(__FILE__) . '/inc/init.php';
 
 fAuthorization::requireLoggedIn();
 
@@ -10,7 +10,11 @@ $action = fRequest::getValid('action',
 	array('list', 'add', 'edit', 'delete')
 );
 
-$check_id = fRequest::get('check_id');
+$sort = fCRUD::getSortColumn(array('name','target','warn','error','status','timestamp','count'));
+$sort_dir  = fCRUD::getSortDirection('asc');
+
+$check_id = fRequest::get('check_id', 'integer');
+
 $check_list_url = Check::makeURL('list');
 // --------------------------------- //
 if ('delete' == $action) {
@@ -77,8 +81,7 @@ if ('delete' == $action) {
   include VIEW_PATH . '/add_edit.php';	
 	
 } else {
-  $sortby = fRequest::get('sortby');
-  $sort = fRequest::get('sort');
-  $checks = Check::findUsersActive();
+  //$checks = Check::findUsersActive($sort,$sort_dir);
+  $checks = Check::findAll($sort,$sort_dir);
   include VIEW_PATH .'/list_checks.php';
 }

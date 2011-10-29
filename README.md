@@ -33,7 +33,7 @@ Installation Requirements
 * PHP
 * MySQL
 * Lighttpd / NGINX / Apache
-* [Flourishlib][flourishlib] for the PHP framework
+* [Flourishlib][flourishlib] for the PHP framework  
 * [bootstrap][bootstrap] for the HTML/CSS framework
 * http access to a [graphite][graphite] installation
 
@@ -42,13 +42,9 @@ Installation and Configuration
 -----------------------------
 * Import .sql file to create database and tables
 
-* Download a copy of [bootstrap][bootstrap] and [Flourishlib][flourishlib]
-
-* bootstrap needs web accessible, and flourishlib should probably not be.
-
 * Create a session storage folder for flourishlib
 
-* Edit inc/config.php with the correct settings (Examples db password, flourishlib path)
+* Edit inc/config.php with the correct settings (Examples db password)
 
 * Setup cronjob to to run processor.php. This file can be run either as a cli or through the web server. (cli maybe required depending on your plugins and their required permissions)
 

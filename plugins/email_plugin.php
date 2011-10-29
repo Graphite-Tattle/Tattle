@@ -16,10 +16,10 @@ function email_notify($check,$check_result,$subscription) {
  // This sets up fSMTP to connect to the gmail SMTP server
  // with a 5 second timeout. Gmail requires a secure connection.
  $smtp = new fSMTP('smtp.gmail.com', 465, TRUE, 5);
- $smtp->authenticate('flourish@dracosplace.com', '&*&*&*123');
+ $smtp->authenticate('example@example.com', 'example');
  $email->addRecipient($user->getEmail(), $user->getUsername());
  // Set who the email is from
- $email->setFromEmail('flourish@dracosplace.com','Tattle');
+ $email->setFromEmail('flourish@example.com','Tattle');
  // Set the subject include UTF-8 curly quotes
  $email->setSubject('Tattle : Alert for ' . $check->prepareName());
  // Set the body to include a string containing UTF-8

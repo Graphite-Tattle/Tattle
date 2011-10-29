@@ -44,14 +44,7 @@ if ('log_out' == $action) {
 
       fMessaging::create('affected',$user_url,$user->getUsername());
       fMessaging::create('success',$user_url,'Welcome ' . $user->getUsername());
-      fCore::expose($user);
-      if ($user->getUserId() == 1){
-        $user = new User;
-        $user->setRole('admin');
-        $user->store();
-      }
-      fCore::expose($user);
-      //fURL::redirect($user_url);
+      fURL::redirect($user_url);
     } catch (fExpectedException $e) {
       fMessaging::create('error',fURL::get(),$e->getMessage());
     }

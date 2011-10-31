@@ -1,6 +1,8 @@
 <?php
 // Congifure based on your environment :
 define('GRAPHITE_URL','http://graph');
+define('GANGLIA_URL','http://localhost:8000/ganglia2');
+define('SOURCE_ENGINE', 'GANGLIA');
 define('ERROR_COLOR','red');
 define('WARN_COLOR','yellow');
 define('GRAPH_WIDTH',586);

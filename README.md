@@ -44,6 +44,11 @@ Installation and Configuration
 
 * Create a session storage folder for flourishlib
 
+* Create JS/CSS minification directory and allow Apache to write to it. By default this is 
+   $TATTLE_DIR/js_cache e.g.
+
+  install -o www-data /var/www/tattle/js_cache/images
+
 * Edit inc/config.php with the correct settings (Examples db password)
 
 * Setup cronjob to to run processor.php. This file can be run either as a cli or through the web server. (cli maybe required depending on your plugins and their required permissions)

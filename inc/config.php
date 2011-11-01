@@ -1,6 +1,6 @@
 <?php
 // Congifure based on your environment :
-define('GRAPHITE_URL','http://graph');
+$GLOBALS['GRAPHITE_URL'] = 'http://localhost:8000';
 $GLOBALS['GANGLIA_URL'] = 'http://localhost:8000/ganglia2';
 $GLOBALS['SOURCE_ENGINE'] = 'GRAPHITE';
 define('ERROR_COLOR','red');

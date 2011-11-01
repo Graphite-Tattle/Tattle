@@ -1,9 +1,9 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'] . '/tattle/inc/init.php');
 
-if ( SOURCE_ENGINE == "GANGLIA" ) {
+if ( $GLOBALS['SOURCE_ENGINE'] == "GANGLIA" ) {
 
-    $json = file_get_contents(GANGLIA_URL . "/tattle_autocomplete.php?term=" . $_REQUEST['term']);
+    $json = file_get_contents($GLOBALS['GANGLIA_URL'] . "/tattle_autocomplete.php?term=" . $_REQUEST['term']);
     print $json;
 
 } else {

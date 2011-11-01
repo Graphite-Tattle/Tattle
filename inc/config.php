@@ -1,8 +1,8 @@
 <?php
 // Congifure based on your environment :
 define('GRAPHITE_URL','http://graph');
-define('GANGLIA_URL','http://localhost:8000/ganglia2');
-define('SOURCE_ENGINE', 'GANGLIA');
+$GLOBALS['GANGLIA_URL'] = 'http://localhost:8000/ganglia2';
+$GLOBALS['SOURCE_ENGINE'] = 'GRAPHITE';
 define('ERROR_COLOR','red');
 define('WARN_COLOR','yellow');
 define('GRAPH_WIDTH',586);
@@ -14,6 +14,11 @@ define('BOOTSTRAP_PATH','/../bootstrap/');
 $database_name = 'graphite_tattle';
 $database_user = 'root';
 $database_password = 'yoyoyo';
+
+// Load overrides if they exist
+if( file_exists(  dirname(__FILE__) . "/config.override.php" ) ) {
+  include_once  dirname(__FILE__) . "/config.override.php";
+}
 
 
 //-----------END CONFIGURATION-------------//

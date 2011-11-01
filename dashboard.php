@@ -4,7 +4,7 @@ include dirname(__FILE__) . '/inc/init.php';
 fAuthorization::requireLoggedIn();
 
 fRequest::overrideAction();
-$breadcrumbs[] = array('name' => 'Dashoards', 'url' => Dashboard::makeUrl('list'),'active' => false);
+$breadcrumbs[] = array('name' => 'Dashboards', 'url' => Dashboard::makeUrl('list'),'active' => false);
 $action = fRequest::getValid('action',
 	array('list', 'add', 'edit', 'delete', 'view')
 );

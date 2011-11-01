@@ -11,7 +11,7 @@ if ($action != 'add') {
   fAuthorization::requireLoggedIn();
 }
 
-$user_id = fRequest::get('user_id');
+$user_id = fRequest::get('user_id','integer');
 
 if ('edit' == $action) {
   try {

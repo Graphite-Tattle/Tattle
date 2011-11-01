@@ -154,7 +154,7 @@ CREATE TABLE `users` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(100) NOT NULL,
   `email` varchar(200) NOT NULL,
-  `role` varchar(100) NOT NULL DEFUALT 'yoyoyo',
+  `role` varchar(100) NOT NULL DEFAULT 'user',
   `password` varchar(100) NOT NULL COMMENT 'This hash is generated using fCryptography::hashPassword()',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `username` (`username`),

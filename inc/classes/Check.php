@@ -35,7 +35,7 @@ class Check extends fActiveRecord
 	 * @param  string  $sort_dir     The direction to sort the column
 	 * @return fRecordSet  An object containing all meetups
 	 */
-	static function findActive($sort,$sort_by)
+	static function findActive($sort = "",$sort_by = "")
 	{
        return fRecordSet::buildFromSQL(
           __CLASS__,
@@ -113,7 +113,9 @@ class Check extends fActiveRecord
 	{
 	
 	  if ( $GLOBALS['SOURCE_ENGINE'] == "GANGLIA" ) {
-              $check_url = $GLOBALS['GANGLIA_URL'] . '/graph.php/?target=' . $obj->prepareTarget() . '&cs='. $obj->prepareSample() . '&ce=now&format=json';
+	      $parts = explode("_|_", $obj->prepareTarget());
+	      $check_url = $GLOBALS['GANGLIA_URL'] . "/graph.php?json=1&cs=". $obj->prepareSample() . "&ce=now&c=" . 
+		$parts[0] . "&h=" . $parts[1] . "&m=" . $parts[2];	      
 	    } else {
               $check_url = $GLOBALS['GRAPHITE_URL'] . '/render/?target=' . $obj->prepareTarget() . '&from='. $obj->prepareSample() . '&format=json';		
 	    }

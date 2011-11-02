@@ -24,6 +24,7 @@ if ($debug) {
 } 
 
 $checks = Check::findActive();
+
 foreach ($checks as $check) {
   $data = Check::getData($check);
   if (count($data) > 0) {

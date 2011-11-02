@@ -236,7 +236,7 @@ function display_subscribers_count($nid){
 }
 
 function make_graphite_link($alert_config, $make_href = true, $href_title = false) {
-  $link = GRAPHITE_URL . '?target=' . $alert_config['target'] . '&from=' . $alert_config['sample'];
+  $link = $GLOBALS['GRAPHITE_URL'] . '?target=' . $alert_config['target'] . '&from=' . $alert_config['sample'];
   if ($make_href) {
     if ($href_title === false) {
       $title = $alert_config['title'];
@@ -249,7 +249,7 @@ function make_graphite_link($alert_config, $make_href = true, $href_title = fals
 }
 
 function get_check_data($alert_config){
-  $json_data = file_get_contents(GRAPHITE_URL . '?target=' . $alert_config->target . '&from=-5minutes&format=json');
+  $json_data = file_get_contents($GLOBALS['GRAPHITE_URL'] . '?target=' . $alert_config->target . '&from=-5minutes&format=json');
   $data = json_decode($json_data);
   return $data;
 }

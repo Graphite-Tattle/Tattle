@@ -79,4 +79,3 @@ include($classes . 'Subscription.php');
 include($classes . 'Dashboard.php');
 include($classes . 'Line.php');
 include($classes . 'Graph.php');
-include($classes . 'Setting.php');

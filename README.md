@@ -48,9 +48,10 @@ Installation and Configuration
   
     ```
     <?
-    $GLOBALS['DATABASE_NAME'] = 'graphite_tattle';
-    $GLOBALS['DATABASE_USER'] = 'tattle';
-    $GLOBALS['DATABASE_PASS'] = 'yoyoyo';
+    $GLOBALS['DATABASE_HOST'] = '127.0.0.1';
+    $GLOBALS['DATABASE_NAME'] = 'tattle';
+    $GLOBALS['DATABASE_USER'] = 'dbuser';
+    $GLOBALS['DATABASE_PASS'] = 'dbpass';
     $GLOBALS['GRAPHITE_URL'] = 'http://graph';
     ```
 

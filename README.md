@@ -8,22 +8,22 @@ This tool was first presented at [EscConf][escconf] during a presentation by dro
 Concepts
 --------
 
-* *Checks*
+### Checks
   A Check is a [graphite][graphite] target in combination with a user defined Error and Warning threshold. 
 
-* *Subscriptions*
+### Subscriptions
   A Subscription is a users signing up for to be alerted by a plugin if the Check reaches the Error or Warning state. A user can have multiple subscriptions to an alert based on different threshold and plugins. (Example : SMS for Error, and Email for Warning)
 
-* *Alerts*
+### Alerts
   An Alert is the signal that the Check either passed it's defined Error or Warning threshold, or it's returned to the OK state from being in a bad state. The frequency of Alerts is defined by the Repeat Delay (in minutes), which can't be less than the frequency of the processing cronjob. 
 
-* *Dashboards*
+### Dashboards
   A Dashboard is a collection of pre-defined graphs that allows for self service creation and has a fullscreen option.
 
-* *Graph*
+### Graph
   A Graph in Tattle is a combination of "lines" which make up the graph. A graph can have one or more lines, and can set the display type of the graphs (Stacked or Not) and has a weight for ordering on the dashboard.
 
-* *Lines*
+### Lines
   Lines are a combination of an Alias, a graphite Target, and a color.
 
 
@@ -47,18 +47,16 @@ Installation and Configuration
 * Create JS/CSS minification directory and allow Apache to write to it. By default this is 
    /js_cache e.g.
 
-  install -o www-data /var/www/js_cache/images
+    install -o www-data /var/www/js_cache/images
 
 * Create a file called inc/config.override.php so that upgrades don't blow away your config
   
-  Your config.override might look something like this:
---------------------------
-  <?
-   $GLOBALS['DATABASE_NAME'] = 'graphite_tattle';
-   $GLOBALS['DATABASE_USER'] = 'tattle';
-   $GLOBALS['DATABASE_PASS'] = 'yoyoyo';
-   $GLOBALS['GRAPHITE_URL'] = 'http://graph';
---------------------------
+Your config.override might look something like this:
+    <?
+    $GLOBALS['DATABASE_NAME'] = 'graphite_tattle';
+    $GLOBALS['DATABASE_USER'] = 'tattle';
+    $GLOBALS['DATABASE_PASS'] = 'yoyoyo';
+    $GLOBALS['GRAPHITE_URL'] = 'http://graph';
   
 * Edit inc/config.php with the correct settings (Examples db password)
 

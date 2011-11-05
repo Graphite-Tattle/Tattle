@@ -9,7 +9,7 @@ Concepts
 --------
 
 ### Checks
-  A Check is a [graphite][graphite] target in combination with a user defined Error and Warning threshold. 
+  A Check is a [graphite][graphite] or [ganglia][ganglia] target in combination with a user defined Error and Warning threshold. 
 
 ### Subscriptions
   A Subscription is a users signing up for to be alerted by a plugin if the Check reaches the Error or Warning state. A user can have multiple subscriptions to an alert based on different threshold and plugins. (Example : SMS for Error, and Email for Warning)
@@ -35,7 +35,7 @@ Installation Requirements
 * Lighttpd / NGINX / Apache
 * [Flourishlib][flourishlib] for the PHP framework  
 * [bootstrap][bootstrap] for the HTML/CSS framework
-* http access to a [graphite][graphite] installation
+* http access to a [graphite][graphite] or [ganglia][ganglia] installation
 
 
 Installation and Configuration

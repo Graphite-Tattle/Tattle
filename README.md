@@ -44,11 +44,6 @@ Installation and Configuration
 
 * Create a session storage folder for flourishlib
 
-* Create JS/CSS minification directory and allow Apache to write to it. By default this is 
-   /js_cache e.g.
-
-    ```install -o www-data /var/www/js_cache/images```
-
 * Create a file called inc/config.override.php so that upgrades don't blow away your config
   
     ```

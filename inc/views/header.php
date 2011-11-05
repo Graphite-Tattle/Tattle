@@ -15,10 +15,10 @@
        $this->place('css');  
        $this->place('js'); 
     if ($this->get('graphlot')) { ?>
-    <script type="text/javascript" src="<?php echo GRAPHITE_URL; ?>/content/js/jquery.flot.js"></script>
-    <script type="text/javascript" src="<?php echo GRAPHITE_URL; ?>/content/js/jquery.autocomplete.js"></script>
-    <script type="text/javascript" src="<?php echo GRAPHITE_URL; ?>/content/js/jquery.flot.selection.js"></script>
-    <script type="text/javascript" src="<?php echo GRAPHITE_URL; ?>/content/js/jquery.flot.crosshair.js"></script>
+    <script type="text/javascript" src="<?=$GLOBALS['GRAPHITE_URL']; ?>/content/js/jquery.flot.js"></script>
+    <script type="text/javascript" src="<?=$GLOBALS['GRAPHITE_URL']; ?>/content/js/jquery.autocomplete.js"></script>
+    <script type="text/javascript" src="<?=$GLOBALS['GRAPHITE_URL']; ?>/content/js/jquery.flot.selection.js"></script>
+    <script type="text/javascript" src="<?=$GLOBALS['GRAPHITE_URL']; ?>/content/js/jquery.flot.crosshair.js"></script>
     <script type="text/javascript">
 
     $(document).ready(function () {

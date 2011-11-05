@@ -1,5 +1,5 @@
 <?php
-include_once('inc/init.php');
+include 'inc/init.php';
 
 $debug = false;
 

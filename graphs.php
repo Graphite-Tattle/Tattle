@@ -1,16 +1,14 @@
 <?php
-include dirname(__FILE__) . '/inc/init.php';
+include 'inc/init.php';
 
 fAuthorization::requireLoggedIn();
 
 fRequest::overrideAction();
 
-$action = fRequest::getValid('action',
-	array('list', 'add', 'edit', 'delete', 'view')
-);
+$action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete', 'view'));
 
-$dashboard_id = fRequest::get('dashboard_id');
-$graph_id = fRequest::get('graph_id');
+$dashboard_id = fRequest::get('dashboard_id', 'integer');
+$graph_id = fRequest::get('graph_id', 'integer');
 $manage_url = $_SERVER['SCRIPT_NAME'];
 
 // --------------------------------- //
@@ -27,7 +25,6 @@ if ('edit' == $action) {
       fMessaging::create('affected', fURL::get(), $graph->getName());
       fMessaging::create('success', fURL::getWithQueryString(), 
                          'The Graph ' . $graph->getName(). ' was successfully updated');
-			//fURL::redirect($manage_url);	
     }
   } catch (fNotFoundException $e) {
     fMessaging::create('error', $manage_url, 

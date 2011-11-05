@@ -41,8 +41,6 @@ class Graph extends fActiveRecord
     
     	static function drawGraph($obj=NULL,$parent=NULL)
 	{
-        //fCore::expose($parent);
-       //fCore::expose($obj);
         $link = 'http://graph/render/?';
         $lines = Line::findAll($obj->getGraphId());     
         foreach($lines as $line) {

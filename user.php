@@ -1,11 +1,9 @@
 <?php
-include dirname(__FILE__) . '/inc/init.php';
+include 'inc/init.php';
 
 fRequest::overrideAction();
 
-$action = fRequest::getValid('action',
-	array('list', 'add', 'edit','settings', 'delete')
-);
+$action = fRequest::getValid('action', array('list', 'add', 'edit','settings', 'delete'));
 
 if ($action != 'add') {
   fAuthorization::requireLoggedIn();

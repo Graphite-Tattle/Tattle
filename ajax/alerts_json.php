@@ -1,5 +1,5 @@
 <?php
-include dirname(__FILE__) . '/../inc/init.php';
+include '../inc/init.php';
 
 fAuthorization::requireLoggedIn();
 header('Cache-Control: no-cache, must-revalidate');

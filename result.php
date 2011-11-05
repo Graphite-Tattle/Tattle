@@ -1,14 +1,12 @@
 <?php
-include dirname(__FILE__) . '/inc/init.php';
+include 'inc/init.php';
 
 fAuthorization::requireLoggedIn();
 
-$action = fRequest::getValid('action',
-	array('list', 'add', 'edit', 'delete','ackAll')
-);
+$action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete','ackAll'));
 
 $result_id = fRequest::get('result_id','integer');
-$check_id = fRequest::get('check_id');
+$check_id = fRequest::get('check_id', 'integer');
 $manage_url = $_SERVER['SCRIPT_NAME'];
 
 /*------------------------------------*/

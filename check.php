@@ -1,14 +1,12 @@
 <?php
-include dirname(__FILE__) . '/inc/init.php';
+include 'inc/init.php';
 
 fAuthorization::requireLoggedIn();
 
 fRequest::overrideAction();
 $breadcrumbs[] = array('name' => 'Checks', 'url' => Check::makeUrl('list'), 'active'=> false);
 
-$action = fRequest::getValid('action',
-	array('list', 'add', 'edit', 'delete')
-);
+$action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete'));
 
 $sort = fCRUD::getSortColumn(array('name','target','warn','error','status','timestamp','count'));
 $sort_dir  = fCRUD::getSortDirection('asc');

@@ -1,7 +1,7 @@
 <?php
 // Customize this to your flourish root directory
-$root = dirname(__FILE__) . '/flourish/';
-$classes = dirname(__FILE__) . '/classes/';
+$root = TATTLE_ROOT . '/inc/flourish/';
+$classes = TATTLE_ROOT . '/inc/classes/';
  
 // Load the exceptions in their inheritance order
 include($root . 'fException.php');
@@ -16,6 +16,7 @@ include($root . 'fConnectivityException.php');
 include($root . 'fEnvironmentException.php');
 include($root . 'fProgrammerException.php');
 include($root . 'fSQLException.php');
+include($root . 'fAuthorizationException.php');
  
 // The rest of the classes can be loaded alphabetically
 include($root . 'fActiveRecord.php');
@@ -78,3 +79,4 @@ include($classes . 'Subscription.php');
 include($classes . 'Dashboard.php');
 include($classes . 'Line.php');
 include($classes . 'Graph.php');
+include($classes . 'Setting.php');

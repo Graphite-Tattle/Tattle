@@ -1,13 +1,11 @@
 <?php
-include dirname(__FILE__) . '/inc/init.php';
+include 'inc/init.php';
 
 fAuthorization::requireLoggedIn();
 
 fRequest::overrideAction();
 $breadcrumbs[] = array('name' => 'Dashboards', 'url' => Dashboard::makeUrl('list'),'active' => false);
-$action = fRequest::getValid('action',
-	array('list', 'add', 'edit', 'delete', 'view')
-);
+$action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete', 'view'));
 
 $full_screen = fRequest::get('full_screen','boolean',false);
 $dashboard_id = fRequest::get('dashboard_id','integer');
@@ -19,7 +17,7 @@ if ('edit' == $action) {
   try {
     $dashboard = new Dashboard($dashboard_id);
     $graphs = $dashboard->buildGraphs();
-    //$graphs = Graph::findAll($dashboard_id);
+
     if (fRequest::isPost()) {
       $dashboard->populate();
       fRequest::validateCSRFToken(fRequest::get('token'));
@@ -28,7 +26,6 @@ if ('edit' == $action) {
       fMessaging::create('affected', fURL::get(), $dashboard->getName());
       fMessaging::create('success', fURL::get(), 
                          'The Dashboard ' . $dashboard->getName(). ' was successfully updated');
-			//fURL::redirect($manage_url);	
     }
   } catch (fNotFoundException $e) {
     fMessaging::create('error', Dashboard::makeUrl('list'), 

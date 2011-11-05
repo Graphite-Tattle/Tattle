@@ -81,7 +81,6 @@ class Check extends fActiveRecord
               $check_results = CheckResult::build($result->getResultId());
             }
 	    foreach ($check_results as $check_result) {
-            fCore::expose($check_result);
              $check_result->setAcknowledged(1);
              $check_result->store();
 	    }
@@ -95,7 +94,17 @@ class Check extends fActiveRecord
 	 */
 	static public function getData($obj=NULL)
 	{
-          $check_url = GRAPHITE_URL . '/render/?target=' . $obj->prepareTarget() . '&from='. $obj->prepareSample() . '&format=json';
+          if ( $GLOBALS['PRIMARY_SOURCE'] == "GANGLIA" ) {
+            $check_url = $GLOBALS['GANGLIA_URL'] . '/graph.php/?' .
+                        'target=' . $obj->prepareTarget() . 
+                        '&cs='. $obj->prepareSample() . 
+                        '&ce=now&format=json';
+          } else {
+            $check_url = $GLOBALS['GRAPHITE_URL'] . '/render/?' .
+                        'target=' . $obj->prepareTarget() . 
+                        '&from='. $obj->prepareSample() . 
+                        '&format=json';
+          }
           $json_data = @file_get_contents($check_url);
           if ($json_data) {
             $data = json_decode($json_data);
@@ -175,31 +184,47 @@ class Check extends fActiveRecord
           } else {
             $link = '<a href="';
           }
-          $link .=  GRAPHITE_URL . '/render/?';
-          $link .= 'target=legendValue(alias(' . $obj->prepareTarget() . '%2C%22Check : ' . $obj->prepareName() .'%22),%22last%22)';
-          //$link .= 'target=legendValue(' . $obj->prepareTarget() .',%22last%22)'; 
-          if ($sample !== False) {
-            $link .= '&from=' . $sample;
-          } else {
-            $link .= '&from=' . $obj->prepareSample();
+
+          if ( $GLOBALS['PRIMARY_SOURCE'] == "GANGLIA" ) {
+
+	    $parts = explode("_|_", $obj->prepareTarget());
+	    $link  .= $GLOBALS['GANGLIA_URL'] . "/graph.php?json=1&ce=now&c=" . 
+	      $parts[0] . "&h=" . $parts[1] . "&m=" . $parts[2];
+
+	    if ($sample !== False) {
+	      $link .= '&cs=' . $sample;
+	    } else {
+	      $link .= '&cs=' . $obj->prepareSample();
+	    }
+
+	  } else {
+
+            $link .=  $GLOBALS['GRAPHITE_URL'] . '/render/?';
+            $link .= 'target=legendValue(alias(' . $obj->prepareTarget() . '%2C%22Check : ' . $obj->prepareName() .'%22),%22last%22)';
+            if ($sample !== False) {
+              $link .= '&from=' . $sample;
+            } else {
+              $link .= '&from=' . $obj->prepareSample();
+            }
+            if ($width !== false) {
+              $link .= '&width=' .$width;
+            } else {
+              $link .= '&width=' .$GLOBALS['GRAPH_WIDTH'];
+            }
+            $link .= '&height=' .$GLOBALS['GRAPH_HEIGHT'];
+            $link .= '&target=color(alias(threshold('. $obj->getError() . ')%2C%22Error%20('. $obj->getError() . ')%22)%2C%22' . $GLOBALS['ERROR_COLOR'] . '%22)';
+            $link .= '&target=color(alias(threshold('. $obj->getWarn() . ')%2C%22Warning%20('. $obj->getWarn() . ')%22)%2C%22' . $GLOBALS['WARN_COLOR'] . '%22)';
+            if ($hideLegend !== false) { 
+              $link .= '&hideLegend=true';
+            } 
           }
-          if ($width !== false) {
-            $link .= '&width=' .$width;
-          } else {
-            $link .= '&width=' .GRAPH_WIDTH;
-          }
-          $link .= '&height=' .GRAPH_HEIGHT;
-          $link .= '&target=color(alias(threshold('. $obj->getError() . ')%2C%22Error%20('. $obj->getError() . ')%22)%2C%22' . ERROR_COLOR . '%22)';
-          $link .= '&target=color(alias(threshold('. $obj->getWarn() . ')%2C%22Warning%20('. $obj->getWarn() . ')%22)%2C%22' . WARN_COLOR . '%22)';
-          if ($hideLegend !== false) { 
-            $link .= '&hideLegend=true';
-          } 
+          
           if ($img) {  
             $link .= '" title="' . $obj->prepareName() . '" alt="' . $obj->prepareName();
             $link .= '" />';
-      } else {
-        $link .= '"> ' . $obj->prepareTarget() .'</a>';
-      }
+          } else {
+            $link .= '"> ' . $obj->prepareTarget() .'</a>';
+          }
       return $link;
     }
      

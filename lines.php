@@ -1,16 +1,14 @@
 <?php
-include dirname(__FILE__) . '/inc/init.php';
+include 'inc/init.php';
 
 fAuthorization::requireLoggedIn();
 
 fRequest::overrideAction();
 
-$action = fRequest::getValid('action',
-	array('list', 'add', 'edit', 'delete', 'view')
-);
+$action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete', 'view'));
 
-$line_id = fRequest::get('line_id');
-$graph_id = fRequest::get('graph_id');
+$line_id = fRequest::get('line_id', 'integer');
+$graph_id = fRequest::get('graph_id', 'integer');
 
 if ('delete' == $action) {
   try {
@@ -46,7 +44,6 @@ if ('delete' == $action) {
       fMessaging::create('affected', fURL::get(), $graph->getName());
       fMessaging::create('success', fURL::getWithQueryString(), 
                          'The Line ' . $line->getAlias(). ' was successfully updated');
-			//fURL::redirect($manage_url);	
     }
   } catch (fNotFoundException $e) {
     fMessaging::create('error', Graph::makeUrl('edit',$graph), 
@@ -79,6 +76,4 @@ if ('delete' == $action) {
 
   include VIEW_PATH . '/add_edit_line.php';	
 	
-} else {
- echo "you shouldn't get here";
 }

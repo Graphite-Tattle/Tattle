@@ -1,4 +1,5 @@
 <?
+
 function subarray_median($data_array) {
     foreach ($data_array as $value) {
       $temp_array[] = $value[0]; 
@@ -47,7 +48,6 @@ function edit_alert($nid=0) {
     print 'Results Error : ' . mysql_error(). "\n";
   } else {
     $row = mysql_fetch_assoc($results);
-     //print_r($row);
   }
    print '<form method="post">';
    if ($nid > 0) {
@@ -75,7 +75,6 @@ function edit_alert($nid=0) {
 }
 
 function save_alert($post_data,$mode) {
-  //print "Mode in function : $mode";
   global $dblink, $username;
   if (count($post_data) > 8) {
     $title = validate_element($post_data,'title');
@@ -93,10 +92,8 @@ function save_alert($post_data,$mode) {
     } else {
       $sql = "INSERT INTO checks (title,owner,target,warn,error,sample,baseline,over_under,visibility) VALUES ('" . $title . "','" . $owner . "','" . $target . "','" . $warn . "','" . $error . "','" . $sample . "','" . $baseline . "','" . $over_under. "','" . $visibility ."');";
     }
-    //print $sql;
     $results = mysql_query($sql,$dblink);
     if (!$results) {
-      //print 'Results Error : ' . mysql_error(). "\n";
     } else {
       print 'Alert Updated';
     }
@@ -137,7 +134,6 @@ function generate_comparison_value($data, $alert_config){
   if ($alert_config->baseline == 'average') {
     $compare_value = subarray_average($data[0]->datapoints);
   } elseif ($alert_config->baseline == 'median') {
-    //print_r($data[0]->datapoints);
     $compare_value = subarray_median($data[0]->datapoints);
   }
  return $compare_value;
@@ -158,7 +154,6 @@ function validate_results($test_value, $alert_config) {
 }
 
 function display_alert_row($alert_config) {
-    //print_r($alert_config);
   $return = '<tr><td>' . make_graphite_link($alert_config, true)  . '</td>';
   $return .= '<td>' . $alert_config['owner'] . '</td>';
   $return .= '<td>' . $alert_config['target'] . '</td>';  
@@ -174,7 +169,7 @@ function display_alert_row($alert_config) {
 }
 
 function action_buttons($alert_config) {
-    global $username;
+  global $username;
   $results = '';
   if ($username == $alert_config['owner']) {
     $results .= '<a href="edit_alert.php?nid='. $alert_config['nid'] . '">Edit Alert</a> | ';
@@ -184,13 +179,6 @@ function action_buttons($alert_config) {
   } else {
     $results .= '<a href="modify_subscription.php?nid='. $alert_config['nid'] . '&action=add">Subscribe</a> | ';
   }
-
-  //need to figure this out differently based on db;
-  //if (in_object_key($username,$alert_config->subscribers)){
-//    $results .= 'Edit Subscription : ';
-//  } else {
-    //$results .= 'Subscribe : ';
-  //} 
 
   return $results;
 }
@@ -236,7 +224,7 @@ function display_subscribers_count($nid){
 }
 
 function make_graphite_link($alert_config, $make_href = true, $href_title = false) {
-  $link = GRAPHITE_URL . '?target=' . $alert_config['target'] . '&from=' . $alert_config['sample'];
+  $link = $GLOBALS['GRAPHITE_URL'] . '?target=' . $alert_config['target'] . '&from=' . $alert_config['sample'];
   if ($make_href) {
     if ($href_title === false) {
       $title = $alert_config['title'];
@@ -249,7 +237,7 @@ function make_graphite_link($alert_config, $make_href = true, $href_title = fals
 }
 
 function get_check_data($alert_config){
-  $json_data = file_get_contents(GRAPHITE_URL . '?target=' . $alert_config->target . '&from=-5minutes&format=json');
+  $json_data = file_get_contents( $GLOBALS['GRAPHITE_URL']  . '?target=' . $alert_config->target . '&from=-5minutes&format=json');
   $data = json_decode($json_data);
   return $data;
 }

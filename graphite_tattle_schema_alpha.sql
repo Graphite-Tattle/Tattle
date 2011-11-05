@@ -12,6 +12,7 @@ CREATE TABLE `users` (
 CREATE TABLE `settings` (
   `setting_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
+  `friendly_name` varchar(200) NOT NULL,
   `value` varchar(500) NOT NULL,
   `plugin` varchar(200) NOT NULL,
   `type` varchar(100) NOT NULL DEFAULT 'string',

@@ -1,35 +1,84 @@
 <?php
-// Congifure based on your environment :
-define('GRAPHITE_URL','http://graph');
-define('ERROR_COLOR','red');
-define('WARN_COLOR','yellow');
-define('GRAPH_WIDTH',586);
-define('GRAPH_HEIGHT',308);
-define('WHISPER_DIR','/opt/graphite/storage/whisper/');
-define('SESSION_FILES_PATH','/tmp');
-define('FLOURISHLIB_PATH','/flourish/');
-define('BOOTSTRAP_PATH','/../bootstrap/');
-$database_name = 'graphite_tattle';
-$database_user = 'root';
-$database_password = 'yoyoyo';
+
+// DATABASE SETTINGS
+$GLOBALS['DATABASE_NAME'] = 'graphite_tattle';
+$GLOBALS['DATABASE_USER'] = 'root';
+$GLOBALS['DATABASE_PASS'] = '';
+
+// GRAPHITE and GANGLIA Settings
+$GLOBALS['PRIMARY_SOURCE'] = 'GRAPHITE'; //Currently can be GRAPHITE or GANGLIA
+$GLOBALS['GRAPHITE_URL'] = 'http://localhost:8000';
+$GLOBALS['GANGLIA_URL'] = 'http://localhost:8000/ganglia2';
+
+// Graph Styling
+$GLOBALS['ERROR_COLOR'] = 'red';
+$GLOBALS['WARN_COLOR'] = 'yellow';
+$GLOBALS['GRAPH_WIDTH'] = '586';
+$GLOBALS['GRAPH_HEIGHT'] = '308';
+$GLOBALS['WHISPER_DIR'] = '/opt/graphite/storage/whisper/';
+
+// Flourish Related Settings
+$GLOBALS['FLOURISHLIB_PATH'] = '/inc/flourish/'; 
+$GLOBALS['SESSION_FILES'] = '/tmp';
+
+// Bootstrap Settings
+$GLOBALS['BOOTSTRAP_PATH'] = '/bootstrap/';
 
 
-//-----------END CONFIGURATION-------------//
-// Help people installing know if we can't find flourishlib or bootstrap
+// Allow loading GLOBAL overrides
+if(file_exists(  TATTLE_ROOT . "/inc/config.override.php" ) ) {
+  include_once  TATTLE_ROOT . "/inc/config.override.php";
+}
+
+//Load in plugin files
+$plugin_settings = array();
+foreach (glob("plugins/*_plugin.php") as $plugin) {
+  include_once($plugin);
+  $plugin_name = str_replace(array('plugins/', '_plugin.php'), '', $plugin);
+  $plugin_config = $plugin_name . '_config';
+  $plugin_engine = $plugin_name . '_engine';
+  $plugin_notify = $plugin_name . '_notify';
+
+  if (function_exists($plugin_config)) {
+    $plugin_settings[$plugin_name] = $plugin_config();
+    if (function_exists($plugin_notify)) {
+      $send_methods[$plugin_name] = $plugin_settings[$plugin_name]['name'];
+    }
+    if (function_exists($plugin_engine)) {
+      $data_engine[$plugin_name] = $plugin_settings[$plugin_name]['name'];
+    }
+  }
+}
+
+// Check to make sure the session folder exists 
 $config_error = '';
 $config_exit = false;
-if (!file_exists($root_path . FLOURISHLIB_PATH . 'fCore.php')) { 
-  $config_error .= "<br/>Tattle Error <br />" .
-                   "Flourishlib not found : expected at : " . $root_path . FLOURISHLIB_PATH . "<br />" .
-                   "Can be changed in inc/config.php : FLOURISHLIB_PATH";
+
+try {
+  //Set DB connection (using flourish it isn't actually connected to until the first use)
+  $mysql_db  = new fDatabase('mysql', $GLOBALS['DATABASE_NAME'],$GLOBALS['DATABASE_USER'], $GLOBALS['DATABASE_PASS']);
+  // Please note that calling this method is not required, and simply
+  // causes an exception to be thrown if the connection can not be made
+  $mysql_db->connect();
+} catch (fAuthorizationException $e) {
+  $config_error = "DB error : " . $e->getMessage();
   $config_exit = true;
 }
 
-if (!file_exists($root_path . BOOTSTRAP_PATH . 'bootstrap.css')) {
-  $config_error .= "<br/>Tattle Error <br />" .
-                   "Bootstrap library not found : expected at : " . $root_path . BOOTSTRAP_PATH . "<br />" .
-                   "Can be changed in inc/config.php : BOOTSTRAP_PATH";
-  $config_exit = true;
+//Connect the db to the ORM functions
+fORMDatabase::attach($mysql_db);
+
+
+
+if (!is_dir(JS_CACHE)) {
+  $config_error .="<br/>Tattle Error <br />" .
+                  "Can't write to the js cache folder : " . JS_CACHE;
+}
+
+if (!is_dir($GLOBALS['SESSION_FILES']) || !is_writable($GLOBALS['SESSION_FILES'])){
+  $config_error .="<br/>Tattle Error <br />" .
+                  "Flourishlib Session path is not write-able. Path at : " . $GLOBALS['SESSION_FILES'];
+  $config_error = true;
 }
 
 if ($config_exit) {
@@ -37,7 +86,7 @@ if ($config_exit) {
   exit;
 }
 
-define('VIEW_PATH', $root_path . '/views/');
+
 $status_array = array('0' => 'OK', '1'   => 'Error', '2' => 'Warning');
 $visibility_array = array('0'   => 'Public', '1' => 'Private');
 $over_under_array = array('0'   => 'Over', '1' => 'Under');
@@ -58,15 +107,5 @@ fAuthorization::setAuthLevels(
                  )
                 );
 // This prevents cross-site session transfer
-fSession::setPath(SESSION_FILES_PATH);
+fSession::setPath($GLOBALS['SESSION_FILES']);
 
-$plugin_settings = array();
-foreach (glob("plugins/*_plugin.php") as $plugin) {
-  include_once($plugin);
-  $plugin_name = str_replace(array('plugins/', '_plugin.php'), '', $plugin);  
-  $plugin_config = $plugin_name . '_config';
-  if (function_exists($plugin_config)) {
-    $plugin_settings[$plugin_name] = $plugin_config();
-    $send_methods[$plugin_name] = $plugin_settings[$plugin_name]['name'];
-  }  
-}

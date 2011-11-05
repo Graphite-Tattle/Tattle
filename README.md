@@ -1,7 +1,7 @@
 Tattle  (formely Graphite-Tattle)
 ======
 
-A self service alerting and dashboard frontend for [graphite][graphite]
+A self service alerting and dashboard frontend for [graphite][graphite] and [ganglia][ganglia]
 
 This tool was first presented at [EscConf][escconf] during a presentation by drowe from [Wayfair][wayfair]
 
@@ -108,6 +108,7 @@ fork Tattle from here: http://github.com/wayfair/Graphite-Tattle
 We'll do our best to get your changes in as soon as possible!
 
 [graphite]: http://graphite.wikidot.com
+[ganglia]: http://ganglia.sourceforge.net/
 [etsy]: http://www.etsy.com
 [statsd]: https://github.com/etsy/statsd/
 [bootstrap]: http://twitter.github.com/bootstrap/

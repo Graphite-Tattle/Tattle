@@ -40,6 +40,8 @@ class Dashboard extends fActiveRecord
 				return 'dashboard.php?action=delete&dashboard_id=' . $obj->prepareDashboardId();
 			case 'view':
 				return 'dashboard.php?action=view&dashboard_id=' . $obj->prepareDashboardId();
+			case 'clean':
+				return 'dash/' . $obj->prepareDashboardId();
                 
 		}	
 	}

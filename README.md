@@ -65,6 +65,19 @@ Installation and Configuration
 
 * Register via the web interface. (The first user registered is the admin currently prior to us implementing any roles, and other permissions)
 
+Dashboard Cleanurls
+-----------
+If you have apache, with mod_rewrite enabled and allow .htaccess files you can try the new Clean Dashboard urls.
+Initial urls look like this:
+
+```
+http://localhost/dash/1/500/300 
+```
+
+The second parameter should be replaced with the dashboard id you want to see. 
+The third parameter represents the heigt of the individual graphs.
+The fourth parameter represents the width of the individual graphs
+
 
 Reason for creation
 -----------

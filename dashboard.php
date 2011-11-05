@@ -1,14 +1,31 @@
 <?php
 include 'inc/init.php';
 
+if (isset($_SERVER['REQUEST_URI'])) {
+  $pos = strrpos($_SERVER['REQUEST_URI'], 'dashboard.php');
+  if ($pos === false) {
+    $action = 'view';
+  }
+}
+   
+
 fAuthorization::requireLoggedIn();
 
 fRequest::overrideAction();
 $breadcrumbs[] = array('name' => 'Dashboards', 'url' => Dashboard::makeUrl('list'),'active' => false);
-$action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete', 'view'));
 
-$full_screen = fRequest::get('full_screen','boolean',false);
-$dashboard_id = fRequest::get('dashboard_id','integer');
+if (!isset($dashboard_id)) {
+  $dashboard_id = fRequest::get('dashboard_id','integer');
+}
+
+if (!isset($action)) {
+  $action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete', 'view'));
+}
+
+if (!isset($full_screen)) {
+  $full_screen = fRequest::get('full_screen','boolean',false);
+}
+
 
 $sort = fRequest::getValid('sort',array('name'),'name');
 $sortby = fRequest::getValid('sortby',array('asc','desc'),'asc');
@@ -57,7 +74,30 @@ if ('edit' == $action) {
   include VIEW_PATH . '/add_edit_dashboard.php';	
 	
 } elseif ('view' == $action) {
-  $dashboard = new Dashboard($dashboard_id);
+  $url_parts = explode('/',$_SERVER['REQUEST_URI']);
+    $clean_url = false;
+    foreach($url_parts as $url_part) {
+      if ($url_part == 'dash') {
+        $clean_url = true;
+        break;
+      } else {
+        array_shift($url_parts);
+      }
+    }
+    if ($clean_url && $url_parts[0] == 'dash' && is_numeric($url_parts[1])) {
+      $dashboard_id = $url_parts[1];
+    } 
+      
+    $full_screen = true;
+    $dashboard = new Dashboard($dashboard_id);
+
+    if ($clean_url && isset($url_parts[2]) && is_numeric($url_parts[2])) {
+       $dashboard->setGraphHeight($url_parts[2]);
+    }     
+    if ($clean_url && isset($url_parts[3]) && is_numeric($url_parts[3])) {
+       $dashboard->setGraphWidth($url_parts[3]);
+    } 
+
   $graphs = Graph::findAll($dashboard_id);
   include VIEW_PATH . '/view_dashboard.php';	
 	

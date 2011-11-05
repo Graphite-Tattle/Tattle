@@ -47,18 +47,18 @@ Installation and Configuration
 * Create JS/CSS minification directory and allow Apache to write to it. By default this is 
    /js_cache e.g.
 
-    <code>install -o www-data /var/www/js_cache/images</code>
+    ```install -o www-data /var/www/js_cache/images```
 
 * Create a file called inc/config.override.php so that upgrades don't blow away your config
   
-Your config.override might look something like this:
-    <code>
+    ```
     <?
     $GLOBALS['DATABASE_NAME'] = 'graphite_tattle';
     $GLOBALS['DATABASE_USER'] = 'tattle';
     $GLOBALS['DATABASE_PASS'] = 'yoyoyo';
     $GLOBALS['GRAPHITE_URL'] = 'http://graph';
-    </code>
+    ```
+
 * Edit inc/config.php with the correct settings (Examples db password)
 
 * Setup cronjob to to run processor.php. This file can be run either as a cli or through the web server. (cli maybe required depending on your plugins and their required permissions)

@@ -6,7 +6,7 @@ $tmpl->place('header');
 try {
 	$dashboards->tossIfEmpty();
 	$affected = fMessaging::retrieve('affected', fURL::get());
-	?><a href="<?php Dashboard::makeURL('add'); ?>" class="btn primary">Add Dashboard</a>
+	?><a href="<?=Dashboard::makeURL('add'); ?>" class="btn primary">Add Dashboard</a>
 	<table class="zebra-striped">
           <thead>
           <tr>    

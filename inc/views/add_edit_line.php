@@ -7,13 +7,15 @@ $breadcrumbs[] = array('name' => $graph->prepareName(), 'url' => Graph::makeURL(
 $breadcrumbs[] = array('name' => $page_title, 'url' => fURL::getWithQueryString(),'active'=> true);
 $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
+$query_string = '';
+
 if (isset($line_id)) {
   $query_string = "&line_id=$line_id";
-} elseif (isset($graph_id)) {
-  $query_string = "&graph_id=$graph_id";  
-} else {
-  $query_string = '';
+} 
+if (isset($graph_id) && $action != 'edit') {
+  $query_string .= "&graph_id=$graph_id";  
 }
+
 ?>
   <div class="row">
     <div class="span6">

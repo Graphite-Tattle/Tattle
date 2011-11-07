@@ -9,7 +9,6 @@ if (isset($_SERVER['REQUEST_URI'])) {
 }
    
 
-fAuthorization::requireLoggedIn();
 
 fRequest::overrideAction();
 $breadcrumbs[] = array('name' => 'Dashboards', 'url' => Dashboard::makeUrl('list'),'active' => false);
@@ -20,6 +19,11 @@ if (!isset($dashboard_id)) {
 
 if (!isset($action)) {
   $action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete', 'view'));
+}
+
+// Don't require login for tv monitors that just need to view the dashboards. Will add a public/private feature for dashboards as phase two
+if ($action != 'view') {
+  fAuthorization::requireLoggedIn();
 }
 
 if (!isset($full_screen)) {

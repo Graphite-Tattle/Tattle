@@ -44,18 +44,14 @@ Installation and Configuration
 
 * Create a session storage folder for flourishlib
 
-* Create JS/CSS minification directory and allow Apache to write to it. By default this is 
-   /js_cache e.g.
-
-    ```install -o www-data /var/www/js_cache/images```
-
 * Create a file called inc/config.override.php so that upgrades don't blow away your config
   
     ```
     <?
-    $GLOBALS['DATABASE_NAME'] = 'graphite_tattle';
-    $GLOBALS['DATABASE_USER'] = 'tattle';
-    $GLOBALS['DATABASE_PASS'] = 'yoyoyo';
+    $GLOBALS['DATABASE_HOST'] = '127.0.0.1';
+    $GLOBALS['DATABASE_NAME'] = 'tattle';
+    $GLOBALS['DATABASE_USER'] = 'dbuser';
+    $GLOBALS['DATABASE_PASS'] = 'dbpass';
     $GLOBALS['GRAPHITE_URL'] = 'http://graph';
     ```
 

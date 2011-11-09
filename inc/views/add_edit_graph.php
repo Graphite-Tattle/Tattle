@@ -6,9 +6,9 @@ $breadcrumbs[] = array('name' => $dashboard->encodeName(), 'url' => Dashboard::m
 $breadcrumbs[] = array('name' => $page_title, 'url' => fURL::getWithQueryString(),'active' => true);
 $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
-if (isset($dashboard_id)) {
+if (!is_null($dashboard_id)) {
   $query_string = "&dashboard_id=$dashboard_id";
-} elseif (isset($graph_id)) {
+} elseif (!is_null($graph_id)) {
   $query_string = "&graph_id=$graph_id";  
 } else {
   $query_string = '';

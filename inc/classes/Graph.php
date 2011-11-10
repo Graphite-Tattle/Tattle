@@ -41,7 +41,7 @@ class Graph extends fActiveRecord
 
     	static function drawGraph($obj=NULL,$parent=NULL)
 	{
-        $link = 'http://graph/render/?';
+        $link = $GLOBALS['GRAPHITE_URL'].'/render/?';
         $lines = Line::findAll($obj->getGraphId());
         foreach($lines as $line) {
            $link .= 'target=';

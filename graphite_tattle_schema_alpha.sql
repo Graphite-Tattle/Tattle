@@ -76,6 +76,8 @@ CREATE TABLE `graphs` (
   `description` varchar(1000) NOT NULL DEFAULT '',
   `dashboard_id` int(11) NOT NULL,
   `weight` int(11) NOT NULL DEFAULT '0',
+  `time_value` int(11) NOT NULL DEFAULT '2',
+  `unit` varchar(10) NOT NULL DEFAULT 'hours',
   PRIMARY KEY (`graph_id`),
   UNIQUE KEY `dashboard_id` (`dashboard_id`,`name`),
   CONSTRAINT `graphs_ibfk_1` FOREIGN KEY (`dashboard_id`) REFERENCES `dashboards` (`dashboard_id`) ON DELETE CASCADE ON UPDATE CASCADE

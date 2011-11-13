@@ -79,7 +79,9 @@ HTTP Auth Based User Accounts
 If you are already using Web Server based authentication, then you can tell Tattle to use those credentials instead of keeping two sets of user accounts.
 
 just set the following config variable to true in your config.override.php file:
+```
 $GLOBALS['ALLOW_HTTP_AUTH'] = true;
+```
 
 Reason for creation
 -----------

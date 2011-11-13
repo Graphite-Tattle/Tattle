@@ -74,6 +74,12 @@ The second parameter should be replaced with the dashboard id you want to see.
 The third parameter represents the heigt of the individual graphs.
 The fourth parameter represents the width of the individual graphs
 
+HTTP Auth Based User Accounts
+-----------
+If you are already using Web Server based authentication, then you can tell Tattle to use those credentials instead of keeping two sets of user accounts.
+
+just set the following config variable to true in your config.override.php file:
+$GLOBALS['ALLOW_HTTP_AUTH'] = true;
 
 Reason for creation
 -----------

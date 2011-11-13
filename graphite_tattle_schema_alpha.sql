@@ -29,6 +29,7 @@ CREATE TABLE `dashboards` (
   `background_color` varchar(15) NOT NULL DEFAULT '000000',
   `graph_height` int(11) NOT NULL DEFAULT '300',
   `graph_width` int(11) NOT NULL DEFAULT '300',
+  `refresh_rate` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`dashboard_id`),
   UNIQUE KEY `user_id` (`user_id`,`name`),
   CONSTRAINT `dashboards_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -76,6 +77,8 @@ CREATE TABLE `graphs` (
   `description` varchar(1000) NOT NULL DEFAULT '',
   `dashboard_id` int(11) NOT NULL,
   `weight` int(11) NOT NULL DEFAULT '0',
+  `time_value` int(11) NOT NULL DEFAULT '2',
+  `unit` varchar(10) NOT NULL DEFAULT 'hours',
   PRIMARY KEY (`graph_id`),
   UNIQUE KEY `dashboard_id` (`dashboard_id`,`name`),
   CONSTRAINT `graphs_ibfk_1` FOREIGN KEY (`dashboard_id`) REFERENCES `dashboards` (`dashboard_id`) ON DELETE CASCADE ON UPDATE CASCADE

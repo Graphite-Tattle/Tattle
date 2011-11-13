@@ -6,10 +6,10 @@ $breadcrumbs[] = array('name' => $dashboard->encodeName(), 'url' => Dashboard::m
 $breadcrumbs[] = array('name' => $page_title, 'url' => fURL::getWithQueryString(),'active' => true);
 $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
-if (isset($dashboard_id)) {
+if (!is_null($dashboard_id)) {
   $query_string = "&dashboard_id=$dashboard_id";
-} elseif (isset($graph_id)) {
-  $query_string = "&graph_id=$graph_id";  
+} elseif (!is_null($graph_id)) {
+  $query_string = "&graph_id=$graph_id";
 } else {
   $query_string = '';
 }
@@ -19,24 +19,24 @@ if (isset($dashboard_id)) {
       <form action="<?php echo fURL::get() ?>?action=<? echo $action.$query_string; ?>" method="post" class="form-stacked">
         <div class="main" id="main">
           <fieldset>
-                <div class="clearfix">
-	      <label for="graph-name">Name<em>*</em></label>
+            <div class="clearfix">
+              <label for="graph-name">Name<em>*</em></label>
               <div class="input">
-	        <input id="graph-name" class="span3" type="text" size="30" name="name" value="<?php echo $graph->encodeName() ?>" />
+                <input id="graph-name" class="span3" type="text" size="30" name="name" value="<?php echo $graph->encodeName() ?>" />
               </div>
             </div><!-- /clearfix -->
             <div class="clearfix">
               <label for="graph-description">Description<em>*</em></label>
-              <div class="input">             
+              <div class="input">
                  <textarea class="span3" id="graph-description" name="description" rows="3"><?php echo $graph->encodeDescription() ?></textarea>
               </div>
             </div><!-- /clearfix -->
             <div class="clearfix">
               <label for="graph-vtitle">Y-Axis Title<em>*</em></label>
-              <div class="input">             
+              <div class="input">
                   <input id="graph-vtitle" class="span3" type="text" size="30" name="vtitle" value="<?php echo $graph->encodeVtitle() ?>" />
               </div>
-            </div><!-- /clearfix -->                  
+            </div><!-- /clearfix -->
             <div class="clearfix">
               <label for="graph-area">Area Mode<em>*</em></label>
               <div class="input">
@@ -47,7 +47,7 @@ if (isset($dashboard_id)) {
                    fHTML::printOption($text, $value, $graph->getArea());
                  }
                 ?>
-                </select>            
+                </select>
               </div>
             </div><!-- /clearfix -->
             <div class="clearfix">
@@ -60,9 +60,32 @@ if (isset($dashboard_id)) {
                    fHTML::printOption($value, $value, $graph->getWeight());
                  }
                 ?>
-                </select>            
+                </select>
               </div>
-            </div><!-- /clearfix -->      
+            </div><!-- /clearfix -->
+            <div class="clearfix">
+              <label for="graph-range">Range<em>*</em></label>
+              <div class="input">
+                <select name="time_value" class="span3">
+                <?
+                 $values = range(0,60);
+                 foreach ($values as $value) {
+                   fHTML::printOption($value, $value, $graph->getTime_value());
+                 }
+                ?>
+                </select>
+              </div>
+              <div class="input">
+                <select name="unit" class="span3">
+                <?
+                 $units = array('minutes', 'hours', 'days', 'weeks', 'months', 'years');
+                 foreach ($units as $value) {
+                   fHTML::printOption($value, $value, $graph->getUnit());
+                 }
+                ?>
+                </select>
+              </div>
+            </div><!-- /clearfix -->
 	    <div class="actions">
 	      <input class="btn primary" type="submit" value="Save" />
               <a href="<?=Graph::makeURL('delete',$graph);?>" class="btn">Delete</a>
@@ -72,10 +95,10 @@ if (isset($dashboard_id)) {
               <input type="hidden" name="user_id" value="<?php echo fSession::get('user_id'); ?>" />
             </div>
          </fieldset>
-       </div>       
+       </div>
      </form>
     </div>
-    <div class="span10"> 
+    <div class="span10">
     <?php if ($action == 'edit') {  ?>
         <img src="<?php echo Graph::drawGraph($graph,$dashboard) ?>">
     <p class="info"><a href="<?php echo Line::makeURL('add',$graph) ?>">Add Line</a></p>
@@ -87,12 +110,12 @@ if (isset($dashboard_id)) {
     <div>
 	<table class="zebra-striped">
           <thead>
-          <tr>    
+          <tr>
           <th>Alias</th>
           <th>Target</th>
           <th>Color</th>
           <th>Action</th>
-          </tr>    
+          </tr>
           </thead>
           <tbody>
 	<?php
@@ -114,10 +137,10 @@ if (isset($dashboard_id)) {
 	<p class="info">There are currently no Tattle lines available for this graph . <a href="<?php echo Line::makeURL('add',$graph) ?>">Add one now</a></p>
 	<?php
 } }
-?>    
+?>
     </div>
   </div>
 </div>
 </div>
 <?php
-$tmpl->place('footer');        
+$tmpl->place('footer');

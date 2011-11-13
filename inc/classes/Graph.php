@@ -4,10 +4,10 @@ class Graph extends fActiveRecord
     protected function configure()
     {
     }
-    
+
   /**
 	 * Returns all meetups on the system
-	 * 
+	 *
 	 * @param  string  $sort_column  The column to sort by
 	 * @param  string  $sort_dir     The direction to sort the column
 	 * @return fRecordSet  An object containing all meetups
@@ -19,8 +19,8 @@ class Graph extends fActiveRecord
           array('dashboard_id=' =>$dashboard_id),
           array('weight' => 'asc')
           );
-	}   
-    
+	}
+
     static public function makeURL($type, $obj=NULL)
 	{
 		switch ($type)
@@ -35,14 +35,14 @@ class Graph extends fActiveRecord
 				return 'graphs.php?action=delete&graph_id=' . $obj->prepareGraphId();
 			case 'list':
 				return 'graphs.php?action=list&graph_id=' . $obj->prepareGraphId();
-                
-		}	
+
+		}
 	}
-    
+
     	static function drawGraph($obj=NULL,$parent=NULL)
 	{
-        $link = 'http://graph/render/?';
-        $lines = Line::findAll($obj->getGraphId());     
+        $link = $GLOBALS['GRAPHITE_URL'].'/render/?';
+        $lines = Line::findAll($obj->getGraphId());
         foreach($lines as $line) {
            $link .= 'target=';
            $target =  'alias(' . $line->getTarget() . '%2C%22' . $line->getAlias() . '%22)';
@@ -56,16 +56,19 @@ class Graph extends fActiveRecord
           $link .= 'height=' . $parent->getGraphHeight() .'&';
           if ($obj->getVtitle() != '') {
               $link .= 'vtitle=' . $obj->getVtitle() .'&';
-          } 
+          }
           if ($obj->getName() != '') {
               $link .= 'title=' . $obj->getName() .'&';
-          }           
+          }
           if ($obj->getArea() != 'none') {
               $link .= 'areaMode=' . $obj->getArea() .'&';
           }
+          if ($obj->getTime_Value() != '' && $obj->getUnit() != '') {
+              $link .= 'from=-' . $obj->getTime_Value() . $obj->getUnit() . '&';
+          }
         }
        return $link;
-	}   
-    
-    
+	}
+
+
 }

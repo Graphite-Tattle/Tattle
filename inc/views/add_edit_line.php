@@ -35,7 +35,7 @@ if (isset($graph_id) && $action != 'edit') {
               </div>
             </div><!-- /clearfix -->
             <div class="clearfix">
-              <label for="line-color">Line Color<em>*</em></label>
+              <label for="line-color">Line Color</label>
               <div class="input">             
                   <input id="line-color" class="span3" type="text" size="30" name="color" value="<?php echo $line->encodeColor() ?>" />
               </div>

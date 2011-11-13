@@ -24,7 +24,7 @@ function email_notify($check,$check_result,$subscription) {
  $email->setSubject('Tattle : Alert for ' . $check->prepareName());
  // Set the body to include a string containing UTF-8
  $state = $status_array[$check_result->getStatus()];
- $email->setHTMLBody("<p>$state Alert for {$check->prepareName()} </p><p>The check returned {$check_result->prepareValue()}</p><p>Warning Threshold is : ". $check->getWarn() . "</p><p>Error Threshold is : ". $check->getError() . '</p><p>View Alert Details : <a href="' . $fURL::getDomain() . '/' . CheckResult::makeURL('list',$check_result) . '">'.$check->prepareName()."</a></p>");
+ $email->setHTMLBody("<p>$state Alert for {$check->prepareName()} </p><p>The check returned {$check_result->prepareValue()}</p><p>Warning Threshold is : ". $check->getWarn() . "</p><p>Error Threshold is : ". $check->getError() . '</p><p>View Alert Details : <a href="' . fURL::getDomain() . '/' . CheckResult::makeURL('list',$check_result) . '">'.$check->prepareName()."</a></p>");
  $email->setBody("
 $state Alert for {$check->prepareName()}
 The check returned {$check_result->prepareValue()}

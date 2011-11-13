@@ -10,8 +10,13 @@ $tmpl->place('header');
             <div class="clearfix">
 	      <label for="user-username">User Name<em>*</em></label>
               <div class="input">
-	        <input id="user-username" class="span3" type="text" size="30" name="username" value="<?php echo $user->encodeUsername() ?>" />
-              </div>
+	       <? if ($GLOBALS['ALLOW_HTTP_AUTH']) { 
+                  echo $_SERVER['PHP_AUTH_USER']; ?>
+                <input id="user-username" class="span3" type="hidden" name="username" value="<?=$_SERVER['PHP_AUTH_USER'];?>"> 
+              <?  } else { ?>
+                <input id="user-username" class="span3" type="text" size="30" name="username" value="<?php echo $user->encodeUsername() ?>" />
+               <? } ?>  
+            </div>
             </div><!-- /clearfix -->
 	    <div class="clearfix">
 	      <label for="user-email">Email<em>*</em></label>
@@ -19,12 +24,14 @@ $tmpl->place('header');
                 <input id="user-email" class="span3" type="text" size="30" name="email" value="<?php echo $user->encodeEmail() ?>" />
 	      </div>
             </div><!-- /clearfix -->
+            <? if (!$GLOBALS['ALLOW_HTTP_AUTH'] || ($user->getUserId() == 1)) { ?> 
 	    <div class="clearfix">
 	      <label for="user-password">Password<em>*</em></label>
               <div class="input">
                 <input id="user-password" class="span3" type="password" size="30" name="password" value="" />
 	      </div>
             </div><!-- /clearfix -->
+           <? } ?>
            <div class="actions">
              <input class="btn primary" type="submit" value="Save" />
 	     <? if ($action == 'edit') { ?><input class="btn" type="submit" name="action::delete" value="Delete" /><?php } ?>

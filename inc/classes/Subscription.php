@@ -11,12 +11,14 @@ class Subscription extends fActiveRecord
 	 * @param  string  $sort_dir     The direction to sort the column
 	 * @return fRecordSet  An object containing all meetups
 	 */
-	static function findAll($check_id=NULL)
+	static function findAll($check_id=NULL,$user_id=NULL)
 	{
+        $filter = array();
         if (!is_null($check_id) && is_numeric($check_id)){
-            $filter = array('check_id=' => $check_id);
-        } else {
-            $filter = array();  
+            $filter['check_id='] = $check_id;
+        }
+        if (!is_null($user_id) && is_numeric($user_id)) {
+            $filter['user_id='] = $user_id;
         }
 		return fRecordSet::build(
           __CLASS__,

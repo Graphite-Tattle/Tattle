@@ -37,7 +37,7 @@ $sortby = fRequest::getValid('sortby',array('asc','desc'),'asc');
 if ('edit' == $action) {
   try {
     $dashboard = new Dashboard($dashboard_id);
-    $graphs = $dashboard->buildGraphs();
+    $graphs = Graph::findAll($dashboard_id);
 
     if (fRequest::isPost()) {
       $dashboard->populate();
@@ -105,6 +105,37 @@ if ('edit' == $action) {
   $graphs = Graph::findAll($dashboard_id);
   include VIEW_PATH . '/view_dashboard.php';	
 	
+} elseif ('delete' == $action) {
+  $class_name = 'Dashboard';
+  try {
+    $obj = new Dashboard($dashboard_id);
+    $delete_text = 'Are you sure you want to delete dashboard : <strong>'. $obj->getName() . '</strong>?';
+    if (fRequest::isPost()) {
+      fRequest::validateCSRFToken(fRequest::get('token'));
+      $obj->delete();
+      $graphs = Graph::findAll($dashboard_id);
+      // Do Dashboard Subelement Cleanup
+      foreach($graphs as $graph) {
+        $lines = Line::findAll($graph->getGraphId());
+        foreach($lines as $line) {
+          $line->delete();
+        }
+        $graph->delete(); 
+      }
+      fMessaging::create('success', Dashboard::makeUrl('list'),
+                         'The Dashboard ' . $obj->getName() . ' was successfully deleted');
+      fURL::redirect(Dashboard::makeUrl('list'));
+    }
+  } catch (fNotFoundException $e) {
+    fMessaging::create('error', Dashboard::makeUrl('list'),
+                       'The Dashboard requested could not be found');
+    fURL::redirect(Dashboard::makeUrl('list'));
+  } catch (fExpectedException $e) {
+    fMessaging::create('error', fURL::get(), $e->getMessage());
+  }
+
+  include VIEW_PATH . '/delete.php';
+
 } else {
   $dashboards = Dashboard::findAll();
   include VIEW_PATH . '/list_dashboards.php';

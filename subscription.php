@@ -16,12 +16,14 @@ $check_id = fRequest::get('check_id', 'integer');
 $manage_url = $_SERVER['SCRIPT_NAME'];
 // --------------------------------- //
 if ('delete' == $action) {
+   $class_name = 'Subscription';
   try {
-    $check = new Check($check_id);
-    $subscription = new Subscription($subscription_id);
-    if (fRequest::isPost()) {
+    $obj = new Subscription($subscription_id);
+    $check = new Check($obj->getCheckId());
+    $delete_text = 'Are you sure you want to delete your subscription to <strong>' .  $check->getName() . '</strong>?';
+  if (fRequest::isPost()) {
       fRequest::validateCSRFToken(fRequest::get('token'));
-      $subscription->delete();
+      $obj->delete();
       fMessaging::create('success', $manage_url, 
                          'The subscription for ' . $check->getName() . ' was successfully deleted');
       fURL::redirect($manage_url);	
@@ -34,13 +36,14 @@ if ('delete' == $action) {
     fMessaging::create('error', fURL::get(), $e->getMessage());	
   }
 
-  include VIEW_PATH . '/delete_subscription.php';	
+  include VIEW_PATH . '/delete.php';	
 	
 // --------------------------------- // 
 } elseif ('edit' == $action) {
   try {
     $subscription = new Subscription($subscription_id);
-    $check = new Check($subscription->getCheck_Id());
+    $check = new Check($subscription->getCheckId());
+    $check_id = $subscription->getCheckId();
     if (fRequest::isPost()) {
       $subscription->populate();
       fRequest::validateCSRFToken(fRequest::get('token'));
@@ -85,7 +88,8 @@ if ('delete' == $action) {
 	
 } else {
   $user = new User(fSession::get('user_id'));
-  $subscriptions = $user->buildSubscriptions();
+  $subscriptions = Subscription::findAll(NULL,fSession::get('user_id'));
+//  $subscriptions = $user->buildSubscriptions();
 
   include VIEW_PATH . '/list_subscriptions.php';	
 }

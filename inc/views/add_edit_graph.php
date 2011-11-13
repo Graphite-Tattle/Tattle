@@ -65,7 +65,7 @@ if (isset($dashboard_id)) {
             </div><!-- /clearfix -->      
 	    <div class="actions">
 	      <input class="btn primary" type="submit" value="Save" />
-              <input class="btn" type="submit" name="action::delete" value="Delete" />
+              <a href="<?=Graph::makeURL('delete',$graph);?>" class="btn">Delete</a>
               <a href="<?php echo Dashboard::makeUrl('view',$dashboard);?>" class="btn">View</a>
               <div class="required"><em>*</em> Required field</div>
 	      <input type="hidden" name="token" value="<?php echo fRequest::generateCSRFToken() ?>" />

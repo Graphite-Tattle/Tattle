@@ -7,12 +7,12 @@ $breadcrumbs[] = array('name' => $page_title , 'url' => fURL::getWithQueryString
 $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
 
+$query_string = '';
 if (isset($check_id)) {
-  $query_string = "&check_id=$check_id";
-} elseif (isset($subscription_id)) {
-  $query_string = "&subscription_id=$subscription_id";  
-} else {
-  $query_string = '';
+  $query_string .= "&check_id=$check_id";
+} 
+if (isset($subscription_id)) {
+  $query_string .= "&subscription_id=$subscription_id";  
 }
 ?>
   <div class="row">

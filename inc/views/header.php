@@ -3,9 +3,6 @@
   <head>
     <meta charset="utf-8">
     <title><?php echo $this->prepare('title') ?><?php echo (strpos($this->get('title'), 'Tattle') === FALSE ? ' - Tattle' : '') ?></title>
-    <meta name="description" content="">
-    <meta name="author" content="">
-
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -60,7 +57,11 @@ if (!$this->get('full_screen')) { ?>
         });
       });
      
-   	</script> 
+   	</script>
+<?php 
+if ($this->get('full_screen') && $this->get('refresh') > 0) {
+  echo '<meta http-equiv="refresh" content="' . $this->get('refresh') . '">';
+} ?> 
   </head>
   <body>
 

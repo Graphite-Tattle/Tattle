@@ -16,8 +16,12 @@ if ('edit' == $action) {
     $user = new User($user_id);
     if (fRequest::isPost()) {
       $user->populate();
-      $password = fCryptography::hashPassword($user->getPassword());
-      $user->setPassword($password);
+      if ($GLOBALS['ALLOW_HTTP_AUTH'] && ($user->getUserId() != 1)) {
+        $password = 'basic_auth';
+      } else {
+        $password = fCryptography::hashPassword($user->getPassword());
+        $user->setPassword($password);
+      }
       fRequest::validateCSRFToken(fRequest::get('token'));
       $user->store();
 			
@@ -42,7 +46,11 @@ if ('edit' == $action) {
   if (fRequest::isPost()) {	
     try {
       $user->populate();
-      $password = fCryptography::hashPassword($user->getPassword());
+      if ($GLOBALS['ALLOW_HTTP_AUTH']) {
+        $password = 'basic_auth';
+      } else {
+        $password = fCryptography::hashPassword($user->getPassword());
+     }
       $user->setPassword($password);			
       fRequest::validateCSRFToken(fRequest::get('token'));
       $user->store();
@@ -71,6 +79,26 @@ if ('edit' == $action) {
     }
   } 
   include VIEW_PATH . '/add_edit_user_settings.php';
+ 
+} elseif ('delete' == $action) {
+ try {
+    $user = new User($user_id);
+    if (fRequest::isPost()) {
+      fRequest::validateCSRFToken(fRequest::get('token'));
+      $user->delete();
+      fMessaging::create('success', User::makeUrl('edit',$user),
+                         'The user ' . $user->getName() . ' was successfully deleted');
+      fURL::redirect(User::makeUrl('edit',$user));
+    }
+  } catch (fNotFoundException $e) {
+    fMessaging::create('error', User::makeUrl('edit',$user),
+                       'The line requested could not be found');
+    fURL::redirect(User::makeUrl('edit',$user));
+  } catch (fExpectedException $e) {
+    fMessaging::create('error', fURL::get(), $e->getMessage());
+  }
+
+  include VIEW_PATH . '/delete.php';
  
 } else {
   if (!fAuthorization::checkAuthLevel('admin')) {

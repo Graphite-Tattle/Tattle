@@ -58,7 +58,13 @@ if (isset($dashboard_id)) {
                   <input id="dashboard-background_color" class="span3" type="text" size="30" name="background_color" value="<?php echo $dashboard->encodeBackgroundColor() ?>" />
               </div>
             </div><!-- /clearfix -->            
-	    <div class="actions span4">
+	    <div class="clearfix">
+             <label for="dashboard-refresh_rate">Refresh Rate<em>*</em> (in seconds)</label>
+             <div class="input">
+               <input id="dashboard-refresh_rate" class="span3" type="text" size="30" name="refresh_rate" value="<?=$dashboard->getRefreshRate(); ?>" />
+             </div>
+            </div>
+            <div class="actions span4">
 	      <input class="btn primary" type="submit" value="Save" />
               <input class="btn" type="submit" name="action::delete" value="Delete" />
               <a href="<?php echo Dashboard::makeUrl('view',$dashboard);?>" class="btn">View</a>

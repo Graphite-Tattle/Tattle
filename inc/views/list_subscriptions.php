@@ -21,7 +21,7 @@ try {
 	<?php
 	$first = TRUE;
 	foreach ($subscriptions as $subscription) {
-          $check = $subscription->createCheck();      
+          $check = new Check($subscription->getCheckId());      
 	?>
     	<tr>
         <td><?php echo $check->prepareName() ?></td>

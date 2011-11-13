@@ -3,7 +3,7 @@ class User extends fActiveRecord
 {
     protected function configure()
     {
-     fORMRelated::setOrderBys($this,'Subscription',array('subscriptions.subscription_id' => 'desc'));
+//     fORMRelated::setOrderBys($this,'Subscription',array('subscriptions.subscription_id' => 'desc'));
     }
 	/**
 	 * Returns all meetups on the system

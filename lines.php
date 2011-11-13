@@ -11,12 +11,14 @@ $line_id = fRequest::get('line_id', 'integer');
 $graph_id = fRequest::get('graph_id', 'integer');
 
 if ('delete' == $action) {
+   $class_name = 'Line';
   try {
-    $line = new Line($line_id);
-    $graph = $line->createGraph();
+    $obj = new Line($line_id);
+    $graph = new Graph($obj->getGraphId());
+    $delete_text = 'Are you sure you want to delete the line : <strong>' . $obj->getAlias() . '</strong>?';
     if (fRequest::isPost()) {
       fRequest::validateCSRFToken(fRequest::get('token'));
-      $line->delete();
+      $obj->delete();
       fMessaging::create('success', Graph::makeUrl('edit',$graph),
                          'The line for ' . $graph->getName() . ' was successfully deleted');
       fURL::redirect(Graph::makeUrl('edit',$graph));      

@@ -25,6 +25,8 @@ $GLOBALS['SESSION_FILES'] = '/tmp';
 // Bootstrap Settings
 $GLOBALS['BOOTSTRAP_PATH'] = '/bootstrap/';
 
+// Allow HTTP auth as user management 
+$GLOBALS['ALLOW_HTTP_AUTH'] = false;
 
 // Allow loading GLOBAL overrides
 if(file_exists(  TATTLE_ROOT . "/inc/config.override.php" ) ) {
@@ -110,3 +112,25 @@ fAuthorization::setAuthLevels(
 // This prevents cross-site session transfer
 fSession::setPath($GLOBALS['SESSION_FILES']);
 
+
+if (!fAuthorization::checkLoggedIn()) {
+  if ($GLOBALS['ALLOW_HTTP_AUTH'] && (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW']))) {
+    unset($_SERVER['PHP_AUTH_PW']); //no need for a clear text password hanging around.
+    try {
+      $user = new User(array('username' => $_SERVER['PHP_AUTH_USER']));
+      // Auto Register User
+      fAuthorization::setUserToken($user->getEmail());
+      fAuthorization::setUserAuthLevel($user->getRole());
+      fSession::set('user_id',$user->getUserId());
+      fSession::set('user_name',$user->getUsername());
+    } catch (fNotFoundException $e) {
+
+       if (fURL::getWithQueryString() != (TATTLE_WEB_ROOT . User::makeURL('add'))) {
+        fMessaging::create('affected', User::makeURL('add'), $_SERVER['PHP_AUTH_USER'] );
+        fMessaging::create('success', User::makeURL('add'),
+                         'The user ' . $_SERVER['PHP_AUTH_USER'] . ' was successfully created');
+        fURL::redirect(User::makeURL('add')); 
+     } 
+    }    
+  }
+}

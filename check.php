@@ -17,12 +17,22 @@ $check_list_url = Check::makeURL('list');
 // --------------------------------- //
 if ('delete' == $action) {
   try {
-    $check = new Check($check_id);
+    $obj = new Check($check_id);
+    $delete_text = 'Are you sure you want to delete the check : <strong>' . $obj->getName() . '</strong>?';
     if (fRequest::isPost()) {
       fRequest::validateCSRFToken(fRequest::get('token'));
-      $check->delete();
+      $obj->delete();
+      // Do our own Subscription and CheckResult cleanup instead of using ORM
+      $subscriptions = Subscription::findAll($check_id);
+      foreach ($subscriptions as $subscription) {
+        $subscription->delete();
+      }
+      $check_results = CheckResult::findAll($check_id);
+      foreach ($check_results as $check_result) {
+        $check_result->delete();
+      }
       fMessaging::create('success', $check_list_url, 
-                         'The check ' . $check->getName() . ' was successfully deleted');
+                         'The check ' . $obj->getName() . ' was successfully deleted');
       fURL::redirect($check_list_url);	
     }
   } catch (fNotFoundException $e) {

@@ -104,7 +104,7 @@ $tmpl->place('header');
            <fieldset>
              <div class="actions">
              <input class="btn primary" type="submit" value="Save" />
-	     <? if ($action == 'edit') { ?><input class="btn" type="submit" name="action::delete" value="Delete" /><?php } ?>
+	     <? if ($action == 'edit') { ?><a href="<?=Check::makeURL('delete',$check);?>" class="btn" >Delete</a><?php } ?>
 	     <div class="required"><em>*</em> Required field</div>
 	     <input type="hidden" name="token" value="<?php echo fRequest::generateCSRFToken() ?>" />
 <?php if ($action == 'add') { ?>

@@ -31,7 +31,7 @@ if ('delete' == $action) {
     fMessaging::create('error', fURL::get(), $e->getMessage());
   }
   
-  include VIEW_PATH . '/delete_line.php';
+  include VIEW_PATH . '/delete.php';
  
 // --------------------------------- //
 } elseif ('edit' == $action) {

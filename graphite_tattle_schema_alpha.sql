@@ -10,14 +10,14 @@ CREATE TABLE `users` (
 ) CHARSET=utf8;
 
 CREATE TABLE `settings` (
-  `setting_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `friendly_name` varchar(200) NOT NULL,
   `value` varchar(500) NOT NULL,
+  `value_type` varchar(100) NOT NULL DEFAULT 'string',
   `plugin` varchar(200) NOT NULL,
-  `type` varchar(100) NOT NULL DEFAULT 'string',
-  PRIMARY KEY (`setting_id`),
-  UNIQUE KEY `name` (`name`)
+  `type` varchar(200) NOT NULL DEFAULT 'system' COMMENT 'So far this can be user or system',
+  `owner_id` int(11) NOT NULL COMMENT 'Can be used by plugins to associated the value with a user or other object like a dashboard',
+  PRIMARY KEY (`name`,`owner_id`)
 ) CHARSET=utf8;
 
 CREATE TABLE `dashboards` (

@@ -19,32 +19,32 @@ if (isset($graph_id) && $action != 'edit') {
 ?>
   <div class="row">
     <div class="span6">
-      <form action="<?php echo fURL::get() ?>?action=<? echo $action.$query_string; ?>" method="post">
+      <form action="<?=fURL::get(); ?>?action=<?=$action.$query_string; ?>" method="post">
         <div class="main" id="main">
           <fieldset>
                 <div class="clearfix">
 	      <label for="line-alias">Alias<em>*</em></label>
               <div class="input">
-	        <input id="line-alias" class="span3" type="text" size="30" name="alias" value="<?php echo $line->encodeAlias() ?>" />
+	        <input id="line-alias" class="span3" type="text" size="30" name="alias" value="<?=$line->encodeAlias(); ?>" />
               </div>
             </div><!-- /clearfix -->
             <div class="clearfix">
               <label for="line-target">Target<em>*</em></label>
               <div class="input">             
-	        <input id="line-target" class="span3" type="text" size="30" name="target" value="<?php echo $line->encodeTarget() ?>" />
+	        <input id="line-target" class="span3" type="text" size="30" name="target" value="<?=$line->encodeTarget(); ?>" />
               </div>
             </div><!-- /clearfix -->
             <div class="clearfix">
               <label for="line-color">Line Color</label>
               <div class="input">             
-                  <input id="line-color" class="span3" type="text" size="30" name="color" value="<?php echo $line->encodeColor() ?>" />
+                  <input id="line-color" class="span3" type="text" size="30" name="color" value="<?=$line->encodeColor(); ?>" />
               </div>
             </div><!-- /clearfix -->                  
         <div class="actions">
 	      <input class="btn primary" type="submit" value="Save" />
               <input class="btn" type="submit" name="action::delete" value="Delete" />
               <div class="required"><em>*</em> Required field</div>
-	      <input type="hidden" name="token" value="<?php echo fRequest::generateCSRFToken() ?>" />
+	      <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
             </div>
          </fieldset>
        </div>       

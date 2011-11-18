@@ -31,12 +31,12 @@ if ('delete' == $action) {
       foreach ($check_results as $check_result) {
         $check_result->delete();
       }
-      fMessaging::create('success', $check_list_url, 
+      fMessaging::create('success', fURL::get(), 
                          'The check ' . $obj->getName() . ' was successfully deleted');
       fURL::redirect($check_list_url);	
     }
   } catch (fNotFoundException $e) {
-    fMessaging::create('error', $check_list_url, 
+    fMessaging::create('error', fURL::get(), 
                        'The check requested, ' . fHTML::encode($date) . ', could not be found');
     fURL::redirect($check_list_url);
   } catch (fExpectedException $e) {
@@ -59,7 +59,7 @@ if ('delete' == $action) {
                          'The check ' . $check->getName(). ' was successfully updated');
     }
   } catch (fNotFoundException $e) {
-    fMessaging::create('error', $check_list_url, 
+    fMessaging::create('error', fURL::get(), 
                        'The check requested, ' . fHTML::encode($check_id) . ', could not be found');	
     fURL::redirect($check_list_url);
   } catch (fExpectedException $e) {
@@ -77,8 +77,8 @@ if ('delete' == $action) {
       fRequest::validateCSRFToken(fRequest::get('token'));
       $check->store();
 			
-      fMessaging::create('affected', $check_list_url, $check->getName());
-      fMessaging::create('success', $check_list_url, 
+      fMessaging::create('affected', fURL::get(), $check->getName());
+      fMessaging::create('success', fURL::get(), 
                          'The check ' . $check->getName() . ' was successfully created');
       fURL::redirect($check_list_url);
     } catch (fExpectedException $e) {
@@ -89,7 +89,6 @@ if ('delete' == $action) {
   include VIEW_PATH . '/add_edit.php';	
 	
 } else {
-  //$checks = Check::findUsersActive($sort,$sort_dir);
   $checks = Check::findAll($sort,$sort_dir);
   include VIEW_PATH .'/list_checks.php';
 }

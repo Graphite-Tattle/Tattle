@@ -50,7 +50,7 @@ if ('edit' == $action) {
       fMessaging::create('affected', $manage_url, $graph->getName());
       fMessaging::create('success', $manage_url, 
                          'The Graph ' . $graph->getName() . ' was successfully created');
-      fURL::redirect(Dashboard::makeUrl('edit',$dashboard));	
+      fURL::redirect(Graph::makeUrl('edit',$graph));	
     } catch (fExpectedException $e) {
       fMessaging::create('error', fURL::get(), $e->getMessage());	
     }	

@@ -5,11 +5,9 @@ function carrier_pidgin_config(){
 }
 
 function carrier_pidgin_settings(){
-  fCore::expose($carriers); 
 }
 
 //carrier_pidgin plugin
 function carrier_pidgin_send_notification($notifications) {
   echo "notify via carrier_pidgin : fly birdies fly!";
-//  print_r($notifications);
 }

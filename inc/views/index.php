@@ -2,12 +2,11 @@
 $tmpl->set('title', 'Self Service Alerts based on Graphite metrics');
 $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
-
 try {
         $results->tossIfNoRows();
 	?>
   <table class="zebra-striped">
-          <thead>
+    <thead>
     <tr>    
     <th>Check</th>
     <th>Latest Status</th>
@@ -21,11 +20,11 @@ try {
           $check = new Check($row['check_id']);
 		?>
     	<tr>
-        <td><?php echo $row['name'] ?></td>
-        <td><?php echo ($row['status'] == 2 ? 'Warning' : 'Error'); ?></td>
-        <td><?php echo $row['timestamp'] ?></td>
-        <td><?php echo $row['count'] ?></td>
-        <td><a href="<?php echo CheckResult::makeURL('list', $check) ?>">View</a> | <a href="<?php echo CheckResult::makeURL('ackAll', $check) ?>">Clear</a>
+        <td><?=$row['name']; ?></td>
+        <td><?=($row['status'] == 2 ? 'Warning' : 'Error'); ?></td>
+        <td><?=$row['timestamp']; ?></td>
+	<td><?=$row['count']; ?></td>
+        <td><a href="<?=CheckResult::makeURL('list', $check); ?>">View</a> | <a href="<?=CheckResult::makeURL('ackAll', $check); ?>">Clear</a>
         </td>
         </tr>
     <?php } ?>

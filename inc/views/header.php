@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title><?php echo $this->prepare('title') ?><?php echo (strpos($this->get('title'), 'Tattle') === FALSE ? ' - Tattle' : '') ?></title>
+    <title><?=$this->prepare('title'); ?><?=(strpos($this->get('title'), 'Tattle') === FALSE ? ' - Tattle' : ''); ?></title>
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -82,6 +82,8 @@ if (!$this->get('full_screen')) { ?>
               echo '<li' . ($current_url == $subscription_list ? ' class="active"' : '') .'><a href="' . $subscription_list . '" >Subscriptions</a></li>' . "\n";
               $dashboard_list = Dashboard::makeURL('list');
               echo '<li' . ($current_url == $dashboard_list ? ' class="active"' : '') . '><a href="' . $dashboard_list . '">Dashboards</a></li>';
+              $setting_list = Setting::makeURL('list');
+              echo '<li' . ($current_url == $setting_list ? ' class="active"' : '') . '><a href="' . $setting_list . '" >Settings</a></li>' . "\n";
 if (fAuthorization::checkAuthLevel('admin')) {
               $user_list = User::makeURL('list'); 
               echo '<li><a href="' . User::makeURL('list') . '" >Users</a></li>';
@@ -90,7 +92,7 @@ if (fAuthorization::checkAuthLevel('admin')) {
           </ul>
  <?php   if (is_numeric(fSession::get('user_id'))) { ?>
  <p class="pull-right">
-     Logged in as <a href="<?= User::makeUrl('edit',fSession::get('user_id'));?>"><?php echo fSession::get('user_name'); ?></a>
+     Logged in as <a href="<?=User::makeUrl('edit',fSession::get('user_id'));?>"><?=fSession::get('user_name'); ?></a>
 </p>
     <?php } ?> 
 </div> 
@@ -114,11 +116,13 @@ if (fAuthorization::checkAuthLevel('admin')) {
      echo '</ul>';
     } ?>
 <?php
+
 if (fMessaging::check('error', fURL::get())) {
   echo '<div class="alert-message error">';
     fMessaging::show('error', fURL::get());
   echo '</div>';
 }
+
 
 if (fMessaging::check('success', fURL::get())) {
   echo '<div class="alert-message success">';

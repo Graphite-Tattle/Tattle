@@ -17,7 +17,7 @@ if (isset($subscription_id)) {
 ?>
   <div class="row">
     <div class="span4">
-      <form class="form-stacked" action="<?php echo fURL::get() ?>?action=<? echo $action.$query_string; ?>" method="post">
+      <form class="form-stacked" action="<?=fURL::get(); ?>?action=<?=$action.$query_string; ?>" method="post">
         <div class="main" id="main">
           <fieldset>
             <div class="clearfix">
@@ -63,11 +63,11 @@ if (isset($subscription_id)) {
 	    <div class="actions">
 	      <input class="btn primary" type="submit" value="Save" />
               <?php if ($action == 'edit') { ?> 
-                 <a class="btn" href="<?=Subscription::makeUrl('delete',$subscription);?>">Delete</a>
+                 <a class="btn" href="<?=Subscription::makeUrl('delete',$subscription); ?>">Delete</a>
               <?php } ?>
               <div class="required"><em>*</em> Required field</div>
-	      <input type="hidden" name="token" value="<?php echo fRequest::generateCSRFToken() ?>" />
-              <input type="hidden" name="user_id" value="<?php echo fSession::get('user_id'); ?>" />
+	      <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
+              <input type="hidden" name="user_id" value="<?=fSession::get('user_id'); ?>" />
             </div>
          </fieldset>
        </div>       
@@ -75,9 +75,9 @@ if (isset($subscription_id)) {
     </div>
     <div class="span10">   
       <fieldset>
-        <p>Check : <?php echo $check->prepareName(); ?></p>
-        <p>Target : <?php echo $check->prepareTarget(); ?></p>
-        <p><?php echo Check::showGraph($check); ?></p>
+        <p>Check : <?=$check->prepareName(); ?></p>
+        <p>Target : <?=$check->prepareTarget(); ?></p>
+        <p><?=Check::showGraph($check); ?></p>
       </fieldset>
     </div>
   </div>

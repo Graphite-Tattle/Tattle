@@ -9,6 +9,7 @@ define('TATTLE_WEB_ROOT',$web_root);
 define('VIEW_PATH', TATTLE_ROOT . '/inc/views/');
 define('JS_CACHE', TATTLE_ROOT . '/js_cache/');
 
+
 include TATTLE_ROOT . '/inc/includes.php';
 include TATTLE_ROOT . '/inc/functions.php';
 include TATTLE_ROOT . '/inc/config.php';

@@ -21,10 +21,10 @@ try {
           $check = new Check($row['check_id']);
 		?>
     	<tr>
-        <td><?php echo $row['name'] ?></td>
-        <td><?php echo ($row['status'] == 2 ? 'Warning' : 'Error'); ?></td>
-        <td><?php echo $row['count'] ?></td>
-        <td><a href="<?php echo CheckResult::makeURL('list', $check) ?>">View</a>
+        <td><?=$row['name']; ?></td>
+        <td><?=($row['status'] == 2 ? 'Warning' : 'Error'); ?></td>
+        <td><?=$row['count']; ?></td>
+        <td><a href="<?=CheckResult::makeURL('list', $check); ?>">View</a>
         </td>
         </tr>
     <?php } ?>

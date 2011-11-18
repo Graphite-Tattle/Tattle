@@ -61,7 +61,7 @@ foreach ($checks as $check) {
       $check->store();
       $subscriptions = Subscription::findAll($check->getCheckId());
       foreach ($subscriptions as $subscription) {
-        $notify_function = $subscription->getMethod() . '_notify';
+        $notify_function = $subscription->getMethod();
         if (function_exists($notify_function)){
          $notify_result = $notify_function($check,$check_result,$subscription);  
         }

@@ -34,23 +34,11 @@ if(file_exists(  TATTLE_ROOT . "/inc/config.override.php" ) ) {
 }
 
 //Load in plugin files
-$plugin_settings = array();
+
+$GLOBALS['hooks'] = array();
+
 foreach (glob("plugins/*_plugin.php") as $plugin) {
   include_once($plugin);
-  $plugin_name = str_replace(array('plugins/', '_plugin.php'), '', $plugin);
-  $plugin_config = $plugin_name . '_config';
-  $plugin_engine = $plugin_name . '_engine';
-  $plugin_notify = $plugin_name . '_notify';
-
-  if (function_exists($plugin_config)) {
-    $plugin_settings[$plugin_name] = $plugin_config();
-    if (function_exists($plugin_notify)) {
-      $send_methods[$plugin_name] = $plugin_settings[$plugin_name]['name'];
-    }
-    if (function_exists($plugin_engine)) {
-      $data_engine[$plugin_name] = $plugin_settings[$plugin_name]['name'];
-    }
-  }
 }
 
 // Check to make sure the session folder exists 
@@ -72,6 +60,17 @@ try {
 fORMDatabase::attach($mysql_db);
 
 
+$default_plugin_settings = plugin_hook('plugin_settings');
+$default_plugin_user_settings = plugin_hook('plugin_user_settings');
+
+$send_methods = plugin_hook('send_methods');
+$current_plugin_settings = Setting::findAll(array('type=' => 'system'));
+$plugin_settings = $default_plugin_settings;
+$plugin_user_settings = $default_plugin_user_settings;
+
+foreach ($current_plugin_settings as $setting) {
+  $plugin_settings[$setting->getName()]['value'] = $setting->getValue();
+}
 
 if (!is_dir(JS_CACHE)) {
   $config_error .="<br/>Tattle Error <br />" .
@@ -79,7 +78,7 @@ if (!is_dir(JS_CACHE)) {
 }
 
 if (!is_dir($GLOBALS['SESSION_FILES']) || !is_writable($GLOBALS['SESSION_FILES'])){
-  $config_error .="<br/>Tattle Error <br />" .
+ $config_error .="<br/>Tattle Error <br />" .
                   "Flourishlib Session path is not write-able. Path at : " . $GLOBALS['SESSION_FILES'];
   $config_error = true;
 }

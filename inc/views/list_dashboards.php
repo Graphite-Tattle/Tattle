@@ -23,21 +23,21 @@ try {
 	foreach ($dashboards as $dashboard) {
 		?>
     	<tr>
-        <td><?php echo $dashboard->prepareName() ?></td>
-        <td><?php echo $dashboard->prepareDescription() ?></td>
-        <td><?php echo $dashboard->prepareColumns() ?></td>
-        <td><?php echo $dashboard->prepareBackgroundColor() ?></td>
+        <td><?=$dashboard->prepareName(); ?></td>
+        <td><?=$dashboard->prepareDescription(); ?></td>
+        <td><?=$dashboard->prepareColumns(); ?></td>
+        <td><?=$dashboard->prepareBackgroundColor(); ?></td>
         <td>
-        <a href="<?php echo Dashboard::makeURL('view', $dashboard) ?>">View</a> |
-        <a href="<?php echo Dashboard::makeURL('edit', $dashboard) ?>">Edit</a> |
-        <a href="<?php echo Dashboard::makeURL('delete', $dashboard) ?>">Delete</a></td>
+        <a href="<?=Dashboard::makeURL('view', $dashboard); ?>">View</a> |
+        <a href="<?=Dashboard::makeURL('edit', $dashboard); ?>">Edit</a> |
+        <a href="<?=Dashboard::makeURL('delete', $dashboard); ?>">Delete</a></td>
         </tr>
     <?php } ?>
     </tbody></table>
     <?
 } catch (fEmptySetException $e) {
 	?>
-	<p class="info">There are currently no Tattle Dashboards available for your account. <a href="<?php echo Dashboard::makeURL('add') ?>">Add one now</a></p>
+	<p class="info">There are currently no Tattle Dashboards available for your account. <a href="<?=Dashboard::makeURL('add'); ?>">Add one now</a></p>
 	<?php
 }
 ?>

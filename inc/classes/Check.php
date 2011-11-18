@@ -124,12 +124,9 @@ class Check extends fActiveRecord
 	static public function getResultValue($data,$obj=NULL)
 	{
           $value = false;
-          //print_r($data[0]->datapoints);
           if ($obj->getBaseline() == 'average') {
-            //print_r($data[0]->datapoints);
             $value = subarray_average($data[0]->datapoints);
           } elseif ($obj->getBaseline() == 'median') {
-            //print_r($data[0]->datapoints);
             $value = subarray_median($data[0]->datapoints);
           } 
          

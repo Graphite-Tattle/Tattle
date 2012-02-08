@@ -61,6 +61,9 @@ Installation and Configuration
 
 * Register via the web interface. (The first user registered is the admin currently prior to us implementing any roles, and other permissions)
 
+
+If you are on EL6 or a recent Fedora , make sure your php.ini has short_open_tag = off commented or you will get bogus output.
+
 Dashboard Cleanurls
 -----------
 If you have apache, with mod_rewrite enabled and allow .htaccess files you can try the new Clean Dashboard urls.

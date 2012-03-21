@@ -16,8 +16,8 @@ if ('edit' == $action) {
     $user = new User($user_id);
     if (fRequest::isPost()) {
       $user->populate();
-      if ($GLOBALS['ALLOW_HTTP_AUTH'] && ($user->getUserId() != 1)) {
-        $password = 'basic_auth';
+      if (isset($GLOBALS['OUTSIDE_USER']) && ($user->getUserId() != 1)) {
+        $password = 'outside_auth';
       } else {
         $password = fCryptography::hashPassword($user->getPassword());
         $user->setPassword($password);
@@ -46,8 +46,8 @@ if ('edit' == $action) {
   if (fRequest::isPost()) {	
     try {
       $user->populate();
-      if ($GLOBALS['ALLOW_HTTP_AUTH']) {
-        $password = 'basic_auth';
+      if (isset($GLOBALS['OUTSIDE_USER'])) {
+        $password = 'outside_auth';
       } else {
         $password = fCryptography::hashPassword($user->getPassword());
      }

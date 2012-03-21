@@ -28,6 +28,11 @@ $GLOBALS['BOOTSTRAP_PATH'] = '/bootstrap/';
 // Allow HTTP auth as user management 
 $GLOBALS['ALLOW_HTTP_AUTH'] = false;
 
+// Allow REMOTE_USER as user management --- assumes your 
+// webserver supplies REMOTE_USER via some external authentication
+// mechanism
+$GLOBALS['ALLOW_REMOTE_USER'] = false;
+
 // Allow loading GLOBAL overrides
 if(file_exists(  TATTLE_ROOT . "/inc/config.override.php" ) ) {
   include_once  TATTLE_ROOT . "/inc/config.override.php";
@@ -111,12 +116,19 @@ fAuthorization::setAuthLevels(
 // This prevents cross-site session transfer
 fSession::setPath($GLOBALS['SESSION_FILES']);
 
-
+// Allow for either PHP http auth or a provided REMOTE_USER
+// Elsewhere, we assume that if OUTSIDE_USER is set, that's our
+// user.
 if (!fAuthorization::checkLoggedIn()) {
   if ($GLOBALS['ALLOW_HTTP_AUTH'] && (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW']))) {
+    $GLOBALS['OUTSIDE_USER'] = $_SERVER['PHP_AUTH_USER'];
     unset($_SERVER['PHP_AUTH_PW']); //no need for a clear text password hanging around.
+  } elseif( $GLOBALS['ALLOW_REMOTE_USER'] && isset($_SERVER['REMOTE_USER'])) {
+    $GLOBALS['OUTSIDE_USER'] = $_SERVER['REMOTE_USER'];
+  }
+  if (isset($GLOBALS['OUTSIDE_USER'])) { 
     try {
-      $user = new User(array('username' => $_SERVER['PHP_AUTH_USER']));
+      $user = new User(array('username' => $GLOBALS['OUTSIDE_USER']));
       // Auto Register User
       fAuthorization::setUserToken($user->getEmail());
       fAuthorization::setUserAuthLevel($user->getRole());
@@ -125,9 +137,9 @@ if (!fAuthorization::checkLoggedIn()) {
     } catch (fNotFoundException $e) {
 
        if (fURL::getWithQueryString() != (TATTLE_WEB_ROOT . User::makeURL('add'))) {
-        fMessaging::create('affected', User::makeURL('add'), $_SERVER['PHP_AUTH_USER'] );
+        fMessaging::create('affected', User::makeURL('add'), $GLOBALS['OUTSIDE_USER'] );
         fMessaging::create('success', User::makeURL('add'),
-                         'The user ' . $_SERVER['PHP_AUTH_USER'] . ' was successfully created');
+                         'The user ' . $GLOBALS['OUTSIDE_USER'] . ' was successfully created');
         fURL::redirect(User::makeURL('add')); 
      } 
     }    

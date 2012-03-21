@@ -10,9 +10,9 @@ $tmpl->place('header');
             <div class="clearfix">
 	      <label for="user-username">User Name<em>*</em></label>
               <div class="input">
-	       <? if ($GLOBALS['ALLOW_HTTP_AUTH']) { 
-                  echo $_SERVER['PHP_AUTH_USER']; ?>
-                <input id="user-username" class="span3" type="hidden" name="username" value="<?=$_SERVER['PHP_AUTH_USER']; ?>"> 
+	       <? if (isset($GLOBALS['OUTSIDE_USER'])) { 
+                  echo $GLOBALS['OUTSIDE_USER']; ?>
+                <input id="user-username" class="span3" type="hidden" name="username" value="<?=$GLOBALS['OUTSIDE_USER']; ?>"> 
               <?  } else { ?>
                 <input id="user-username" class="span3" type="text" size="30" name="username" value="<?=$user->encodeUsername(); ?>" />
                <? } ?>  
@@ -24,7 +24,7 @@ $tmpl->place('header');
                 <input id="user-email" class="span3" type="text" size="30" name="email" value="<?=$user->encodeEmail(); ?>" />
 	      </div>
             </div><!-- /clearfix -->
-            <? if (!$GLOBALS['ALLOW_HTTP_AUTH'] || ($user->getUserId() == 1)) { ?> 
+            <? if (!isset($GLOBALS['OUTSIDE_USER']) || ($user->getUserId() == 1)) { ?> 
 	    <div class="clearfix">
 	      <label for="user-password">Password<em>*</em></label>
               <div class="input">

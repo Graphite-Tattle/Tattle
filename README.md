@@ -86,6 +86,11 @@ just set the following config variable to true in your config.override.php file:
 $GLOBALS['ALLOW_HTTP_AUTH'] = true;
 ```
 
+If your Web Server uses an external module that sets REMOTE_USER, you can use that instead of the above:
+```
+$GLOBALS['ALLOW_REMOTE_USER'] = true;
+```
+
 Reason for creation
 -----------
 

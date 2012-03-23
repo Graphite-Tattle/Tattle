@@ -13,6 +13,6 @@ $latest_alerts = 'SELECT c.check_id,name,r.status,count(c.check_id) as count, r.
                  'AND acknowledged = 0 '.
                  'AND s.user_id = ' . fSession::get('user_id') . ' ' .
                  'Group by c.check_id;';
-$results = $mysql_db->query($latest_alerts);
+$results = $db->query($latest_alerts);
 
 include 'inc/views/index.php';

@@ -52,12 +52,14 @@ $config_exit = false;
 
 if ($GLOBALS['DATABASE_TYPE'] == 'mysql') {
     try {
-      //Set DB connection (using flourish it isn't actually connected to until the first use)
       $db  = new fDatabase('mysql', $GLOBALS['DATABASE_NAME'], $GLOBALS['DATABASE_USER'], $GLOBALS['DATABASE_PASS'], $GLOBALS['DATABASE_HOST'], $GLOBALS['DATABASE_PORT']);
       // Please note that calling this method is not required, and simply
       // causes an exception to be thrown if the connection can not be made
       $db->connect();
     } catch (fAuthorizationException $e) {
+      $config_error = "DB error : " . $e->getMessage();
+      $config_exit = true;
+    } catch (fConnectivityException $e) {
       $config_error = "DB error : " . $e->getMessage();
       $config_exit = true;
     }

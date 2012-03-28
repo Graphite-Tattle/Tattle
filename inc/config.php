@@ -28,6 +28,9 @@ $GLOBALS['BOOTSTRAP_PATH'] = '/bootstrap/';
 // Allow HTTP auth as user management 
 $GLOBALS['ALLOW_HTTP_AUTH'] = false;
 
+// Locale settings
+$GLOBALS['TIMEZONE'] = 'America/New_York';
+
 // Allow loading GLOBAL overrides
 if(file_exists(  TATTLE_ROOT . "/inc/config.override.php" ) ) {
   include_once  TATTLE_ROOT . "/inc/config.override.php";
@@ -99,7 +102,7 @@ error_reporting(E_STRICT | E_ALL);
 fCore::enableErrorHandling('html');
 fCore::enableExceptionHandling('html');
 
-fTimestamp::setDefaultTimezone('America/New_York');
+fTimestamp::setDefaultTimezone($GLOBALS['TIMEZONE']);
 
 fAuthorization::setLoginPage(User::makeURL('login'));
 fAuthorization::setAuthLevels(

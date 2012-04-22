@@ -72,7 +72,8 @@ Error Threshold is : ". $check->getError() . "
            ");
   try {  
     $message_id = $email->send($smtp);
-  } catch ( fConnectivityException $e) { 
+  } catch ( fConnectivityException $e) {
+    fCore::debug($e,FALSE); 
     fCore::debug("email send failed",FALSE);
   }
 }

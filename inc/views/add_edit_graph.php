@@ -86,6 +86,12 @@ if (!is_null($dashboard_id)) {
                 </select>
               </div>
             </div><!-- /clearfix -->
+            <div class="clearfix">
+                <label for="graph-custom-opts">Custom Options</label>
+                <div class="input">
+                  <input id="graph-custom-opts" class="span3" type="text" size="30" name="custom_opts" value="<?=$graph->encodeCustom_Opts(); ?>" />
+              </div>
+            </div><!-- /clearfix -->
 	    <div class="actions">
 	      <input class="btn primary" type="submit" value="Save" />
               <a href="<?=Graph::makeURL('delete',$graph); ?>" class="btn">Delete</a>

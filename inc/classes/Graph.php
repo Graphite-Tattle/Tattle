@@ -66,6 +66,9 @@ class Graph extends fActiveRecord
           if ($obj->getTime_Value() != '' && $obj->getUnit() != '') {
               $link .= 'from=-' . $obj->getTime_Value() . $obj->getUnit() . '&';
           }
+          if ($obj->getCustom_Opts() != '') {
+              $link .= $obj->getCustom_Opts() . '&';
+          }
         }
        return $link;
 	}

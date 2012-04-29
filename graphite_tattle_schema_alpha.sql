@@ -76,6 +76,7 @@ CREATE TABLE `graphs` (
   `weight` int(11) NOT NULL DEFAULT '0',
   `time_value` int(11) NOT NULL DEFAULT '2',
   `unit` varchar(10) NOT NULL DEFAULT 'hours',
+  `custom_opts` varchar(1000) NULL,
   PRIMARY KEY (`graph_id`),
   UNIQUE KEY `dashboard_id` (`dashboard_id`,`name`)
 ) CHARSET=utf8;

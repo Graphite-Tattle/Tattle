@@ -92,7 +92,7 @@ if (isset($dashboard_id)) {
           <th>Name</th>
           <th>Description</th>
           <th>Vtitle</th>
-          <th>Background Color</th>
+          <th>Area</th>
           <th>Action</th>
           </tr>    
           </thead>
@@ -104,9 +104,9 @@ if (isset($dashboard_id)) {
     	<tr>
         <td><?=$graph->prepareWeight(); ?></td>
         <td><?=$graph->prepareName(); ?></td>
-        <td><?=$graph->prepareArea(); ?></td>
-        <td><?=$graph->prepareVtitle(); ?></td>
         <td><?=$graph->prepareDescription(); ?></td>
+        <td><?=$graph->prepareVtitle(); ?></td>
+        <td><?=$graph->prepareArea(); ?></td>        
         <td><a href="<?=Graph::makeURL('edit', $graph); ?>">Edit</a> |
         <a href="<?=Graph::makeURL('delete', $graph); ?>">Delete</a></td>
         </tr>

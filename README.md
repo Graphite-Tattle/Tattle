@@ -100,6 +100,8 @@ Caution!
 This project is still in an Alpha status and not feature complete or ready for full production use yet.
 Any help smoothing out the edges and adding additional features / functions would be greatly appreciated!
 
+If you're having strange SQL issues, make sure you are using the most recent schema
+
 How to Contribute
 ---------------------
 

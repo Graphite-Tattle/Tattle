@@ -97,12 +97,12 @@ class Check extends fActiveRecord
           if ( $GLOBALS['PRIMARY_SOURCE'] == "GANGLIA" ) {
             $check_url = $GLOBALS['GANGLIA_URL'] . '/graph.php/?' .
                         'target=' . $obj->prepareTarget() . 
-                        '&cs='. $obj->prepareSample() . 
+                        '&cs=-'. $obj->prepareSample() . 'minutes' .
                         '&ce=now&format=json';
           } else {
             $check_url = $GLOBALS['GRAPHITE_URL'] . '/render/?' .
-                        'target=' . $obj->prepareTarget() . 
-                        '&from='. $obj->prepareSample() . 
+                        'target=movingAverage(' . $obj->prepareTarget() . ',' . $obj->prepareSample() . ')' . 
+                        '&from=-'. $obj->prepareSample() . 'minutes' .
                         '&format=json';
           }
           $json_data = @file_get_contents($check_url);
@@ -125,11 +125,10 @@ class Check extends fActiveRecord
 	{
           $value = false;
           if ($obj->getBaseline() == 'average') {
-            $value = subarray_average($data[0]->datapoints);
+            $value = subarray_endvalue($data[0]->datapoints);
           } elseif ($obj->getBaseline() == 'median') {
             $value = subarray_median($data[0]->datapoints);
           } 
-         
      return $value;
         }        
   
@@ -177,7 +176,7 @@ class Check extends fActiveRecord
 	static public function showGraph($obj=NULL,$img=true,$sample=false,$width=false,$hideLegend=false) 
         {
           if ($img) {  
-            $link = '<img src="';
+            $link = '<img id="renderedGraphImage" src="';
           } else {
             $link = '<a href="';
           }
@@ -191,17 +190,17 @@ class Check extends fActiveRecord
 	    if ($sample !== False) {
 	      $link .= '&cs=' . $sample;
 	    } else {
-	      $link .= '&cs=' . $obj->prepareSample();
+	      $link .= '&cs=-' . $obj->prepareSample() . 'minutes';
 	    }
 
 	  } else {
 
             $link .=  $GLOBALS['GRAPHITE_URL'] . '/render/?';
-            $link .= 'target=legendValue(alias(' . $obj->prepareTarget() . '%2C%22Check : ' . $obj->prepareName() .'%22),%22last%22)';
+            $link .= 'target=legendValue(alias(movingAverage(' . $obj->prepareTarget() . ',' . $obj->prepareSample() . ')%2C%22Check : ' . $obj->prepareName() .'%22),%22last%22)';
             if ($sample !== False) {
               $link .= '&from=' . $sample;
             } else {
-              $link .= '&from=' . $obj->prepareSample();
+              $link .= '&from=-' . $obj->prepareSample() . 'minutes';
             }
             if ($width !== false) {
               $link .= '&width=' .$width;

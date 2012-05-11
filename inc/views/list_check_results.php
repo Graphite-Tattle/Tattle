@@ -11,29 +11,12 @@ $tmpl->place('header');
         <p class="info">There are currently no Tattle checks. <a href="<?=Check::makeURL('add'); ?>">Add one now</a></p>
         <?php
   } ?>
-<fieldset>
+    <fieldset>
+      <div style="padding-bottom:15px;">
         <span>Name : <?=$check->prepareName(); ?></span> | 
-        <span>Target : <?=$check->prepareTarget(); ?></span>
-        <div class="graphite">
-                <div id="canvas" style="padding:1px">
-                    <div id="graphcontainer" style="float:left;">
-                        <div id="graph" style="width:600px;height:300px"></div>
-                        <div id="overview" style="width:600px;height:66px"></div>
-                    </div>
-                     <p style="clear:left">&nbsp</p>
-
-                      <div class="metricrow" style="display:none">
-                         <span id="target" class="metricName"><?=$check->prepareTarget(); ?></span>.
-                         <span id="error_threshold"><?=$check->prepareError(); ?></span>
-                         <span id="warn_threshold"><?=$check->prepareWarn(); ?></span>
-                         <span id="check_id"><?=$check->prepareCheckId(); ?></span> 
-                      </div>
-
-            </div>
-
-        </div>
-<!--<span><?=Check::showGraph($check); ?></span>
-          <span><?=Check::showGraph($check,true,'-24Hours',320,true); ?></span> -->
+        <span>Target : <?='movingAverage(' . $check->prepareTarget() . ',' . $check->prepareSample() . ')'; ?></span>
+      </div>
+      <span><?=Check::showGraph($check,true,'-48hours',620,true); ?></span>
     </fieldset>
 <?php
   try {

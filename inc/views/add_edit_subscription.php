@@ -15,6 +15,31 @@ if (isset($subscription_id)) {
   $query_string .= "&subscription_id=$subscription_id";  
 }
 ?>
+<script language="javascript">
+  $(document).ready(function() {
+    reloadGraphiteGraph();
+  });
+
+  function reloadGraphiteGraph() {
+    var imageURL = document.images['renderedGraphImage'].src;
+    document.images['renderedGraphImage'].src = "";
+    if(imageURL.indexOf("?preventCaching=") === -1 && imageURL.indexOf("&preventCaching=") === -1) {
+      imageURL = imageURL + "&preventCaching=" + (new Date()).getTime();
+    }
+    else {
+      preventCachingRegex = /([?|&]preventCaching=)[^\&]+/;
+      imageURL = imageURL.replace(preventCachingRegex, '$1' + (new Date()).getTime());
+    }
+    if(imageURL.indexOf("?from=") === -1 && imageURL.indexOf("&from=") === -1) {
+      imageURL = imageURL + "&from=" + document.getElementById("graphiteDateRange").value;
+    }
+    else {
+      graphDateRangeRegex = /([?|&]from=)[^\&]+/;
+      imageURL = imageURL.replace(graphDateRangeRegex, '$1' + document.getElementById("graphiteDateRange").value);
+    }
+    document.images['renderedGraphImage'].src = imageURL;
+  }
+</script>
   <div class="row">
     <div class="span4">
       <form class="form-stacked" action="<?=fURL::get(); ?>?action=<?=$action.$query_string; ?>" method="post">
@@ -76,8 +101,16 @@ if (isset($subscription_id)) {
     <div class="span10">   
       <fieldset>
         <p>Check : <?=$check->prepareName(); ?></p>
-        <p>Target : <?=$check->prepareTarget(); ?></p>
-        <p><?=Check::showGraph($check); ?></p>
+        <p>Target : <?='movingAverage(' . $check->prepareTarget() . ',' . $check->prepareSample() . ')'; ?></p>
+        <p id="graphiteGraph"><?=Check::showGraph($check); ?></p>
+        <input class="btn primary" type="submit" value="Reload Graph" onClick="reloadGraphiteGraph()"/>
+        <select id="graphiteDateRange" class="span3">
+          <? $dateRange = array('-12hours'   => '12 Hours', '-1days' => '1 Day', '-3days' => '3 Days', '-7days' => '7 Days', '-14days' => '14 Days', '-30days' => '30 Days', '-60days' => '60 Days');
+            foreach ($dateRange as $value => $text) {
+              fHTML::printOption($text, $value, '-3days');
+            }
+          ?>
+        </select>
       </fieldset>
     </div>
   </div>

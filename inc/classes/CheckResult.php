@@ -12,7 +12,7 @@ class CheckResult extends fActiveRecord
 	 * @param  string  $sort_dir     The direction to sort the column
 	 * @return fRecordSet  An object containing all meetups
 	 */
-	static function findAll($check_id=NULL,$all=false)
+	static function findAll($check_id=NULL,$all=false,$limit=NULL,$page=NULL)
 	{
 	if (!is_null($check_id) && is_numeric($check_id)) {
           $filter = array('check_id=' => $check_id);
@@ -25,7 +25,9 @@ class CheckResult extends fActiveRecord
        return fRecordSet::build(
           __CLASS__,
           $filter,
-          array('timestamp' => 'desc')
+          array('timestamp' => 'desc'),
+          $limit,
+          $page
           );
 	}    
 

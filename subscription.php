@@ -88,7 +88,8 @@ if ('delete' == $action) {
 	
 } else {
   $user = new User(fSession::get('user_id'));
-  $subscriptions = Subscription::findAll(NULL,fSession::get('user_id'));
+  $page_num = fRequest::get('page', 'int', 1);
+  $subscriptions = Subscription::findAll(NULL,fSession::get('user_id'),$GLOBALS['PAGE_SIZE'], $page_num);
 //  $subscriptions = $user->buildSubscriptions();
 
   include VIEW_PATH . '/list_subscriptions.php';	

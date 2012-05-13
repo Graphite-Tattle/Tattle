@@ -28,6 +28,9 @@ $GLOBALS['BOOTSTRAP_PATH'] = '/bootstrap/';
 // Allow HTTP auth as user management 
 $GLOBALS['ALLOW_HTTP_AUTH'] = false;
 
+// Number of elements per page (checks, alerts, subscriptions)
+$GLOBALS['PAGE_SIZE'] = 15;
+
 // Locale settings
 $GLOBALS['TIMEZONE'] = 'America/New_York';
 

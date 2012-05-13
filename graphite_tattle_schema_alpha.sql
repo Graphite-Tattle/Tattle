@@ -97,7 +97,6 @@ CREATE TABLE `subscriptions` (
   `threshold` int(11) NOT NULL DEFAULT '0',
   `method` varchar(255) NOT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
-  `frequency` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`subscription_id`),
   KEY `check_id` (`check_id`),
   KEY `user_id` (`user_id`)

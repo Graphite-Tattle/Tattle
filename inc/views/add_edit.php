@@ -1,7 +1,7 @@
 <?php
 $page_title = ($action == 'add' ? 'Add a Check' : 'Editing : ' . $check->encodeName());
 $tmpl->set('title', $page_title);
-$breadcrumbs[] = array('name' => $page_title, 'url' => fURL::get(), 'active' => true);
+$breadcrumbs[] = array('name' => $page_title, 'url' => ($action == 'add' ? Check::makeURL($action,$check_type) : Check::makeURL($action,$check_type,$check)), 'active' => true);
 $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
 ?>
@@ -105,11 +105,12 @@ $tmpl->place('header');
            <fieldset>
              <div class="actions">
              <input class="btn primary" type="submit" value="Save" />
-	     <? if ($action == 'edit') { ?><a href="<?=Check::makeURL('delete', $check); ?>" class="btn" >Delete</a><?php } ?>
+	     <? if ($action == 'edit') { ?><a href="<?=Check::makeURL('delete', $check_type, $check); ?>" class="btn" >Delete</a><?php } ?>
 	     <div class="required"><em>*</em> Required field</div>
 	     <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
 <?php if ($action == 'add') { ?>
              <input type="hidden" name="user_id" value="<?=fSession::get('user_id'); ?>" />
+             <input type="hidden" name="type" value="<?=$check_type; ?>" />
 <?php } ?>
            </div>
          </fieldset>

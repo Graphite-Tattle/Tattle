@@ -1,8 +1,8 @@
 <?
 $page_title = $action == 'add' ? 'Add a Subscription' : 'Edit Subscription';
 $tmpl->set('title', $page_title);
-$breadcrumbs[] = array('name' => 'Checks', 'url' => Check::makeUrl('list'),'active' => false);
-$breadcrumbs[] = array('name' => $check->getName(),'url'=> Check::makeUrl('edit',$check),'active' => false);
+$breadcrumbs[] = array('name' => ucfirst($check->getType()) . ' Checks', 'url' => Check::makeURL('list', $check->prepareType()),'active' => false);
+$breadcrumbs[] = array('name' => $check->getName(),'url'=> Check::makeURL('edit', $check->prepareType(), $check),'active' => false);
 $breadcrumbs[] = array('name' => $page_title , 'url' => fURL::getWithQueryString(),'active' => false);
 $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');

@@ -50,6 +50,7 @@ CREATE TABLE `checks` (
   `last_check_value` int(11) DEFAULT NULL,
   `last_check_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `repeat_delay` int(11) NOT NULL DEFAULT '60',
+  `type` varchar(45) NOT NULL,
   PRIMARY KEY (`check_id`),
   UNIQUE KEY `user_id` (`user_id`,`name`)
 ) CHARSET=utf8;

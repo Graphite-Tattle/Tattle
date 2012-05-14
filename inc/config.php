@@ -96,7 +96,7 @@ $status_array = array('0' => 'OK', '1'   => 'Error', '2' => 'Warning');
 $visibility_array = array('0'   => 'Public', '1' => 'Private');
 $over_under_array = array('0'   => 'Over', '1' => 'Under');
 $breadcrumbs = array();
-$breadcrumbs[] = array('name' => 'Home', 'url' => '#', 'active'=> false);
+$breadcrumbs[] = array('name' => 'Home', 'url' => 'index.php', 'active'=> false);
 
 error_reporting(E_STRICT | E_ALL);
 fCore::enableErrorHandling('html');

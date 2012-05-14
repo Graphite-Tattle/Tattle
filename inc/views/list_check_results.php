@@ -8,7 +8,7 @@ $tmpl->place('header');
 	$affected = fMessaging::retrieve('affected', fURL::get());
   } catch (fEmptySetException $e) {
 ?>
-        <p class="info">There are currently no Tattle checks. <a href="<?=Check::makeURL('add'); ?>">Add one now</a></p>
+        <p class="info">There are currently no Tattle checks. Add a <a href="<?=Check::makeURL('add', 'threshold'); ?>">threshold</a> based or a <a href="<?=Check::makeURL('add', 'predictive'); ?>">predictive</a> based check now.</p>
         <?php
   } ?>
     <fieldset>

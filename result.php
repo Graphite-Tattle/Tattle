@@ -32,7 +32,8 @@ if ($action == 'ackAll') {
   include VIEW_PATH . '/ackAll_results.php';	
 
 } else {
-  $check_results = CheckResult::findAll($check_id);
+  $page_num = fRequest::get('page', 'int', 1);
+  $check_results = CheckResult::findAll($check_id, false, $GLOBALS['PAGE_SIZE'], $page_num);
 
   include VIEW_PATH . '/list_check_results.php';	
 }

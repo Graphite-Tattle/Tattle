@@ -11,12 +11,14 @@ class Check extends fActiveRecord
 	 * @param  string  $sort_dir     The direction to sort the column
 	 * @return fRecordSet  An object containing all meetups
 	 */
-	static function findAll($sort_column = 'name', $sort_dir = 'desc')
+	static function findAll($sort_column = 'name', $sort_dir = 'desc', $limit=NULL, $page=NULL)
 	{
        return fRecordSet::build(
           __CLASS__,
           array('enabled=' => true,'user_id=|visibility=' => array(fSession::get('user_id'),0)),
-          array($sort_column => $sort_dir)
+          array($sort_column => $sort_dir),
+          $limit,
+          $page
           );
 	}    
 

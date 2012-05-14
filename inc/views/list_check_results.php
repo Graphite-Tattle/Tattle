@@ -2,7 +2,6 @@
 $tmpl->set('title', 'Self Service Alerts based on Graphite metrics');
 $tmpl->set('graphlot',true);
 $tmpl->place('header');
-
  try {
         $check = new Check($check_id);
 	$affected = fMessaging::retrieve('affected', fURL::get());
@@ -66,6 +65,33 @@ $tmpl->place('header');
     <?php } ?>
     </table></div>
     <?
+    //check to see if paging is needed
+    $total_pages = ceil($check_results->count(TRUE) / $GLOBALS['PAGE_SIZE']);
+    if ($total_pages > 1) {
+      $prev_class = 'previous';
+      $current_link = fURL::get() . "?action=$action&check_id=$check_id";
+      $prev_link = $current_link . '&page=' . ($page_num - 1);
+      $next_class = 'next';
+      $next_link = $current_link . '&page=' . ($page_num + 1);
+      if ($page_num == 1) {
+        $prev_class .= ' disabled';
+        $prev_link = '#';
+      } elseif ($page_num == $total_pages) {
+        $next_class .= ' disabled';
+        $next_link = '#';
+      }
+      ?>
+      <div class="pagination">
+        <ul class="pager">
+          <li class="<?=$prev_class; ?>">
+            <a href="<?=$prev_link; ?>">&larr; Previous</a>
+          </li>
+          <li class="<?=$next_class; ?>">
+            <a href="<?=$next_link; ?>">Next &rarr;</a>
+          </li>
+        </ul>
+      </div>
+    <?php }
 } catch (fEmptySetException $e) {
 	?>
 	<p class="info">There are currently no alerts for this checks.</p>

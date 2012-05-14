@@ -89,6 +89,7 @@ if ('delete' == $action) {
   include VIEW_PATH . '/add_edit.php';	
 	
 } else {
-  $checks = Check::findAll($sort,$sort_dir);
+  $page_num = fRequest::get('page', 'int', 1);
+  $checks = Check::findAll($sort,$sort_dir, $GLOBALS['PAGE_SIZE'], $page_num);
   include VIEW_PATH .'/list_checks.php';
 }

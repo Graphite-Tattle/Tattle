@@ -6,16 +6,17 @@ class Check extends fActiveRecord
     }
 	/**
 	 * Returns all checks on the system
-	 * 
+	 *
+	 * @param  string  $type         The type of check to return: 'threshold', 'predictive' 
 	 * @param  string  $sort_column  The column to sort by
 	 * @param  string  $sort_dir     The direction to sort the column
 	 * @return fRecordSet  An object containing all meetups
 	 */
-	static function findAll($sort_column = 'name', $sort_dir = 'desc')
+	static function findAll($type, $sort_column = 'name', $sort_dir = 'desc')
 	{
        return fRecordSet::build(
           __CLASS__,
-          array('enabled=' => true,'user_id=|visibility=' => array(fSession::get('user_id'),0)),
+          array('type=' => $type, 'enabled=' => true,'user_id=|visibility=' => array(fSession::get('user_id'),0)),
           array($sort_column => $sort_dir)
           );
 	}    
@@ -37,24 +38,25 @@ class Check extends fActiveRecord
 
         /**
 	 * Creates all Check related URLs for the site
-	 * 
-	 * @param  string $type  The type of URL to make: 'list', 'add', 'edit', 'delete'
+	 * 'action' and 'type' are required in the querystring
+	 *
+	 * @param  string $action  The action to be encoded into the URL to make: 'list', 'add', 'edit', 'delete'
+	 * @param  string $type  The type of check to be encoded into the URL: 'threshold', 'predictive'
 	 * @param  Check $obj   The Check object for the edit and delete URL types
 	 * @return string  The URL requested
 	 */
-	static public function makeURL($type, $obj=NULL)
+	static public function makeURL($action, $type, $obj=NULL)
 	{
-		switch ($type)
-		{
-			case 'list':
-				return 'check.php';
-			case 'add':
-				return 'check.php?action=add';
-			case 'edit':
-				return 'check.php?action=edit&check_id=' . $obj->prepareCheckId();
-			case 'delete':
-				return 'check.php?action=delete&check_id=' . $obj->prepareCheckId();
-		}	
+		$baseURLExtension = 'check.php';
+		$actionFieldValue = '?action=' . $action;
+		$typeFieldValue = '&type=' . $type;
+		$checkIdFieldValue = '';
+		
+		if (!is_null($obj)) {
+			$checkIdFieldValue = '&check_id=' . $obj->prepareCheckId();
+		}
+
+		return $baseURLExtension . $actionFieldValue . $typeFieldValue . $checkIdFieldValue;
 	}   
     
         static public function deleteRelated($obj=NULL)
@@ -97,12 +99,12 @@ class Check extends fActiveRecord
           if ( $GLOBALS['PRIMARY_SOURCE'] == "GANGLIA" ) {
             $check_url = $GLOBALS['GANGLIA_URL'] . '/graph.php/?' .
                         'target=' . $obj->prepareTarget() . 
-                        '&cs='. $obj->prepareSample() . 
+                        '&cs=-'. $obj->prepareSample() . 'minutes' .
                         '&ce=now&format=json';
           } else {
             $check_url = $GLOBALS['GRAPHITE_URL'] . '/render/?' .
-                        'target=' . $obj->prepareTarget() . 
-                        '&from='. $obj->prepareSample() . 
+                        'target=movingAverage(' . $obj->prepareTarget() . ',' . $obj->prepareSample() . ')' . 
+                        '&from=-'. $obj->prepareSample() . 'minutes' .
                         '&format=json';
           }
           $json_data = @file_get_contents($check_url);
@@ -125,11 +127,10 @@ class Check extends fActiveRecord
 	{
           $value = false;
           if ($obj->getBaseline() == 'average') {
-            $value = subarray_average($data[0]->datapoints);
+            $value = subarray_endvalue($data[0]->datapoints);
           } elseif ($obj->getBaseline() == 'median') {
             $value = subarray_median($data[0]->datapoints);
           } 
-         
      return $value;
         }        
   
@@ -177,7 +178,7 @@ class Check extends fActiveRecord
 	static public function showGraph($obj=NULL,$img=true,$sample=false,$width=false,$hideLegend=false) 
         {
           if ($img) {  
-            $link = '<img src="';
+            $link = '<img id="renderedGraphImage" src="';
           } else {
             $link = '<a href="';
           }
@@ -191,17 +192,17 @@ class Check extends fActiveRecord
 	    if ($sample !== False) {
 	      $link .= '&cs=' . $sample;
 	    } else {
-	      $link .= '&cs=' . $obj->prepareSample();
+	      $link .= '&cs=-' . $obj->prepareSample() . 'minutes';
 	    }
 
 	  } else {
 
             $link .=  $GLOBALS['GRAPHITE_URL'] . '/render/?';
-            $link .= 'target=legendValue(alias(' . $obj->prepareTarget() . '%2C%22Check : ' . $obj->prepareName() .'%22),%22last%22)';
+            $link .= 'target=legendValue(alias(movingAverage(' . $obj->prepareTarget() . ',' . $obj->prepareSample() . ')%2C%22Check : ' . $obj->prepareName() .'%22),%22last%22)';
             if ($sample !== False) {
               $link .= '&from=' . $sample;
             } else {
-              $link .= '&from=' . $obj->prepareSample();
+              $link .= '&from=-' . $obj->prepareSample() . 'minutes';
             }
             if ($width !== false) {
               $link .= '&width=' .$width;

@@ -2,7 +2,7 @@
 include 'inc/init.php';
 
 fAuthorization::requireLoggedIn();
-$breadcrumbs[] = array('name' => 'Alerts', 'url' => '#','active' => false);
+$breadcrumbs[] = array('name' => 'Alerts', 'url' => 'index.php','active' => false);
 
 $latest_alerts = 'SELECT c.check_id,name,r.status,count(c.check_id) as count, r.timestamp '.
                  'FROM subscriptions s '. 

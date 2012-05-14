@@ -65,3 +65,10 @@ function subarray_average($data_array) {
   $average = ($total/$count); 
   return $average;
 }
+
+function subarray_endvalue($data_array) {
+  $lastDataPoint = end($data_array);
+  return($lastDataPoint[0]);
+}
+
+

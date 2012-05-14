@@ -76,15 +76,17 @@ if (!$this->get('full_screen')) { ?>
               
               $current_url = fURL::getWithQueryString();
               echo '<li' . ($current_url == '' ? ' class="active"' : '') . '><a href="index.php">Alerts</a></li>'. "\n";                
-              $check_list = Check::makeURL('list');
-              echo '<li' . ($current_url == $check_list ? ' class="active"' : '') . '><a href="' . $check_list . '" >Checks</a></li>' . "\n";
+              $threshold_check_list = Check::makeURL('list', 'threshold');
+              echo '<li' . ($current_url == $threshold_check_list ? ' class="active"' : '') . '><a href="' . $threshold_check_list . '" >Threshold Checks</a></li>' . "\n";
+              $predictive_check_list = Check::makeURL('list', 'predictive');
+              echo '<li' . ($current_url == $predictive_check_list ? ' class="active"' : '') . '><a href="' . $predictive_check_list . '" >Predictive Checks</a></li>' . "\n";
               $subscription_list = Subscription::makeURL('list');
               echo '<li' . ($current_url == $subscription_list ? ' class="active"' : '') .'><a href="' . $subscription_list . '" >Subscriptions</a></li>' . "\n";
               $dashboard_list = Dashboard::makeURL('list');
               echo '<li' . ($current_url == $dashboard_list ? ' class="active"' : '') . '><a href="' . $dashboard_list . '">Dashboards</a></li>';
+if (fAuthorization::checkAuthLevel('admin')) {
               $setting_list = Setting::makeURL('list');
               echo '<li' . ($current_url == $setting_list ? ' class="active"' : '') . '><a href="' . $setting_list . '" >Settings</a></li>' . "\n";
-if (fAuthorization::checkAuthLevel('admin')) {
               $user_list = User::makeURL('list'); 
               echo '<li><a href="' . User::makeURL('list') . '" >Users</a></li>';
 }              

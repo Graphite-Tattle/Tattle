@@ -25,6 +25,18 @@
     </script>
 
 <?php }  
+
+
+    if ($this->get('addeditdocready')) { ?>
+      <script type="text/javascript">
+        $(document).ready(function() {
+          $("fieldset.startCollapsed").collapse( { closed: false } );
+          reloadGraphiteGraph();
+          attachTooltips();
+        });
+      </script>
+    <?php } 
+
  
 if (!$this->get('full_screen')) { ?>
     <style type="text/css">

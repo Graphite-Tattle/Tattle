@@ -3,33 +3,9 @@ $page_title = ($action == 'add' ? 'Add a Check' : 'Editing : ' . $check->encodeN
 $tmpl->set('title', $page_title);
 $breadcrumbs[] = array('name' => $page_title, 'url' => ($action == 'add' ? Check::makeURL($action,$check_type) : Check::makeURL($action,$check_type,$check)), 'active' => true);
 $tmpl->set('breadcrumbs',$breadcrumbs);
+$tmpl->set('addeditdocready',true);
 $tmpl->place('header');
 ?>
-<script language="javascript">
-  $(document).ready(function() {
-    $("fieldset.startCollapsed").collapse( { closed: false } );
-    reloadGraphiteGraph();
-  });
-
-  function reloadGraphiteGraph() {
-    var imageURL = document.images['renderedGraphImage'].src;
-    document.images['renderedGraphImage'].src = "";
-    if(imageURL.indexOf("?preventCaching=") === -1 && imageURL.indexOf("&preventCaching=") === -1) {
-      imageURL = imageURL + "&preventCaching=" + (new Date()).getTime(); 
-    }
-    else {
-      preventCachingRegex = /([?|&]preventCaching=)[^\&]+/;
-      imageURL = imageURL.replace(preventCachingRegex, '$1' + (new Date()).getTime());
-    }
-    if(imageURL.indexOf("?from=") === -1 && imageURL.indexOf("&from=") === -1) {
-      imageURL = imageURL + "&from=" + document.getElementById("graphiteDateRange").value;
-    }
-    else {
-      graphDateRangeRegex = /([?|&]from=)[^\&]+/;
-      imageURL = imageURL.replace(graphDateRangeRegex, '$1' + document.getElementById("graphiteDateRange").value);
-    }
-    document.images['renderedGraphImage'].src = imageURL; 
-  }
 </script>
   <div class="row">
     <div class="span4">
@@ -37,25 +13,25 @@ $tmpl->place('header');
         <div class="main" id="main">
           <fieldset>
             <div class="clearfix">
-	      <label for="check-name">Name<em>*</em></label>
+	      <label class="masterTooltip" title="Name used to identify this check" for="check-name">Name<em>*</em></label>
               <div class="input">
 	        <input id="check-name" class="span3" type="text" size="30" name="name" value="<?=$check->encodeName(); ?>" />
               </div>
             </div><!-- /clearfix -->
             <div class="clearfix">
-	      <label for="check-target">Graphite Target<em>*</em></label>
+	      <label class="masterTooltip" title="The path of your new Graph Target to check up on" for="check-target">Graphite Target<em>*</em></label>
               <div class="input">
                 <input id="check-target" class="span3" type="text" size="30" name="target" value="<?=$check->encodeTarget(); ?>" />
               </div>
             </div><!-- /clearfix -->
 	    <div class="clearfix">
-	      <label for="check-error">Error Threshold<em>*</em></label>
+	      <label class="masterTooltip" title="The threshold level at which an Error will be triggered" for="check-error">Error Threshold<em>*</em></label>
               <div class="input">
 	        <input id="check-error" class="span3" type="text" name="error" value="<?=$check->encodeError(); ?>" />
 	      </div>
             </div><!-- /clearfix -->
 	    <div class="clearfix">
-	      <label for="check-warn">Warn Threshold<em>*</em></label>
+	      <label class="masterTooltip" title="The threshold level at which a Warning will be triggered" for="check-warn">Warn Threshold<em>*</em></label>
               <div class="input">
                 <input id="check-warn" class="span3" type="text" name="warn" value="<?=$check->encodeWarn(); ?>" />   
 	      </div>
@@ -64,13 +40,13 @@ $tmpl->place('header');
          <fieldset class="startCollapsed">
             <legend>Advanced</legend>
             <div class="clearfix">
-              <label for="check-sample">Sample Size in Minutes<em>*</em></label>
+              <label class="masterTooltip" title="Number of data points to use when calculating the moving average. Each data point spans one minute" for="check-sample">Sample Size in Minutes<em>*</em></label>
               <div class="input">
                 <input id="check-warn" class="span3" type="text" name="sample" value="<?=$check->encodeSample(); ?>" />
 	      </div>
             </div><!-- /clearfix -->
 	    <div class="clearfix">
-	      <label for="check-over_under">Over/Under<em>*</em></label>
+	      <label class="masterTooltip" title="Over will trigger an alert when the value retrieved from Graphite is greater than the warning or error threshold. Under will trigger an alert when the value retrieved from Graphite is less than the warning or the error threshold" for="check-over_under">Over/Under<em>*</em></label>
               <div class="input">
                 <select name="over_under" class="span3">
                 <?
@@ -82,7 +58,7 @@ $tmpl->place('header');
               </div>
             </div><!-- /clearfix -->
 	    <div class="clearfix">
-	     <label for="check-visibility">Visibility<em>*</em></label>
+	     <label class="masterTooltip" title="Public checks can be subscribed to by any user while private checks remain hidden from other users" for="check-visibility">Visibility<em>*</em></label>
              <div class="input">
                <select name="visibility" class="span3">
                <?
@@ -94,7 +70,7 @@ $tmpl->place('header');
              </div>
            </div><!-- /clearfix -->
 	   <div class="clearfix">
-	     <label for="check-repeat_delay">Repeat Delay<em>*</em></label>
+	     <label class="masterTooltip" title="After an alert is triggered, the number of minutes to wait before sending another one" for="check-repeat_delay">Repeat Delay<em>*</em></label>
              <div class="input">
                <?php 
                $check_delay = (is_null($check->getRepeatDelay()) ? 30 : $check->encodeRepeatDelay()); ?>

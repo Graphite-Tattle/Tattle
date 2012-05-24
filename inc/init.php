@@ -1,6 +1,7 @@
 <?
 // Include main class loading config file
-define('TATTLE_ROOT', str_replace(array('ajax'),'',getcwd()));
+//define('TATTLE_ROOT', str_replace(array('ajax'),'',getcwd()));
+define('TATTLE_ROOT','/var/www/Tattle');
 $web_root = dirname($_SERVER['PHP_SELF']);
 if ($web_root != '/') {
   $web_root .= '/';
@@ -12,6 +13,7 @@ define('JS_CACHE', TATTLE_ROOT . '/js_cache/');
 
 include TATTLE_ROOT . '/inc/includes.php';
 include TATTLE_ROOT . '/inc/functions.php';
+include TATTLE_ROOT . '/statistical_functions.php';
 include TATTLE_ROOT . '/inc/config.php';
 include TATTLE_ROOT . '/inc/constructor_functions.php';
 

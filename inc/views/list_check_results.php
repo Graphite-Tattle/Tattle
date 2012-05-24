@@ -14,7 +14,7 @@ $tmpl->place('header');
     <fieldset>
       <div style="padding-bottom:15px;">
         <span>Name : <?=$check->prepareName(); ?></span> | 
-        <span>Target : <?='movingAverage(' . $check->prepareTarget() . ',' . $check->prepareSample() . ')'; ?></span>
+        <span>Target : <?=Check::constructTarget($check); ?></span>
       </div>
       <span><?=Check::showGraph($check,true,'-48hours',620,true); ?></span>
     </fieldset>

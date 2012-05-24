@@ -1,6 +1,11 @@
 <?
 class Check extends fActiveRecord
 {
+
+    const MINUTES_PER_DAY = 1440;
+    const MINUTES_PER_WEEK = 10080;
+    const MINUTES_PER_MONTH = 40320; //TODO: adapt number of minutes per month depending on which month it is. Using 4 weeks for now
+
     protected function configure()
     {
     }
@@ -19,7 +24,19 @@ class Check extends fActiveRecord
           array('type=' => $type, 'enabled=' => true,'user_id=|visibility=' => array(fSession::get('user_id'),0)),
           array($sort_column => $sort_dir)
           );
-	}    
+	}
+
+        static public function constructTarget($check)
+        {
+          if($check->getType() == 'threshold') {
+            if($check->getBaseline() == 'average') {
+              return 'movingAverage(' . $check->prepareTarget() . ',' . $check->getSample() . ')';
+            } elseif($check->getBaseline() == 'median') {
+              return 'movingMedian(' . $check->prepareTarget() . ',' . $check->getSample() . ')';
+            }
+          }
+          return $check->prepareTarget();
+        }
 
 	/**
 	 * Returns all active checks on the system
@@ -96,24 +113,73 @@ class Check extends fActiveRecord
 	 */
 	static public function getData($obj=NULL)
 	{
-          if ( $GLOBALS['PRIMARY_SOURCE'] == "GANGLIA" ) {
-            $check_url = $GLOBALS['GANGLIA_URL'] . '/graph.php/?' .
-                        'target=' . $obj->prepareTarget() . 
-                        '&cs=-'. $obj->prepareSample() . 'minutes' .
-                        '&ce=now&format=json';
-          } else {
-            $check_url = $GLOBALS['GRAPHITE_URL'] . '/render/?' .
-                        'target=movingAverage(' . $obj->prepareTarget() . ',' . $obj->prepareSample() . ')' . 
-                        '&from=-'. $obj->prepareSample() . 'minutes' .
-                        '&format=json';
-          }
-          $json_data = @file_get_contents($check_url);
-          if ($json_data) {
-            $data = json_decode($json_data);
-          } else {
+          if($obj->getType() == 'threshold') {
+            if ( $GLOBALS['PRIMARY_SOURCE'] == "GANGLIA" ) {
+              $check_url = $GLOBALS['GANGLIA_URL'] . '/graph.php/?' .
+                          'target=' . $obj->prepareTarget() . 
+                          '&cs=-'. $obj->prepareSample() . 'minutes' .
+                          '&ce=now&format=json';
+            } else {
+              $check_url = $GLOBALS['GRAPHITE_URL'] . '/render/?' .
+                          'target=' . Check::constructTarget($obj) .
+                          '&from=-'. $obj->prepareSample() . 'minutes' .
+                          '&format=json';
+            }
+            $json_data = @file_get_contents($check_url);
+            if ($json_data) {
+              $data = json_decode($json_data);
+            } else {
+              $data = array();
+            }
+            return $data;
+          } elseif($obj->getType() == 'predictive') {
             $data = array();
+            for($i = $obj->getNumberOfRegressions(); $i >= 0; $i--) {
+              $regression_size = 0;
+
+              if($obj->getRegressionType() == 'daily') {
+                $regression_size = self::MINUTES_PER_DAY * $i;
+              } elseif($obj->getRegressionType() == 'weekly') {
+                $regression_size = self::MINUTES_PER_WEEK * $i;
+              } elseif($obj->getRegressionType() == 'monthly') {
+                $regression_size = self::MINUTES_PER_MONTH * $i;
+              }
+
+              $from = $regression_size + $obj->getSample();
+              $until = $regression_size;
+
+              $check_url = $GLOBALS['GRAPHITE_URL'] . '/render/?' .
+                          'target=' . $obj->prepareTarget() .
+                          '&from=-' . $from . 'minutes' .
+                          '&until=-' . $until . 'minutes' .
+                          '&format=json';
+
+              $json_data = @file_get_contents($check_url);
+              if($json_data) {
+                $temp_data = json_decode($json_data);
+                $value = 0;
+
+                if($obj->getBaseline() == 'average') {
+                  $value = subarray_average($temp_data[0]->datapoints);
+                } elseif($obj->getBaseline() == 'median') {
+                  $value = subarray_median($temp_data[0]->datapoints);
+                }
+
+                array_push($data, $value);
+
+                //$temp_data = $temp_data[0]->datapoints;
+                //fCore::debug("Iteration: " . $i,FALSE);
+                //for($j=0; $j < count($temp_data); $j++) {
+                //  if($temp_data[$j][0] != 0) {
+                //    fCore::debug($temp_data[$j][0],FALSE);
+                //  }
+                //}
+                //fCore::debug("\n",FALSE);
+                //$data = array_merge($data, $temp_data);
+              }
+            }
+            return $data;
           }
-      return $data;
 	}   
     
         /**
@@ -131,8 +197,73 @@ class Check extends fActiveRecord
           } elseif ($obj->getBaseline() == 'median') {
             $value = subarray_median($data[0]->datapoints);
           } 
-     return $value;
-        }        
+          return $value;
+        }
+
+        static public function getResultHistoricalValue($data,$obj)
+        {
+          $value = 0;
+          if(count($data) <= 1) {
+            return $value; //TODO: Handle cases where amount of data returned is less than expected
+          }
+          $historical_data = array_slice($data, 0, count($data) - 1);
+          if($obj->getBaseline() == 'average') {
+            $value = average($historical_data);
+          } elseif($obj->getBaseline() == 'median') {
+            $value = median($historical_data);
+          }
+          return $value;
+        }
+
+        static public function getResultStandardDeviation($data,$obj)
+        {
+          $value = 0;
+          if(count($data) <= 1) {
+            return $value; //TODO: Handle cases where amount of data returned is less than expected
+          }
+          $historical_data = array_slice($data, 0, count($data) - 1);
+          return sd($historical_data);
+        }
+
+        static public function getResultCurrentValue($data)
+        {
+          $value = 0;
+          if(count($data) == 0) {
+            return $value;
+          }
+          return end($data);
+        }
+
+
+       static public function setPredictiveResultsLevel($current_value,$historical_value,$stdev,$check)
+       {
+         $upper_error = $historical_value + ($check->getError() * $stdev);
+         $upper_warn = $historical_value + ($check->getWarn() * $stdev);
+         $lower_error = $historical_value - ($check->getError() * $stdev);
+         $lower_warn = $historical_value - ($check->getWarn() * $stdev);
+         $state = 0;
+        
+         if ($check->getOverUnder() == 0 || $check->getOverUnder() == 2) {
+            if ($current_value >= $upper_error) {
+              $state = 1;
+            } elseif ($current_value >= $upper_warn) {
+              $state = 2;
+            }
+ 
+            if($state != 0) {
+              return $state;
+            }
+         }
+          if ($check->getOverUnder() == 1 || $check->getOverUnder() == 2) {
+            if ($current_value <= $lower_error) {
+              $state = 1;
+            } elseif ($current_value <= $lower_warn) {
+              $state = 2;
+            }
+         }
+         return $state;
+       }
+ 
   
         /**
 	 * Creates all Check related URLs for the site
@@ -156,13 +287,13 @@ class Check extends fActiveRecord
          } 
          
           if ($obj->getOverUnder() == 1) {
-            if ($value >= $obj->getWarn()) { 
+            if ($value > $obj->getWarn()) { 
               $state = 0;
-            } elseif ($value >= $obj->getError()) { 
-              $state = 1;
+            } elseif ($value > $obj->getError()) { 
+              $state = 2;
             } else { 
                fCore::debug('error state' . " $value compared to " . $obj->getError() . "<br />",FALSE); 
-              $state = 2;
+              $state = 1;
             }
             return $state;
          }      
@@ -198,7 +329,7 @@ class Check extends fActiveRecord
 	  } else {
 
             $link .=  $GLOBALS['GRAPHITE_URL'] . '/render/?';
-            $link .= 'target=legendValue(alias(movingAverage(' . $obj->prepareTarget() . ',' . $obj->prepareSample() . ')%2C%22Check : ' . $obj->prepareName() .'%22),%22last%22)';
+            $link .= 'target=legendValue(alias(' . Check::constructTarget($obj) . '%2C%22Check : ' . $obj->prepareName() .'%22),%22last%22)';
             if ($sample !== False) {
               $link .= '&from=' . $sample;
             } else {

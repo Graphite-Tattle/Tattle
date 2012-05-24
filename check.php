@@ -6,7 +6,7 @@ fAuthorization::requireLoggedIn();
 fRequest::overrideAction();
 $action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete'));
 $check_type = fRequest::getValid('type', array('predictive', 'threshold'));
-$sort = fCRUD::getSortColumn(array('name','target','warn','error','status','timestamp','count'));
+$sort = fCRUD::getSortColumn(array('name','target','warn','error','status','timestamp','count','regression_type','sample','baseline','over_under','visibility','number_of_regressions'));
 $sort_dir  = fCRUD::getSortDirection('asc');
 
 $check_id = fRequest::get('check_id', 'integer');
@@ -66,7 +66,11 @@ if ('delete' == $action) {
     fMessaging::create('error', fURL::get(), $e->getMessage());	
   }
 
-  include VIEW_PATH . '/add_edit.php';
+  if ($check_type == 'threshold') {
+    include VIEW_PATH . '/add_edit.php';
+  } elseif ($check_type == 'predictive') {
+    include VIEW_PATH . 'add_edit_predictive_check.php';
+  }
 	
 // --------------------------------- //
 } elseif ('add' == $action) {
@@ -86,9 +90,19 @@ if ('delete' == $action) {
     }	
   } 
 
-  include VIEW_PATH . '/add_edit.php';	
-	
+  if ($check_type == 'threshold') {
+    include VIEW_PATH . '/add_edit.php';	
+  } elseif ($check_type == 'predictive') {
+    include VIEW_PATH . 'add_edit_predictive_check.php';
+  }
+
 } else {
   $checks = Check::findAll($check_type,$sort,$sort_dir);
-  include VIEW_PATH .'/list_checks.php';
+
+  if ($check_type == 'threshold') {
+    include VIEW_PATH . '/list_checks.php';
+  } elseif ($check_type == 'predictive') {
+    include VIEW_PATH . 'list_predictive_checks.php';
+  }
+
 }

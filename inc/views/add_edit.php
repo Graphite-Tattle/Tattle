@@ -45,7 +45,7 @@ $tmpl->place('header');
             <div class="clearfix">
               <label for="check-sample">Sample Size<em>*</em></label>
               <div class="input">
-                <select name="check-sample" class="span3">
+                <select id="check-sample" name="sample" class="span3">
                 <?
                   $statuses = array('-5minutes'   => '5 Minutes', '-10minutes' => '10 Minutes');
                   foreach ($statuses as $value => $text) {
@@ -58,7 +58,7 @@ $tmpl->place('header');
 	    <div class="clearfix">
 	      <label for="check-baseline">Baseline<em>*</em></label>
               <div class="input">
-                <select name="check-baseline" class="span3">
+                <select id="check-baseline" name="baseline" class="span3">
               <?
                 $statuses = array('average'   => 'average', 'median' => 'median');
                 foreach ($statuses as $value => $text) {

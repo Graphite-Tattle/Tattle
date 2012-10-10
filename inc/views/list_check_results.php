@@ -55,7 +55,7 @@ $tmpl->place('header');
         $check = new Check($check_result->getCheck_Id());
 	?>
     	<tr>
-        <td><?=($check_result->prepareStatus() == 2 ? 'Warning' : 'Error'); ?></td>
+        <td><?=$status_array[$check_result->prepareStatus()]; ?></td>
         <td><?=$check_result->prepareValue(); ?></td>
         <td><?=$check->prepareError(); ?></td>
         <td><?=$check->prepareWarn(); ?></td>

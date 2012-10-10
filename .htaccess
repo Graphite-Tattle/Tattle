@@ -5,4 +5,4 @@
   # set this to the subdirectory of your Tattle install if its not at the root
   #RewriteBase /graphite-tattle
   RewriteRule ^dash dashboard.php [L]
-
+</IfModule>

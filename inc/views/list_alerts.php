@@ -22,7 +22,7 @@ try {
 		?>
     	<tr>
         <td><?=$row['name']; ?></td>
-        <td><?=($row['status'] == 2 ? 'Warning' : 'Error'); ?></td>
+        <td><?=$status_array[$row['status']]; ?></td>
         <td><?=$row['count']; ?></td>
         <td><a href="<?=CheckResult::makeURL('list', $check); ?>">View</a>
         </td>

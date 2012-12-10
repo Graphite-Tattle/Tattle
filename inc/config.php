@@ -65,7 +65,7 @@ if ($GLOBALS['DATABASE_TYPE'] == 'mysql') {
   } catch (fAuthorizationException $e) {
     $config_error = "DB error : " . $e->getMessage();
     $config_exit = true;
-  } catch ((fConnectivityException $e) {
+  } catch (fConnectivityException $e) {
     $config_error = "DB error : " . $e->getMessage();
     $config_exit = true;
   }

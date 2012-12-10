@@ -2,6 +2,7 @@
 
 // DATABASE SETTINGS
 $GLOBALS['DATABASE_HOST'] = '127.0.0.1';
+$GLOBALS['DATABASE_PORT'] = '3306';
 $GLOBALS['DATABASE_NAME'] = 'tattle';
 $GLOBALS['DATABASE_USER'] = 'dbuser';
 $GLOBALS['DATABASE_PASS'] = 'dbpass';
@@ -53,7 +54,7 @@ $config_exit = false;
 
 try {
   //Set DB connection (using flourish it isn't actually connected to until the first use)
-  $mysql_db  = new fDatabase('mysql', $GLOBALS['DATABASE_NAME'], $GLOBALS['DATABASE_USER'], $GLOBALS['DATABASE_PASS'], $GLOBALS['DATABASE_HOST']);
+  $mysql_db  = new fDatabase('mysql', $GLOBALS['DATABASE_NAME'], $GLOBALS['DATABASE_USER'], $GLOBALS['DATABASE_PASS'], $GLOBALS['DATABASE_HOST'], $GLOBALS['DATABASE_PORT']);
   // Please note that calling this method is not required, and simply
   // causes an exception to be thrown if the connection can not be made
   $mysql_db->connect();

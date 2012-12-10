@@ -16,7 +16,7 @@ $alert_count_query = 'SELECT count(distinct c.check_id) as count '.
                  'AND acknowledged = 0 '.
                  'AND s.user_id = ' . fSession::get('user_id') . ';';
 
-$alert_count_results = $mysql_db->query($alert_count_query);
+$alert_count_results = $db->query($alert_count_query);
 $alert_count = $alert_count_results->fetchScalar();
 $results = NULL;
 if ($alert_count > $GLOBALS['PAGE_SIZE']) {
@@ -34,7 +34,7 @@ if ($alert_count > $GLOBALS['PAGE_SIZE']) {
                      'LIMIT ' . $GLOBALS['PAGE_SIZE'] . ' ' .
                      'OFFSET ' . $offset . ';';
 
-    $results = $mysql_db->query($latest_alerts);
+    $results = $db->query($latest_alerts);
 }
 
 include 'inc/views/index.php';

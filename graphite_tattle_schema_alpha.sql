@@ -41,7 +41,7 @@ CREATE TABLE `checks` (
   `target` varchar(1000) NOT NULL,
   `error` decimal(20,3) NOT NULL,
   `warn` decimal(20,3) NOT NULL,
-  `sample` varchar(255) NOT NULL DEFAULT '-5minute',
+  `sample` varchar(255) NOT NULL DEFAULT '5',
   `baseline` varchar(255) NOT NULL DEFAULT 'average',
   `visibility` int(11) NOT NULL DEFAULT '0',
   `over_under` int(11) NOT NULL DEFAULT '0',

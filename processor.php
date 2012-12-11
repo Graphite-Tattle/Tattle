@@ -13,7 +13,7 @@ if (isset($_SERVER['argc'])) {
             "--help, -h : Displays this help \n".
             "\n" .
             "--debug, -d : Enables debuging (?debug=true can be used via a web request) \n";
-    } 
+    }
 } elseif ($debug = fRequest::get('debug','boolean')) {
   $debug = true;
 }
@@ -21,7 +21,7 @@ if (isset($_SERVER['argc'])) {
 if ($debug) {
   print "debug enabled";
   fCore::enableDebugging(TRUE);
-} 
+}
 
 $checks = Check::findActive();
 foreach ($checks as $check) {
@@ -34,7 +34,7 @@ foreach ($checks as $check) {
     $result = Check::setResultsLevel($check_value,$check);
     fCore::debug("Check Value:" . $result . ":\n",FALSE);
     if (is_null($check->getLastCheckTime())) {
-      $next_check = new fTimestamp();   
+      $next_check = new fTimestamp();
       fCore::debug("is null?\n",FALSE);
     } else {
       $next_check = $check->getLastCheckTime()->adjust('+' . $check->getRepeatDelay() . ' minutes');
@@ -63,11 +63,11 @@ foreach ($checks as $check) {
       foreach ($subscriptions as $subscription) {
         $notify_function = $subscription->getMethod();
         if (function_exists($notify_function)){
-         $notify_result = $notify_function($check,$check_result,$subscription);  
+         $notify_result = $notify_function($check,$check_result,$subscription);
         }
       }
     } else {
-      fCore::debug("Skip Notification \n",FALSE);  
+      fCore::debug("Skip Notification \n",FALSE);
     }
   }
   fCore::debug("check done moving to next \n\n",FALSE);

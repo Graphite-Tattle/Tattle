@@ -2,14 +2,14 @@
 
 function subarray_median($data_array) {
   foreach ($data_array as $value) {
-    $temp_array[] = $value[0]; 
+    $temp_array[] = $value[0];
   }
   sort($temp_array);
-  $count = count($temp_array); 
+  $count = count($temp_array);
   $middleval = floor(($count-1)/2);
-  if($count % 2) { 
+  if($count % 2) {
     $median = $temp_array[$middleval];
-  } else { 
+  } else {
     $low = $temp_array[$middleval];
     $high = $temp_array[$middleval+1];
     $median = (($low+$high)/2);
@@ -18,24 +18,24 @@ function subarray_median($data_array) {
 }
 
 function usr_var($setting_name,$user_id=NULL) {
-  try{ 
+  try{
     $setting = New Setting(array('name' => $setting_name,'owner_id' => $user_id));
     $value = $setting->getValue();
   } catch (fNotFoundException $e) {
     $setting = $GLOBALS['default_plugin_user_settings'][$setting_name];
     $value = $setting['default'];
   }
-  return $value; 
+  return $value;
 }
- 
+
 function sys_var($setting_name) {
   try{
     $setting = New Setting(array('name' => $setting_name,'owner_id' => 0));
     $value = $setting->getValue();
   } catch (fNotFoundException $e) {
     $setting = $GLOBALS['default_plugin_settings'][$setting_name];
-    $value = $setting['default']; 
-  }   
+    $value = $setting['default'];
+  }
   return $value;
 }
 
@@ -43,7 +43,7 @@ function plugin_hook() {
   $arg_count = func_num_args();
   $args = func_get_args();
   $hook = array_shift($args);
-  if(!isset($GLOBALS['hooks'][$hook])) { 
+  if(!isset($GLOBALS['hooks'][$hook])) {
     return;
   }
   foreach($GLOBALS['hooks'][$hook] as $func){
@@ -57,11 +57,26 @@ function plugin_listener($hook,$function){
 }
 
 function subarray_average($data_array) {
-  $count = count($data_array); 
+  $count = count($data_array);
   $total = '';
   foreach ($data_array as $value) {
-    $total = $total + $value[0]; 
+    $total = $total + $value[0];
   }
-  $average = ($total/$count); 
+  $average = ($total/$count);
   return $average;
+}
+
+/**
+ * Returns the first item of the last item
+ *
+ * @param array $data_array Array of something
+ * @return mixed the first item of the last item in the array
+ */
+function subarray_endvalue($data_array) {
+    if ( is_array($data_array) ) {
+        $lastDataPoint = end($data_array);
+        return($lastDataPoint[0]);
+    } else {
+        return false;
+    }
 }

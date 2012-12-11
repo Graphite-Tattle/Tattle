@@ -41,7 +41,7 @@ CREATE TABLE `checks` (
   `target` varchar(1000) NOT NULL,
   `error` decimal(20,3) NOT NULL,
   `warn` decimal(20,3) NOT NULL,
-  `sample` varchar(255) NOT NULL DEFAULT '5',
+  `sample` varchar(255) NOT NULL DEFAULT '10',
   `baseline` varchar(255) NOT NULL DEFAULT 'average',
   `visibility` int(11) NOT NULL DEFAULT '0',
   `over_under` int(11) NOT NULL DEFAULT '0',
@@ -52,6 +52,7 @@ CREATE TABLE `checks` (
   `repeat_delay` int(11) NOT NULL DEFAULT '60',
   `type` varchar(255) NOT NULL,
   `regression_type` varchar(255) DEFAULT NULL,
+  `number_of_regressions` int(11) DEFAULT NULL,
   PRIMARY KEY (`check_id`),
   UNIQUE KEY `user_id` (`user_id`,`name`)
 ) CHARSET=utf8;

@@ -24,13 +24,13 @@ $tmpl->place('header');
               </div>
             </div><!-- /clearfix -->
             <div class="clearfix">
-              <label class="masterTooltip" title="The threshold level at which an Error will be triggered" for="check-error">Error Threshold<em>*</em></label>
+              <label class="masterTooltip" title="Number of acceptable standard deviations before an Error is triggered" for="check-error">Error: Standard Deviations<em>*</em></label>
               <div class="input">
                 <input id="check-error" class="span3" type="text" name="error" value="<?=$check->encodeError(); ?>" />
               </div>
             </div><!-- /clearfix -->
             <div class="clearfix">
-              <label class="masterTooltip" title="The threshold level at which a Warning will be triggered" for="check-warn">Warn Threshold<em>*</em></label>
+              <label class="masterTooltip" title="Number of acceptable standard deviations before a Warning is triggered" for="check-warn">Warn: Standard Deviations<em>*</em></label>
               <div class="input">
                 <input id="check-warn" class="span3" type="text" name="warn" value="<?=$check->encodeWarn(); ?>" />
               </div>
@@ -39,17 +39,53 @@ $tmpl->place('header');
          <fieldset class="startCollapsed">
             <legend>Advanced</legend>
             <div class="clearfix">
-              <label class="masterTooltip" title="Number of data points to use when calculating the moving average. Each data point spans one minute" for="check-sample">Sample Size in Minutes<em>*</em></label>
+              <label class="masterTooltip" title="Data will be analyized at the same time of day on a daily, weekly or monthly basis. For example, if you recognize a pattern in your data such that it looks similiar on weekly basis, choose the weekly regression type" for="check-regression_type">Regression Type<em>*</em></label>
+              <div class="input">
+                <select name="regression_type" class="span3">
+              <?
+                foreach ($regression_type_array as $value => $text) {
+                  fHTML::printOption($text, $value, $check->getRegressionType());
+                }
+              ?>
+              </select>
+              </div>
+            </div><!-- /clearfix -->
+            <div class="clearfix">
+              <label class="masterTooltip" title="Given the Regression Type, the number of periods to use when computing the historical analysis for your Predictive Check" for="check-number_of_regressions">Number of Regressions<em>*</em></label>
+              <div class="input">
+                <select name="number_of_regressions" class="span3">
+              <?
+                foreach ($number_of_regressions_array as $value => $text) {
+                  fHTML::printOption($text, $value, $check->getNumberOfRegressions());
+                }
+              ?>
+              </select>
+              </div>
+            </div><!-- /clearfix -->
+            <div class="clearfix">
+              <label class="masterTooltip" title="Number of data points to use when calculating the average/median. Each data point usually spans one minute. (This is not the case if you use a function like summarize)" for="check-sample">Sample Size<em>*</em></label>
               <div class="input">
                 <input id="check-warn" class="span3" type="text" name="sample" value="<?=$check->encodeSample(); ?>" />
               </div>
             </div><!-- /clearfix -->
             <div class="clearfix">
-              <label class="masterTooltip" title="Over will trigger an alert when the value retrieved from Graphite is greater than the warning or error threshold. Under will trigger an alert when the value retrieved from Graphite is less than the warning or the error threshold" for="check-over_under">Over/Under<em>*</em></label>
+              <label class="masterTooltip" title="Method that will be used to calculate the value of the check over the number of sample data points: Average or Median" for="check-baseline">Baseline<em>*</em></label>
+              <div class="input">
+                <select name="baseline" class="span3">
+              <?
+                foreach ($average_median_array as $value => $text) {
+                  fHTML::printOption($text, $value, $check->getBaseline());
+                }
+              ?>
+              </select>
+              </div>
+            </div><!-- /clearfix -->
+            <div class="clearfix">
+              <label class="masterTooltip" title="Over will trigger an alert when the value retrieved from Graphite is greater than the warning or error threshold. Under will trigger an alert when the value retrieved from Graphite is less than the warning or the error threshold" for="check-over_under">Over/Under/Both<em>*</em></label>
               <div class="input">
                 <select name="over_under" class="span3">
                 <?
-                  foreach ($over_under_array as $value => $text) {
+                  foreach ($over_under_both_array as $value => $text) {
                     fHTML::printOption($text, $value, $check->getOverUnder());
                   }
                 ?>
@@ -57,7 +93,7 @@ $tmpl->place('header');
               </div>
             </div><!-- /clearfix -->
             <div class="clearfix">
-             <label class="masterTooltip" title="Public checks can be subscribed to by any user while private checks remain hidden from other users" for="check-visibility">Visibility<em>*</em></label>
+             <label class="masterTooltip" title="Public checks can be subscribed to by any user while private checks remain hidden from other users" for="check-visibility">Visibility<em>*</em></label>
              <div class="input">
                <select name="visibility" class="span3">
                <?
@@ -72,10 +108,9 @@ $tmpl->place('header');
              <label class="masterTooltip" title="After an alert is triggered, the number of minutes to wait before sending another one" for="check-repeat_delay">Repeat Delay<em>*</em></label>
              <div class="input">
 <?php
-                $check_delay = (is_null($check->getRepeatDelay()) ? 30 : $check->encodeRepeatDelay());
-?>
+                $check_delay = (is_null($check->getRepeatDelay()) ? 30 : $check->encodeRepeatDelay()); ?>
                 <input id="check-repeat_delay" class="span3" type="text" size="20" name="repeat_delay" value="<?=$check_delay; ?>" />
-              </div>
+             </div>
            </div><!-- /clearfix -->
            </fieldset>
            <fieldset>

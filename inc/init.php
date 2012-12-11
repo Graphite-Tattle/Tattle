@@ -12,6 +12,7 @@ define('JS_CACHE', TATTLE_ROOT . '/js_cache/');
 
 include TATTLE_ROOT . '/inc/includes.php';
 include TATTLE_ROOT . '/inc/functions.php';
+include TATTLE_ROOT . '/statistical_functions.php';
 include TATTLE_ROOT . '/inc/config.php';
 include TATTLE_ROOT . '/inc/constructor_functions.php';
 

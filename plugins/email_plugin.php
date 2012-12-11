@@ -49,8 +49,8 @@ function email_plugin_notify($check,$check_result,$subscription,$alt_email=false
   $email = new fEmail();
   // This sets up fSMTP to connect to the gmail SMTP server
   // with a 5 second timeout. Gmail requires a secure connection.
-  $smtp = new fSMTP(sys_var('smtp_server'), sys_var('smtp_port'), TRUE, 5);
-  $smtp->authenticate(sys_var('smtp_user'), sys_var('smtp_pass'));
+  $smtp = new fSMTP(sys_var('smtp_server'), sys_var('smtp_port'), FALSE, 5);
+  #$smtp->authenticate(sys_var('smtp_user'), sys_var('smtp_pass'));
   if ($alt_email) {
     $email_address = usr_var('alt_email',$user->getUserId());
   } else {
@@ -63,12 +63,26 @@ function email_plugin_notify($check,$check_result,$subscription,$alt_email=false
   $email->setSubject(str_replace('{check_name}', $check->prepareName(), sys_var('email_subject')));
   // Set the body to include a string containing UTF-8
   $state = $status_array[$check_result->getStatus()];
-  $email->setHTMLBody("<p>$state Alert for {$check->prepareName()} </p><p>The check returned {$check_result->prepareValue()}</p><p>Warning Threshold is : ". $check->getWarn() . "</p><p>Error Threshold is : ". $check->getError() . '</p><p>View Alert Details : <a href="' . fURL::getDomain() . '/' . CheckResult::makeURL('list',$check_result) . '">'.$check->prepareName()."</a></p>");
+
+  $check_type = '';
+  if($check->getType() == 'threshold') {
+    $check_type = ' Threshold';
+  } elseif($check->getType() == 'predictive') {
+    $check_type = ' Standard Deviation';
+  }
+
+  $state_email_injection = $state . " Alert ";
+  if($state == 'OK') {
+    $state_email_injection = "Everything's back to normal ";
+  }
+
+  $email->setHTMLBody("<p>" . $state_email_injection . "for {$check->prepareName()} </p><p>The check returned {$check_result->prepareValue()}</p><p>Warning" . $check_type  . " is : ". $check->getWarn() . "</p><p>Error" . $check_type . " is : ". $check->getError() . '</p><p>View Alert Details : <a href="' . $GLOBALS['TATTLE_DOMAIN'] . '/' . CheckResult::makeURL('list',$check_result) . '">'.$check->prepareName()."</a></p>");
+
   $email->setBody("
   $state Alert for {$check->prepareName()}
 The check returned {$check_result->prepareValue()}
-Warning Threshold is : ". $check->getWarn() . "
-Error Threshold is : ". $check->getError() . "
+Warning" . $check_type  . " is : ". $check->getWarn() . "
+Error" . $check_type . " is : ". $check->getError() . "
            ");
   try {  
     $message_id = $email->send($smtp);

@@ -101,7 +101,7 @@ if (isset($subscription_id)) {
     <div class="span10">
       <fieldset>
         <p>Check : <?=$check->prepareName(); ?></p>
-        <p>Target : <?='movingAverage(' . $check->prepareTarget() . ',' . $check->prepareSample() . ')'; ?></p>
+        <p>Target : <?=Check::constructTarget($check); ?></p>
         <p id="graphiteGraph"><?=Check::showGraph($check); ?></p>
         <input class="btn primary" type="submit" value="Reload Graph" onClick="reloadGraphiteGraph()"/>
         <select id="graphiteDateRange" class="span3">

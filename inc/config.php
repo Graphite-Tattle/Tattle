@@ -10,6 +10,7 @@ $GLOBALS['DATABASE_PORT'] = '3306';
 $GLOBALS['DATABASE_NAME'] = 'tattle';
 $GLOBALS['DATABASE_USER'] = 'dbuser';
 $GLOBALS['DATABASE_PASS'] = 'dbpass';
+$GLOBALS['TATTLE_DOMAIN'] = 'http://localhost';
 
 // GRAPHITE and GANGLIA Settings
 $GLOBALS['PRIMARY_SOURCE'] = 'GRAPHITE'; //Currently can be GRAPHITE or GANGLIA
@@ -110,6 +111,10 @@ if ($config_exit) {
 $status_array = array('0' => 'OK', '1'   => 'Error', '2' => 'Warning');
 $visibility_array = array('0'   => 'Public', '1' => 'Private');
 $over_under_array = array('0'   => 'Over', '1' => 'Under');
+$over_under_both_array = array('0'   => 'Over', '1' => 'Under', '2' => 'Both');
+$average_median_array = array('average' => 'Average', 'median' => 'Median');
+$regression_type_array = array('daily' => 'Daily', 'weekly' => 'Weekly', 'monthly' => 'Monthly');
+$number_of_regressions_array = array('1' => '1','2' =>'2','3' =>'3','4' =>'4','5' =>'5','6' =>'6','7' =>'7','8' => '8','9' => '9','10' => '10', '11' => '11', '12' => '12', '13' => '13', '14' => '14', '15' => '15');
 $breadcrumbs = array();
 $breadcrumbs[] = array('name' => 'Home', 'url' => 'index.php', 'active'=> false);
 

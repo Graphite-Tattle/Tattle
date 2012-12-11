@@ -3,7 +3,7 @@ $page_title = ($action == 'add' ? 'Add a Check' : 'Editing : ' . $check->encodeN
 $tmpl->set('title', $page_title);
 $breadcrumbs[] = array('name' => $page_title, 'url' => ($action == 'add' ? Check::makeURL($action,$check_type) : Check::makeURL($action,$check_type,$check)), 'active' => true);
 $tmpl->set('breadcrumbs',$breadcrumbs);
-$tmpl-set('addeditdocready', true);
+$tmpl->set('addeditdocready', true);
 $tmpl->place('header');
 ?>
   <div class="row">

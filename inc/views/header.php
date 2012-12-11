@@ -9,8 +9,8 @@
     <![endif]-->
 
    <?php
-       $this->place('css');  
-       $this->place('js'); 
+       $this->place('css');
+       $this->place('js');
     if ($this->get('graphlot')) { ?>
     <script type="text/javascript" src="<?=$GLOBALS['GRAPHITE_URL']; ?>/content/js/jquery.flot.js"></script>
     <script type="text/javascript" src="<?=$GLOBALS['GRAPHITE_URL']; ?>/content/js/jquery.autocomplete.js"></script>
@@ -24,8 +24,8 @@
 
     </script>
 
-<?php }  
- 
+<?php }
+
 if (!$this->get('full_screen')) { ?>
     <style type="text/css">
       body {
@@ -34,7 +34,7 @@ if (!$this->get('full_screen')) { ?>
     </style>
 <?php } ?>
 
-    <script type="text/javascript"> 
+    <script type="text/javascript">
       $(function() {
                  $("#check-target").autocomplete({
 		  source: "ajax/autocomplete.php",
@@ -44,9 +44,9 @@ if (!$this->get('full_screen')) { ?>
 		  }
         });
       });
-     
+
    	</script>
-    <script type="text/javascript"> 
+    <script type="text/javascript">
       $(function() {
                  $("#line-target").autocomplete({
 		  source: "ajax/autocomplete.php",
@@ -56,16 +56,16 @@ if (!$this->get('full_screen')) { ?>
 		  }
         });
       });
-     
+
    	</script>
-<?php 
+<?php
 if ($this->get('full_screen') && $this->get('refresh') > 0) {
   echo '<meta http-equiv="refresh" content="' . $this->get('refresh') . '">';
-} ?> 
+} ?>
   </head>
   <body>
 
-<?php 
+<?php
 if (!$this->get('full_screen')) { ?>
    <div class="topbar">
       <div class="topbar-inner">
@@ -73,34 +73,34 @@ if (!$this->get('full_screen')) { ?>
           <a class="brand" href="index.php">Tattle </a>
           <ul class="nav">
             <?
-              
+
               $current_url = fURL::getWithQueryString();
-              echo '<li' . ($current_url == '' ? ' class="active"' : '') . '><a href="index.php">Alerts</a></li>'. "\n";                
+              echo '<li' . ($current_url == '' ? ' class="active"' : '') . '><a href="index.php">Alerts</a></li>'. "\n";
               $check_list = Check::makeURL('list');
               echo '<li' . ($current_url == $check_list ? ' class="active"' : '') . '><a href="' . $check_list . '" >Checks</a></li>' . "\n";
               $subscription_list = Subscription::makeURL('list');
               echo '<li' . ($current_url == $subscription_list ? ' class="active"' : '') .'><a href="' . $subscription_list . '" >Subscriptions</a></li>' . "\n";
               $dashboard_list = Dashboard::makeURL('list');
               echo '<li' . ($current_url == $dashboard_list ? ' class="active"' : '') . '><a href="' . $dashboard_list . '">Dashboards</a></li>';
+if (fAuthorization::checkAuthLevel('admin')) {
               $setting_list = Setting::makeURL('list');
               echo '<li' . ($current_url == $setting_list ? ' class="active"' : '') . '><a href="' . $setting_list . '" >Settings</a></li>' . "\n";
-if (fAuthorization::checkAuthLevel('admin')) {
-              $user_list = User::makeURL('list'); 
+              $user_list = User::makeURL('list');
               echo '<li><a href="' . User::makeURL('list') . '" >Users</a></li>';
-}              
+}
 ?>
           </ul>
  <?php   if (is_numeric(fSession::get('user_id'))) { ?>
  <p class="pull-right">
      Logged in as <a href="<?=User::makeUrl('edit',fSession::get('user_id'));?>"><?=fSession::get('user_name'); ?></a>
 </p>
-    <?php } ?> 
-</div> 
+    <?php } ?>
+</div>
         </div>
       </div>
 <?php } ?>
 <div class="container-fluid">
-<?php  
+<?php
     $breadcrumbs = $this->get('breadcrumbs');
     if (is_array($breadcrumbs)) {
     echo '<ul class="breadcrumb">';

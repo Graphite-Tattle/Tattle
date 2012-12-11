@@ -8,18 +8,25 @@ try {
 	$checks->tossIfEmpty();
 	$affected = fMessaging::retrieve('affected', fURL::get());
 	?>
-<a class="small btn primary" href="<?= Check::makeUrl('add');?>">Add Check</a>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  attachTooltips();
+});
+</script>
+
+<a class="small btn primary" href="<?= Check::makeURL('add', $check_type);?>">Add Check</a>
 <table class="zebra-striped">
           <thead>
 		<tr>
     <th><?=fCRUD::printSortableColumn('name','Name'); ?></th>
-    <th><?=fCRUD::printSortableColumn('target','Target'); ?></th>
-    <th><?=fCRUD::printSortableColumn('warn','Warn'); ?></th>
-    <th><?=fCRUD::printSortableColumn('error','Error'); ?></th>
-    <th><?=fCRUD::printSortableColumn('sample','Sample'); ?></th>
+    <th class="masterTooltip" title="Graph Target that will be checked in Graphite"><?=fCRUD::printSortableColumn('target','Target'); ?></th>
+    <th class="masterTooltip" title="The threshold level at which a Warning will be triggered"><?=fCRUD::printSortableColumn('warn','Warn'); ?></th>
+    <th class="masterTooltip" title="The threshold level at which an Error will be triggered"><?=fCRUD::printSortableColumn('error','Error'); ?></th>
+    <th class="masterTooltip" title="Number of data points to use when calculating the moving average. Each data point spans one minute"><?=fCRUD::printSortableColumn('sample','Sample'); ?></th>
     <th><?=fCRUD::printSortableColumn('baseline','Baseline'); ?></th>
-    <th><?=fCRUD::printSortableColumn('over_under','Over/Under'); ?></th>
-    <th><?=fCRUD::printSortableColumn('visiblity','Visibility'); ?></th>
+    <th class="masterTooltip" title="Over will trigger an event when the value retrieved from Graphite is greater than the warning or error threshold. Under will trigger an event when the value retrieved from Graphite is less than the warning or the error threshold"><?=fCRUD::printSortableColumn('over_under','Over/Under'); ?></th>
+    <th class="masterTooltip" title="Public checks can be subscribed to by any user while private checks remain hidden from other users"><?=fCRUD::printSortableColumn('visiblity','Visibility'); ?></th>
     <th>Action</th>
        </tr></thead><tbody>    
 	<?php
@@ -36,7 +43,7 @@ try {
         <td><?=$over_under_array[$check->getOver_Under()]; ?></td>
         <td><?=$visibility_array[$check->getVisibility()]; ?></td>
         <td><?php if (fSession::get('user_id') == $check->getUserId()) { 
-                    echo '<a href="' . Check::makeURL('edit', $check) . '">Edit</a> |'; 
+                    echo '<a href="' . Check::makeURL('edit', $check_type, $check) . '">Edit</a> |'; 
                   } ?>
         <a href="<?=Subscription::makeURL('add', $check); ?>">Subscribe</a></td>
         </tr>
@@ -47,9 +54,9 @@ try {
     $total_pages = ceil($checks->count(TRUE) / $GLOBALS['PAGE_SIZE']);
     if ($total_pages > 1) {
       $prev_class = 'previous';
-      $prev_link = fURL::get() . '?page=' . ($page_num - 1);
+      $prev_link = fURL::replaceInQueryString('page', $page_num -1 );
       $next_class = 'next';
-      $next_link = fURL::get() . '?page=' . ($page_num + 1);
+      $next_link = fURL::replaceInQueryString('page', $page_num + 1);
       if ($page_num == 1) {
         $prev_class .= ' disabled';
         $prev_link = '#';
@@ -71,7 +78,7 @@ try {
     <?php } 
 } catch (fEmptySetException $e) {
 	?>
-	<p class="info">There are currently no Tattle checks. <a href="<?=Check::makeURL('add'); ?>">Add one now</a></p>
+	<p class="info">There are currently no <?=$check_type?> based checks. <a href="<?=Check::makeURL('add', $check_type); ?>">Add one now</a></p>
 	<?php
 }
 ?>

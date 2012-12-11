@@ -62,7 +62,7 @@ try {
     <?php }
 } catch (fEmptySetException $e) {
 	?>
-	<p class="info">There are currently no Tattle check subscriptions for your account. <a href="<?=Check::makeURL('list'); ?>">Add one now</a></p>
+	<p class="info">There are currently no Tattle check subscriptions for your account. Add a <a href="<?=Check::makeURL('list', 'threshold'); ?>">threshold</a> based or a <a href="<?=Check::makeURL('list', 'predictive'); ?>">predictive</a> based subscription now.</p>
 	<?php
 }
 ?>

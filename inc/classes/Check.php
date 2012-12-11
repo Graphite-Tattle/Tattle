@@ -4,18 +4,22 @@ class Check extends fActiveRecord
     protected function configure()
     {
     }
+
     /**
      * Returns all checks on the system
      *
+     * @param  string  $type         The type of check to return 'threshold', 'predictive'
      * @param  string  $sort_column  The column to sort by
      * @param  string  $sort_dir     The direction to sort the column
+     * @param  int     $limit        The max number of records to show
+     * @param  int     $page         The offset
      * @return fRecordSet  An object containing all meetups
      */
-    static function findAll($sort_column = 'name', $sort_dir = 'desc', $limit=NULL, $page=NULL)
+    static function findAll($type, $sort_column = 'name', $sort_dir = 'desc', $limit=NULL, $page=NULL)
     {
         return fRecordSet::build(
             __CLASS__,
-            array('enabled=' => true,'user_id=|visibility=' => array(fSession::get('user_id'),0)),
+            array('type=' => $type, 'enabled=' => true,'user_id=|visibility=' => array(fSession::get('user_id'),0)),
             array($sort_column => $sort_dir),
             $limit,
             $page
@@ -40,23 +44,23 @@ class Check extends fActiveRecord
     /**
      * Creates all Check related URLs for the site
      *
-     * @param  string $type  The type of URL to make: 'list', 'add', 'edit', 'delete'
-     * @param  Check $obj   The Check object for the edit and delete URL types
-     * @return string  The URL requested
+     * @param  string $action  The action to be encoded into the URL to make: 'list', 'add', 'edit', 'delete'
+     * @param  string $type    The type of check to be encoded into the URL: 'threshold', 'predictive'
+     * @param  Check  $obj     The Check object for the edit and delete URL types
+     * @return string          The URL requested
      */
-    static public function makeURL($type, $obj=NULL)
+    static public function makeURL($action, $type, $obj=NULL)
     {
-        switch ($type)
-        {
-        case 'list':
-            return 'check.php';
-        case 'add':
-            return 'check.php?action=add';
-        case 'edit':
-            return 'check.php?action=edit&check_id=' . $obj->prepareCheckId();
-        case 'delete':
-            return 'check.php?action=delete&check_id=' . $obj->prepareCheckId();
+        $baseURLExtension = 'check.php';
+        $actionFieldValue = '?action=' . $action;
+        $typeFieldValue = '&type=' . $type;
+        $checkIdFieldValue = '';
+
+        if (!is_null($obj)) {
+            $checkIdFieldValue = '&check_id=' . $obj->prepareCheckId();
         }
+
+        return $baseURLExtension . $actionFieldValue . $typeFieldValue . $checkIdFieldValue;
     }
 
     static public function deleteRelated($obj=NULL)

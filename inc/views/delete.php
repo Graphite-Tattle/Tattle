@@ -12,6 +12,10 @@ if ($class_name == 'Setting') {
      $form_url = $class_name::makeURL('delete',$setting_type,$setting_name,$owner_id);
      $list_url = $class_name::makeURL('list',$setting_type,NULL,$owner_id);
    }
+} elseif ($class_name == 'Check') {
+  $form_url = $class_name::makeURL('delete',$obj->prepareType(),$obj); 
+  $list_url = $class_name::makeURL('list',$obj->prepareType());
+
 } else {
   $form_url = $class_name::makeURL('delete',$obj); 
   $list_url = $class_name::makeURL('list');

@@ -2,7 +2,7 @@
 include 'inc/init.php';
 
 fAuthorization::requireLoggedIn();
-$breadcrumbs[] = array('name' => 'Alerts', 'url' => '#','active' => false);
+$breadcrumbs[] = array('name' => 'Alerts', 'url' => 'index.php','active' => false);
 
 $page_num = fRequest::get('page', 'int', 1);
 $offset = ($page_num - 1)*$GLOBALS['PAGE_SIZE'];

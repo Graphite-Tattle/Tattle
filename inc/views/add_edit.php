@@ -1,11 +1,11 @@
 <?php
 $page_title = ($action == 'add' ? 'Add a Check' : 'Editing : ' . $check->encodeName());
 $tmpl->set('title', $page_title);
-$breadcrumbs[] = array('name' => $page_title, 'url' => fURL::get(), 'active' => true);
+$breadcrumbs[] = array('name' => $page_title, 'url' => ($action == 'add' ? Check::makeURL($action,$check_type) : Check::makeURL($action,$check_type,$check)), 'active' => true);
 $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
 ?>
-<script type="text/javascript">
+<script language="javascript">
   $(document).ready(function() {
     $("fieldset.startCollapsed").collapse( { closed: false } );
     reloadGraphiteGraph();
@@ -15,7 +15,7 @@ $tmpl->place('header');
     var imageURL = document.images['renderedGraphImage'].src;
     document.images['renderedGraphImage'].src = "";
     if(imageURL.indexOf("?preventCaching=") === -1 && imageURL.indexOf("&preventCaching=") === -1) {
-      imageURL = imageURL + "&preventCaching=" + (new Date()).getTime(); 
+      imageURL = imageURL + "&preventCaching=" + (new Date()).getTime();
     }
     else {
       preventCachingRegex = /([?|&]preventCaching=)[^\&]+/;
@@ -28,7 +28,7 @@ $tmpl->place('header');
       graphDateRangeRegex = /([?|&]from=)[^\&]+/;
       imageURL = imageURL.replace(graphDateRangeRegex, '$1' + document.getElementById("graphiteDateRange").value);
     }
-    document.images['renderedGraphImage'].src = imageURL; 
+    document.images['renderedGraphImage'].src = imageURL;
   }
 </script>
   <div class="row">
@@ -66,24 +66,11 @@ $tmpl->place('header');
             <div class="clearfix">
               <label for="check-sample">Sample Size in Minutes<em>*</em></label>
               <div class="input">
-              <input id="check-warn" class="span3" type="text" name="sample" value="<?=$check->encodeSample(); ?>" />
+                <input id="check-warn" class="span3" type="text" name="sample" value="<?=$check->encodeSample(); ?>" />
               </div>
             </div><!-- /clearfix -->
-      <div class="clearfix">
-        <label for="check-baseline">Baseline<em>*</em></label>
-              <div class="input">
-                <select id="check-baseline" name="baseline" class="span3">
-              <?
-                $statuses = array('average'   => 'average', 'median' => 'median');
-                foreach ($statuses as $value => $text) {
-                  fHTML::printOption($text, $value, $check->getBaseline());
-                }
-              ?>
-              </select>
-        </div>
-            </div><!-- /clearfix -->
-      <div class="clearfix">
-        <label for="check-over_under">Over/Under<em>*</em></label>
+            <div class="clearfix">
+              <label for="check-over_under">Over/Under<em>*</em></label>
               <div class="input">
                 <select name="over_under" class="span3">
                 <?
@@ -94,8 +81,8 @@ $tmpl->place('header');
                 </select>
               </div>
             </div><!-- /clearfix -->
-	    <div class="clearfix">
-	     <label for="check-visibility">Visibility<em>*</em></label>
+            <div class="clearfix">
+             <label for="check-visibility">Visibility<em>*</em></label>
              <div class="input">
                <select name="visibility" class="span3">
                <?
@@ -106,23 +93,24 @@ $tmpl->place('header');
                </select>
              </div>
            </div><!-- /clearfix -->
-     <div class="clearfix">
-       <label for="check-repeat_delay">Repeat Delay<em>*</em></label>
+           <div class="clearfix">
+             <label for="check-repeat_delay">Repeat Delay<em>*</em></label>
              <div class="input">
                <?php
                $check_delay = (is_null($check->getRepeatDelay()) ? 30 : $check->encodeRepeatDelay()); ?>
-         <input id="check-repeat_delay" class="span3" type="text" size="20" name="repeat_delay" value="<?=$check_delay; ?>" />
-       </div>
+               <input id="check-repeat_delay" class="span3" type="text" size="20" name="repeat_delay" value="<?=$check_delay; ?>" />
+             </div>
            </div><!-- /clearfix -->
            </fieldset>
            <fieldset>
              <div class="actions">
              <input class="btn primary" type="submit" value="Save" />
-       <? if ($action == 'edit') { ?><a href="<?=Check::makeURL('delete', $check); ?>" class="btn" >Delete</a><?php } ?>
-       <div class="required"><em>*</em> Required field</div>
-       <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
+             <? if ($action == 'edit') { ?><a href="<?=Check::makeURL('delete', $check_type, $check); ?>" class="btn" >Delete</a><?php } ?>
+             <div class="required"><em>*</em> Required field</div>
+             <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
 <?php if ($action == 'add') { ?>
              <input type="hidden" name="user_id" value="<?=fSession::get('user_id'); ?>" />
+             <input type="hidden" name="type" value="<?=$check_type; ?>" />
 <?php } ?>
            </div>
          </fieldset>

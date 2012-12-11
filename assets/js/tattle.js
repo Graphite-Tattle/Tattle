@@ -24,3 +24,24 @@ function attachTooltips() {
         });
 }
 
+function reloadGraphiteGraph() {
+  if(document.images['renderedGraphImage'] != null) {
+    var imageURL = document.images['renderedGraphImage'].src;
+    document.images['renderedGraphImage'].src = "";
+    if(imageURL.indexOf("?preventCaching=") === -1 && imageURL.indexOf("&preventCaching=") === -1) {
+      imageURL = imageURL + "&preventCaching=" + (new Date()).getTime();
+    }
+    else {
+      preventCachingRegex = /([?|&]preventCaching=)[^\&]+/;
+      imageURL = imageURL.replace(preventCachingRegex, '$1' + (new Date()).getTime());
+    }
+    if(imageURL.indexOf("?from=") === -1 && imageURL.indexOf("&from=") === -1) {
+      imageURL = imageURL + "&from=" + document.getElementById("graphiteDateRange").value;
+    }
+    else {
+      graphDateRangeRegex = /([?|&]from=)[^\&]+/;
+      imageURL = imageURL.replace(graphDateRangeRegex, '$1' + document.getElementById("graphiteDateRange").value);
+    }
+    document.images['renderedGraphImage'].src = imageURL;
+  }
+}

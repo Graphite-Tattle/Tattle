@@ -26,6 +26,16 @@
 
 <?php }
 
+if ($this->get('addeditdocready')) { ?>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $("fieldset.startCollapsed").collapse( { closed: false } );
+      reloadGraphiteGraph();
+      attachTooltips();
+    });
+  </script>
+<?php }
+
 if (!$this->get('full_screen')) { ?>
     <style type="text/css">
       body {
@@ -36,28 +46,28 @@ if (!$this->get('full_screen')) { ?>
 
     <script type="text/javascript">
       $(function() {
-                 $("#check-target").autocomplete({
-		  source: "ajax/autocomplete.php",
-		  minLength: 2,
-		  select: function(event, ui) {
-  		    $('#check-target').val(ui.item.id);
-		  }
+        $("#check-target").autocomplete({
+          source: "ajax/autocomplete.php",
+          minLength: 2,
+          select: function(event, ui) {
+            $('#check-target').val(ui.item.id);
+          }
         });
       });
 
-   	</script>
+    </script>
     <script type="text/javascript">
       $(function() {
-                 $("#line-target").autocomplete({
-		  source: "ajax/autocomplete.php",
-		  minLength: 2,
-		  select: function(event, ui) {
-  		    $('#line-target').val(ui.item.id);
-		  }
+        $("#line-target").autocomplete({
+          source: "ajax/autocomplete.php",
+          minLength: 2,
+          select: function(event, ui) {
+            $('#line-target').val(ui.item.id);
+          }
         });
       });
 
-   	</script>
+    </script>
 <?php
 if ($this->get('full_screen') && $this->get('refresh') > 0) {
   echo '<meta http-equiv="refresh" content="' . $this->get('refresh') . '">';

@@ -57,6 +57,8 @@ Installation and Configuration
 
 * Edit inc/config.php with the correct settings (Examples db password)
 
+* Create a logs folder which is writable by your webserver user
+
 * Setup cronjob to to run processor.php. This file can be run either as a cli or through the web server. (cli maybe required depending on your plugins and their required permissions)
 
 * Register via the web interface. (The first user registered is the admin currently prior to us implementing any roles, and other permissions)
@@ -125,4 +127,10 @@ We'll do our best to get your changes in as soon as possible!
 [escconf]: http://escconf.com
 [wayfair]: http://engineering.wayfair.com/
 
+
+Contributors
+---------------------
+In lieu of a list of contributors, check out the commit history for the project: 
+https://github.com/wayfair/Graphite-Tattle/graphs/contributors
+Though special shout out to [jpatapoff](https://github.com/jpatapoff/Graphite-Tattle) since he helped a lot, but his commits weren't attributed due to manually merging
 

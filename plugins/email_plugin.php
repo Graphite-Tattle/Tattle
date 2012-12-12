@@ -13,6 +13,12 @@ function email_plugin_settings(){
               'smtp_port' => array('friendly_name' => 'SMTP Port',
                                    'default' => 465, 
                                    'type' => 'integer'),
+              'require_auth' => array('friendly_name' => 'Require Auth',
+              'default' => 'false',
+              'type' => 'string'),
+              'require_ssl' => array('friendly_name' => 'Require SSL',
+              'default' => 'false',
+              'type' => 'string'),
               'smtp_user' => array('friendly_name' => 'SMTP Username',
                                    'default' => 'example@example.com',
                                    'type' => 'email'),
@@ -49,8 +55,10 @@ function email_plugin_notify($check,$check_result,$subscription,$alt_email=false
   $email = new fEmail();
   // This sets up fSMTP to connect to the gmail SMTP server
   // with a 5 second timeout. Gmail requires a secure connection.
-  $smtp = new fSMTP(sys_var('smtp_server'), sys_var('smtp_port'), FALSE, 5);
-  #$smtp->authenticate(sys_var('smtp_user'), sys_var('smtp_pass'));
+  $smtp = new fSMTP(sys_var('smtp_server'), sys_var('smtp_port'), sys_var('require_ssl') === 'true'? TRUE: FALSE, 5);
+  if (sys_var('require_auth') === 'true')  {
+    $smtp->authenticate(sys_var('smtp_user'), sys_var('smtp_pass'));
+  }
   if ($alt_email) {
     $email_address = usr_var('alt_email',$user->getUserId());
   } else {

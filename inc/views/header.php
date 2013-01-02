@@ -94,9 +94,11 @@ if (!$this->get('full_screen')) { ?>
               echo '<li' . ($current_url == $subscription_list ? ' class="active"' : '') .'><a href="' . $subscription_list . '" >Subscriptions</a></li>' . "\n";
               $dashboard_list = Dashboard::makeURL('list');
               echo '<li' . ($current_url == $dashboard_list ? ' class="active"' : '') . '><a href="' . $dashboard_list . '">Dashboards</a></li>';
-if (fAuthorization::checkAuthLevel('admin')) {
-              $setting_list = Setting::makeURL('list');
+              $setting_list = Setting::makeURL('list','user');
               echo '<li' . ($current_url == $setting_list ? ' class="active"' : '') . '><a href="' . $setting_list . '" >Settings</a></li>' . "\n";
+if (fAuthorization::checkAuthLevel('admin')) {
+              $setting_list = Setting::makeURL('list','system');
+              echo '<li' . ($current_url == $setting_list ? ' class="active"' : '') . '><a href="' . $setting_list . '" >System Settings</a></li>' . "\n";
               $user_list = User::makeURL('list');
               echo '<li><a href="' . User::makeURL('list') . '" >Users</a></li>';
 }

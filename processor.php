@@ -38,9 +38,9 @@ if ($debug) {
 $checks = Check::findActive();
 foreach ($checks as $check) {
   $data = Check::getData($check);
-  if (count($data) > 0) {
     $title = $check->prepareName();
     fCore::debug('Processing :' . $title . "\n",FALSE);
+  if (count($data) > 0) {
 
     if($check->getType() == 'threshold') {
       $check_value = Check::getResultValue($data,$check);
@@ -89,7 +89,7 @@ foreach ($checks as $check) {
       $subscriptions = Subscription::findAll($check->getCheckId());
       foreach ($subscriptions as $subscription) {
         $notify_function = $subscription->getMethod();
-        if (function_exists($notify_function)){
+        if (function_exists($notify_function) && $subscription->getStatus() == 0 ){
          $notify_result = $notify_function($check,$check_result,$subscription);
          $number_of_emails += 1;
         }
@@ -97,6 +97,10 @@ foreach ($checks as $check) {
     } else {
       fCore::debug("Skip Notification \n",FALSE);
     }
+  }
+  else {
+      fCore::debug("couldn't get data!\n",FALSE);
+      fCore::debug("Data: $data\n",FALSE);
   }
   fCore::debug("check done moving to next \n\n",FALSE);
 }

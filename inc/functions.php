@@ -60,10 +60,13 @@ function plugin_hook() {
   if(!isset($GLOBALS['hooks'][$hook])) {
     return;
   }
+  $result=array();
   foreach($GLOBALS['hooks'][$hook] as $func){
-    $args = $func($args);
+    $result1 = $func($args);
+    $result=array_merge($result,$result1);
+
   }
-  return $args;
+  return $result;
 }
 
 function plugin_listener($hook,$function){

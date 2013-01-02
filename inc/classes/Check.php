@@ -132,15 +132,24 @@ class Check extends fActiveRecord
             '&cs=-'. $obj->prepareSample() . 'minutes' .
             '&ce=now&format=json';
         } else {
+	  $target = Check::constructTarget($obj);
+          $target = str_replace("&quot;","\"",$target);
+          $target = urlencode($target);
           $check_url = $GLOBALS['GRAPHITE_URL'] . '/render/?' .
-            'target=' . Check::constructTarget($obj) .
+            'target=' . $target .
             '&from=-'. $obj->prepareSample() . 'minutes' .
             '&format=json';
         }
         $json_data = @file_get_contents($check_url);
         if ($json_data) {
           $data = json_decode($json_data);
+	  if (count($data) <= 0 )
+          {
+		fCore::debug("bad json data for $check_url\n",FALSE);
+		fCore::debug("Json: $json_data\n");
+          }
         } else {
+	  fCore::debug("no data for $check_url\n",FALSE);
           $data = array();
         }
         return $data;

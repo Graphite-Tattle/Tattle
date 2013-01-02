@@ -227,7 +227,7 @@ class fSMTP
 		}
 		
 		if (!$this->connection) {
-			throw new fConnectivityException('There was an error connecting to the server');
+			throw new fConnectivityException('There was an error connecting to the server %1$s %2$s',$this->host,$this->port);
 		}
 		
 		stream_set_timeout($this->connection, $this->timeout);

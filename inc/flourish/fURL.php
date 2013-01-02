@@ -60,10 +60,11 @@ class fURL
 	static public function getDomain()
 	{
 		$port = (isset($_SERVER['SERVER_PORT'])) ? $_SERVER['SERVER_PORT'] : NULL;
+	        $host = (isset($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : php_uname('n'); 
 		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
-			return 'https://' . $_SERVER['SERVER_NAME'] . ($port && $port != 443 ? ':' . $port : '');
+			return 'https://' . $host . ($port && $port != 443 ? ':' . $port : '');
 		} else {
-			return 'http://' . $_SERVER['SERVER_NAME'] . ($port && $port != 80 ? ':' . $port : '');
+			return 'http://' . $host . ($port && $port != 80 ? ':' . $port : '');
 		}
 	}
 	

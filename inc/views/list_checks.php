@@ -34,15 +34,18 @@ $(document).ready(function() {
 	foreach ($checks as $check) {
 	?>
     	<tr>
-        <td><?='<a href="' . CheckResult::makeUrl('list',$check) . '">' . $check->prepareName(); ?></a></td>
-        <td><?=$check->prepareTarget(); ?></td>
+        <td><?=$check->prepareName() . '<br/><a href="' . CheckResult::makeUrl('list',$check) . '">View';?></a> | <?php if (fSession::get('user_id') == $check->getUserId() || fAuthorization::checkAuthLevel('admin')) { 
+                    echo '<a href="' . Check::makeURL('edit', $check_type, $check) . '"> Edit</a> |'; 
+                  } ?>
+        <a href="<?=Subscription::makeURL('add', $check); ?>">Subscribe</a></td>
+        <td style="max-width:300px; overflow:scroll;"><?=$check->prepareTarget(); ?></td>
         <td><?=$check->prepareWarn(); ?></td>
         <td><?=$check->prepareError(); ?></td>
         <td><?=$check->prepareSample(); ?></td>
         <td><?=$check->prepareBaseline(); ?></td>
         <td><?=$over_under_array[$check->getOver_Under()]; ?></td>
         <td><?=$visibility_array[$check->getVisibility()]; ?></td>
-        <td><?php if (fSession::get('user_id') == $check->getUserId()) { 
+        <td><?=$check->prepareName() . '<br/><a href="' . CheckResult::makeUrl('list',$check) . '">View';?></a> | <?php if (fSession::get('user_id') == $check->getUserId() || fAuthorization::checkAuthLevel('admin')) { 
                     echo '<a href="' . Check::makeURL('edit', $check_type, $check) . '">Edit</a> |'; 
                   } ?>
         <a href="<?=Subscription::makeURL('add', $check); ?>">Subscribe</a></td>

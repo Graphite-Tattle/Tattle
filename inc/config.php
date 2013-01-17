@@ -25,13 +25,13 @@ $GLOBALS['GRAPH_HEIGHT'] = '308';
 $GLOBALS['WHISPER_DIR'] = '/opt/graphite/storage/whisper/';
 
 // Flourish Related Settings
-$GLOBALS['FLOURISHLIB_PATH'] = '/inc/flourish/'; 
+$GLOBALS['FLOURISHLIB_PATH'] = '/inc/flourish/';
 $GLOBALS['SESSION_FILES'] = '/tmp';
 
 // Bootstrap Settings
 $GLOBALS['BOOTSTRAP_PATH'] = '/bootstrap/';
 
-// Allow HTTP auth as user management 
+// Allow HTTP auth as user management
 $GLOBALS['ALLOW_HTTP_AUTH'] = false;
 
 // Number of elements per page (checks, alerts, subscriptions)
@@ -53,7 +53,7 @@ foreach (glob("plugins/*_plugin.php") as $plugin) {
   include_once($plugin);
 }
 
-// Check to make sure the session folder exists 
+// Check to make sure the session folder exists
 $config_error = '';
 $config_exit = false;
 
@@ -75,20 +75,21 @@ if ($GLOBALS['DATABASE_TYPE'] == 'mysql') {
     $config_exit = true;
 }
 
-//Connect the db to the ORM functions
-fORMDatabase::attach($db);
+if (!$config_exit) {
+    //Connect the db to the ORM functions
+    fORMDatabase::attach($db);
 
+    $default_plugin_settings = plugin_hook('plugin_settings');
+    $default_plugin_user_settings = plugin_hook('plugin_user_settings');
 
-$default_plugin_settings = plugin_hook('plugin_settings');
-$default_plugin_user_settings = plugin_hook('plugin_user_settings');
+    $send_methods = plugin_hook('send_methods');
+    $current_plugin_settings = Setting::findAll(array('type=' => 'system'));
+    $plugin_settings = $default_plugin_settings;
+    $plugin_user_settings = $default_plugin_user_settings;
 
-$send_methods = plugin_hook('send_methods');
-$current_plugin_settings = Setting::findAll(array('type=' => 'system'));
-$plugin_settings = $default_plugin_settings;
-$plugin_user_settings = $default_plugin_user_settings;
-
-foreach ($current_plugin_settings as $setting) {
-  $plugin_settings[$setting->getName()]['value'] = $setting->getValue();
+    foreach ($current_plugin_settings as $setting) {
+        $plugin_settings[$setting->getName()]['value'] = $setting->getValue();
+    }
 }
 
 if (!is_dir(JS_CACHE)) {
@@ -151,8 +152,8 @@ if (!fAuthorization::checkLoggedIn()) {
         fMessaging::create('affected', User::makeURL('add'), $_SERVER['PHP_AUTH_USER'] );
         fMessaging::create('success', User::makeURL('add'),
                          'The user ' . $_SERVER['PHP_AUTH_USER'] . ' was successfully created');
-        fURL::redirect(User::makeURL('add')); 
-     } 
-    }    
+        fURL::redirect(User::makeURL('add'));
+     }
+    }
   }
 }

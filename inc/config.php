@@ -105,13 +105,6 @@ if (!is_dir($GLOBALS['SESSION_FILES']) || !is_writable($GLOBALS['SESSION_FILES']
   $config_error = true;
 }
 
-if (!is_dir($GLOBALS['PROCESSOR_LOG_PATH']) || !is_writable($GLOBALS['PROCESSOR_LOG_PATH'])) {
-    $config_error .= "<br/>Log Permissions <br />" .
-        "Tattle can't write to the log directory for processing" .
-        "<br />Log files : " . $GLOBALS['PROCESSOR_LOG_PATH'];
-    $config_exit = true;
-}
-
 if ($config_exit) {
   print $config_error;
   exit;

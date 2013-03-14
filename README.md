@@ -9,13 +9,13 @@ Concepts
 --------
 
 ### Checks
-  A Check is a [graphite][graphite] or [ganglia][ganglia] target in combination with a user defined Error and Warning threshold. 
+  A Check is a [graphite][graphite] or [ganglia][ganglia] target in combination with a user defined Error and Warning threshold.
 
 ### Subscriptions
   A Subscription is a users signing up for to be alerted by a plugin if the Check reaches the Error or Warning state. A user can have multiple subscriptions to an alert based on different threshold and plugins. (Example : SMS for Error, and Email for Warning)
 
 ### Alerts
-  An Alert is the signal that the Check either passed it's defined Error or Warning threshold, or it's returned to the OK state from being in a bad state. The frequency of Alerts is defined by the Repeat Delay (in minutes), which can't be less than the frequency of the processing cronjob. 
+  An Alert is the signal that the Check either passed it's defined Error or Warning threshold, or it's returned to the OK state from being in a bad state. The frequency of Alerts is defined by the Repeat Delay (in minutes), which can't be less than the frequency of the processing cronjob.
 
 ### Dashboards
   A Dashboard is a collection of pre-defined graphs that allows for self service creation and has a fullscreen option.
@@ -26,6 +26,15 @@ Concepts
 ### Lines
   Lines are a combination of an Alias, a graphite Target, and a color.
 
+Screen Shots
+-----------------------------
+
+* [Threshold Checks](./screenshots/tattle-threshold-checks.png)
+* [Threshold Check Edit](./screenshots/tattle-check-edit-page.png)
+* [Predictive Checks](./screenshots/tattle-predictive-checks.png)
+* [Alert Subscriptions](./screenshots/tattle-subscriptions-page.png)
+* [Alerts Overview Page](./screenshots/tattle-alerts-page.png)
+* [Alert Page](./screenshots/tattle-alert-page.png)
 
 Installation Requirements
 -----------------------------
@@ -33,7 +42,7 @@ Installation Requirements
 * PHP
 * MySQL
 * Lighttpd / NGINX / Apache
-* [Flourishlib][flourishlib] for the PHP framework  
+* [Flourishlib][flourishlib] for the PHP framework
 * [bootstrap][bootstrap] for the HTML/CSS framework
 * http access to a [graphite][graphite] or [ganglia][ganglia] installation
 
@@ -45,7 +54,7 @@ Installation and Configuration
 * Create a session storage folder for flourishlib
 
 * Create a file called inc/config.override.php so that upgrades don't blow away your config
-  
+
     ```
     <?
     $GLOBALS['DATABASE_HOST'] = '127.0.0.1';
@@ -72,10 +81,10 @@ If you have apache, with mod_rewrite enabled and allow .htaccess files you can t
 Initial urls look like this:
 
 ```
-http://localhost/dash/1/500/300 
+http://localhost/dash/1/500/300
 ```
 
-The second parameter should be replaced with the dashboard id you want to see. 
+The second parameter should be replaced with the dashboard id you want to see.
 The third parameter represents the heigt of the individual graphs.
 The fourth parameter represents the width of the individual graphs
 
@@ -92,7 +101,7 @@ Reason for creation
 -----------
 
 [StatsD][statsd] from the team over at [Etsy][etsy] added a simple Dev and Ops friendly way to send metrics to graphite.
-[graphite][graphite] makes graphing metrics and data self serve and simple for anyone. 
+[graphite][graphite] makes graphing metrics and data self serve and simple for anyone.
 
 With this tag team in our environment alerting seemed to be the weakest link from an adhoc/self service perspective which is where the idea
 for Tattle came from.
@@ -130,7 +139,7 @@ We'll do our best to get your changes in as soon as possible!
 
 Contributors
 ---------------------
-In lieu of a list of contributors, check out the commit history for the project: 
+In lieu of a list of contributors, check out the commit history for the project:
 https://github.com/wayfair/Graphite-Tattle/graphs/contributors
 Though special shout out to [jpatapoff](https://github.com/jpatapoff/Graphite-Tattle) since he helped a lot, but his commits weren't attributed due to manually merging
 

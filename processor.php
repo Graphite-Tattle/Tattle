@@ -1,5 +1,6 @@
 <?php
 include 'inc/init.php';
+$GLOBALS['GRAPHITE_URL'] = $GLOBALS['PROCESSOR_GRAPHITE_URL'];
 
 function log_action($msg) {
   $today = date("d.m.Y");

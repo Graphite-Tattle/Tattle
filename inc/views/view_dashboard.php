@@ -27,7 +27,7 @@
 </center>
 <?php 
 if (!$full_screen) {
-echo '<a href="' . Dashboard::makeUrl('edit',$dashboard) . '">Edit Dashboard</a> | <a href="' . Graph::makeUrl('add',$dashboard) .'">Add Graph</a> | <a href="' . fUrl::getWithQueryString() . '&full_screen=true">Full Screen</a>';
+echo '<a href="' . Dashboard::makeUrl('edit',$dashboard) . '">Edit Dashboard</a> | <a href="' . Graph::makeUrl('add',$dashboard) .'">Add Graph</a> | <a href="?' . fURL::getQueryString() . '&full_screen=true">Full Screen</a>';
 $tmpl->set('show_bubbles',true);
 $tmpl->place('footer') ;
 }

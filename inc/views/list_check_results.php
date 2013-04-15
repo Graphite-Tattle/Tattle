@@ -53,7 +53,7 @@ $tmpl->place('header');
     $total_pages = ceil($check_results->count(TRUE) / $GLOBALS['PAGE_SIZE']);
     if ($total_pages > 1) {
       $prev_class = 'previous';
-      $current_link = fURL::get() . "?action=$action&check_id=$check_id";
+      $current_link = "?action=$action&check_id=$check_id";
       $prev_link = $current_link . '&page=' . ($page_num - 1);
       $next_class = 'next';
       $next_link = $current_link . '&page=' . ($page_num + 1);

@@ -23,7 +23,7 @@ if ('edit' == $action) {
       $graph->store();
 			
       fMessaging::create('affected', fURL::get(), $graph->getName());
-      fMessaging::create('success', fURL::getWithQueryString(), 
+      fMessaging::create('success', '?'.fURL::getQueryString(),
                          'The Graph ' . $graph->getName(). ' was successfully updated');
       fURL::redirect(Dashboard::makeUrl('edit',$dashboard));
     }

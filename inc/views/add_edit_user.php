@@ -4,7 +4,7 @@ $tmpl->place('header');
 ?>
   <div class="row">
     <div class="span6">
-      <form action="<?=fURL::getWithQueryString(); ?>" method="post">
+      <form action="?<?=fURL::getQueryString(); ?>" method="post">
         <div class="main" id="main">
           <fieldset>
             <div class="clearfix">

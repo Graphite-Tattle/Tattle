@@ -9,13 +9,19 @@
     <h1><?=$dashboard->getName(); ?>&nbsp<small><?=$dashboard->getDescription(); ?></small></h1>
     <div class="row">
 	<?php
+$overrideFrom = '';
+foreach ($_REQUEST as $key => $value) {
+	if ( $key == "from" ) {
+		$overrideFrom = "&from=".$value;
+	}
+}
         $graph_count = 0;
         $columns = $dashboard->getColumns();
 	foreach ($graphs as $graph) {
           $graph_row = ($graph_count % $columns);
         
 		?>
-        <span class=""><a href="<?=Graph::makeUrl('edit',$graph); ?>"><img src="<?=Graph::drawGraph($graph,$dashboard); ?>" rel=<?=($graph_count >= $columns ? 'popover-above' : 'popover-below'); ?> title="<?=$graph->getName(); ?>" data-content="<?=$graph->getDescription(); ?>" /></a></span>
+        <span class=""><a href="<?=Graph::makeUrl('edit',$graph); ?>"><img src="<?=Graph::drawGraph($graph,$dashboard); ?><?= $overrideFrom ; ?>" rel=<?=($graph_count >= $columns ? 'popover-above' : 'popover-below'); ?> title="<?=$graph->getName(); ?>" data-content="<?=$graph->getDescription(); ?>" /></a></span>
     <?php 
           $graph_count++;
            if ( $graph_count == $columns) {

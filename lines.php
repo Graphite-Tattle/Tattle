@@ -44,7 +44,7 @@ if ('delete' == $action) {
       $line->store();
 			
       fMessaging::create('affected', fURL::get(), $graph->getName());
-      fMessaging::create('success', fURL::getWithQueryString(), 
+      fMessaging::create('success', '?'.fURL::getQueryString(),
                          'The Line ' . $line->getAlias(). ' was successfully updated');
     }
   } catch (fNotFoundException $e) {

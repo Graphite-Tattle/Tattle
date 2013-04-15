@@ -3,7 +3,7 @@ $page_title = $action == 'add' ? 'Add a Subscription' : 'Edit Subscription';
 $tmpl->set('title', $page_title);
 $breadcrumbs[] = array('name' => ucfirst($check->getType()) . ' Checks', 'url' => Check::makeURL('list', $check->prepareType()),'active' => false);
 $breadcrumbs[] = array('name' => $check->getName(),'url'=> Check::makeURL('edit', $check->prepareType(), $check),'active' => false);
-$breadcrumbs[] = array('name' => $page_title , 'url' => fURL::getWithQueryString(),'active' => false);
+$breadcrumbs[] = array('name' => $page_title , 'url' => '?'.fURL::getQueryString(),'active' => false);
 $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
 
@@ -42,7 +42,7 @@ if (isset($subscription_id)) {
 </script>
   <div class="row">
     <div class="span4">
-      <form class="form-stacked" action="<?=fURL::get(); ?>?action=<?=$action.$query_string; ?>" method="post">
+      <form class="form-stacked" action="?action=<?=$action.$query_string; ?>" method="post">
         <div class="main" id="main">
           <fieldset>
             <div class="clearfix">

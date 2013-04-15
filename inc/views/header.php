@@ -84,7 +84,7 @@ if (!$this->get('full_screen')) { ?>
           <ul class="nav">
             <?
 
-              $current_url = fURL::getWithQueryString();
+              $current_url = '?'.fURL::getQueryString();
               echo '<li' . ($current_url == '' ? ' class="active"' : '') . '><a href="index.php">Alerts</a></li>'. "\n";
               $threshold_check_list = Check::makeURL('list', 'threshold');
               echo '<li' . ($current_url == $threshold_check_list ? ' class="active"' : '') . '><a href="' . $threshold_check_list . '" >Threshold Checks</a></li>' . "\n";

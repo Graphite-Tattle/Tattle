@@ -35,13 +35,13 @@ class Dashboard extends fActiveRecord
 			case 'add':
 				return 'dashboard.php?action=add';
 			case 'edit':
-				return 'dashboard.php?action=edit&dashboard_id=' . $obj->prepareDashboardId();
+				return 'dashboard.php?action=edit&dashboard_id=' . (new fNumber($obj->prepareDashboardId()))->__toString();
 			case 'delete':
-				return 'dashboard.php?action=delete&dashboard_id=' . $obj->prepareDashboardId();
+				return 'dashboard.php?action=delete&dashboard_id=' . (new fNumber($obj->prepareDashboardId()))->__toString();
 			case 'view':
-				return 'dashboard.php?action=view&dashboard_id=' . $obj->prepareDashboardId();
+				return 'dashboard.php?action=view&dashboard_id=' . (new fNumber($obj->prepareDashboardId()))->__toString();
 			case 'clean':
-				return 'dash/' . $obj->prepareDashboardId();
+				return 'dash/' . (new fNumber($obj->prepareDashboardId()))->__toString();
                 
 		}	
 	}

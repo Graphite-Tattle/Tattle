@@ -3,7 +3,7 @@ $tmpl->set('title', 'Log In');
 $tmpl->set('no-nav', true);
 $tmpl->place('header');
 ?>
-   <form action="<?=fURL::get() . '?action=log_in'; ?>" method="post">
+   <form action="?action=log_in" method="post">
      <div class="main" id="main">
        <fieldset>
          <div class="clearfix">

@@ -1,7 +1,7 @@
 <?
 $page_title = ($action == 'add' ? 'User Settings' : 'Edit Settings');
 $tmpl->set('title', $page_title);
-$breadcrumbs[] = array('name' => $page_title, 'url' => fURL::getWithQueryString(),'active'=> true);
+$breadcrumbs[] = array('name' => $page_title, 'url' => '?'.fURL::getQueryString(),'active'=> true);
 $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
 $plugin = fRequest::get('plugin');
@@ -14,7 +14,7 @@ if (isset($plugin_settings[$plugin]) && is_array($plugin_settings[$plugin]['sett
 ?>
   <div class="row">
     <div class="span6">
-      <form action="<?=fURL::get(); ?>" method="post">
+      <form action="?" method="post">
         <div class="main" id="main">
           <ul class="tabs">
           <?php foreach($plugin_settings as $plugin_name => $plugin_config) {

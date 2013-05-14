@@ -3,7 +3,7 @@ $page_title = ($action == 'add' ? 'Add a Graph' : 'Edit Graph');
 $tmpl->set('title', $page_title);
 $breadcrumbs[] = array('name' => 'Dashboard', 'url' => Dashboard::makeURL('list'),'active' => false);
 $breadcrumbs[] = array('name' => $dashboard->encodeName(), 'url' => Dashboard::makeUrl('edit',$graph),'active' => false);
-$breadcrumbs[] = array('name' => $page_title, 'url' => fURL::getWithQueryString(),'active' => true);
+$breadcrumbs[] = array('name' => $page_title, 'url' => '?'.fURL::getQueryString(),'active' => true);
 $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
 if (!is_null($dashboard_id)) {
@@ -16,7 +16,7 @@ if (!is_null($dashboard_id)) {
 ?>
   <div class="row">
     <div class="span4">
-      <form action="<?=fURL::get(); ?>?action=<?=$action.$query_string; ?>" method="post" class="form-stacked">
+      <form action="?action=<?=$action.$query_string; ?>" method="post" class="form-stacked">
         <div class="main" id="main">
           <fieldset>
             <div class="clearfix">

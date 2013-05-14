@@ -25,7 +25,7 @@ class User extends fActiveRecord
 	static public function makeURL($type, $user=NULL)
 	{
                 if (is_object($user)) {
-                  $user_id = $user->prepareUserId();
+                  $user_id = (new fNumber($user->prepareUserId()))->__toString();
                 } elseif (is_numeric($user))  {
                   $user_id = $user;
                 }

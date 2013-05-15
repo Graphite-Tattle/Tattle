@@ -103,6 +103,8 @@ if ('edit' == $action) {
     } 
 
   $graphs = Graph::findAll($dashboard_id);
+  
+  $ignored_values = array("action", "dashboard_id");
   include VIEW_PATH . '/view_dashboard.php';	
 	
 } elseif ('delete' == $action) {

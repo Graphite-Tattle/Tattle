@@ -13,9 +13,22 @@
         $columns = $dashboard->getColumns();
 	foreach ($graphs as $graph) {
           $graph_row = ($graph_count % $columns);
+          $url_graph = Graph::drawGraph($graph,$dashboard);
+          $req = $_REQUEST;
+          if (isset($ignored_values)) {
+			$keys = array_keys($req);
+			foreach ($ignored_values as $ignore_it) {
+				if (in_array($ignore_it, $keys)) {
+					unset($req[$ignore_it]);
+				}
+			}
+		  }
+          foreach ($req as $key => $value) {
+			$url_graph = addOrReplaceInURL($url_graph,$key,$value);
+		  }
         
 		?>
-        <span class=""><a href="<?=Graph::makeUrl('edit',$graph); ?>"><img src="<?=Graph::drawGraph($graph,$dashboard); ?>" rel=<?=($graph_count >= $columns ? 'popover-above' : 'popover-below'); ?> title="<?=$graph->getName(); ?>" data-content="<?=$graph->getDescription(); ?>" /></a></span>
+        <span class=""><a href="<?=Graph::makeUrl('edit',$graph); ?>"><img src="<?=$url_graph ?>" rel=<?=($graph_count >= $columns ? 'popover-above' : 'popover-below'); ?> title="<?=$graph->getName(); ?>" data-content="<?=$graph->getDescription(); ?>" /></a></span>
     <?php 
           $graph_count++;
            if ( $graph_count == $columns) {

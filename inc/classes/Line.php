@@ -30,11 +30,14 @@ class Line extends fActiveRecord
 			case 'add':
 				return 'lines.php?action=add&graph_id=' . $obj->getGraphId();
 			case 'edit':
-				return 'lines.php?action=edit&line_id=' . $obj->prepareLineId();
+				$id = $obj->prepareLineId();
+				return 'lines.php?action=edit&line_id=' . (empty($id)?'':(new fNumber($id))->__toString());
 			case 'delete':
-				return 'lines.php?action=delete&line_id=' . $obj->prepareLineId();
+				$id = $obj->prepareLineId();
+				return 'lines.php?action=delete&line_id=' . (empty($id)?'':(new fNumber($id))->__toString());
 			case 'list':
-				return 'lines.php?action=list&line_id=' . $obj->prepareLineId();
+				$id = $obj->prepareLineId();
+				return 'lines.php?action=list&line_id=' . (empty($id)?'':(new fNumber($id))->__toString());
                 
 		}	
 	}

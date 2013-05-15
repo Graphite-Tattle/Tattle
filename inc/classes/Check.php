@@ -81,7 +81,8 @@ class Check extends fActiveRecord
       $checkIdFieldValue = '';
 
       if (!is_null($obj)) {
-        $checkIdFieldValue = '&check_id=' . $obj->prepareCheckId();
+      	$id = $obj->prepareCheckId();
+        $checkIdFieldValue = '&check_id=' . (empty($id)?'':(new fNumber($id))->__toString());
       }
 
       return $baseURLExtension . $actionFieldValue . $typeFieldValue . $checkIdFieldValue;

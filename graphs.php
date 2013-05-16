@@ -5,7 +5,7 @@ fAuthorization::requireLoggedIn();
 
 fRequest::overrideAction();
 
-$action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete', 'view'));
+$action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete', 'view', 'clone'));
 
 $dashboard_id = fRequest::get('dashboard_id', 'integer?');
 $graph_id = fRequest::get('graph_id', 'integer?');
@@ -86,4 +86,25 @@ if ('edit' == $action) {
   include VIEW_PATH . '/delete.php';
   
 
+}  elseif ('clone' == $action) {
+	if (fRequest::isPost()) {
+		$graph_to_clone = new Graph($graph_id);
+		$dashboard_id = $graph_to_clone->getDashboardId();
+		$dashboard = new Dashboard($dashboard_id);
+		try {
+			fRequest::validateCSRFToken(fRequest::get('token'));
+			
+			Graph::cloneGraph($graph_id);
+			
+			fMessaging::create('affected',fURL::get() , $graph_to_clone->getName());
+			fMessaging::create('success', fURL::get(),
+			'The Graph ' . $graph_to_clone->getName() . ' was successfully cloned');
+			fURL::redirect(Dashboard::makeURL('edit',$dashboard));
+		} catch (fExpectedException $e) {
+			fMessaging::create('error', fURL::get(), $e->getMessage());
+		}
+	}
+	
+	include VIEW_PATH . '/add_edit_dashboard.php';
+	
 }

@@ -38,8 +38,33 @@ class Line extends fActiveRecord
 			case 'list':
 				$id = $obj->prepareLineId();
 				return 'lines.php?action=list&line_id=' . (empty($id)?'':(new fNumber($id))->__toString());
+			case 'clone':
+				$id = $obj->prepareLineId();
+				return 'lines.php?action=clone&line_id=' . (empty($id)?'':(new fNumber($id))->__toString());
                 
 		}	
+	}
+	
+	static public function cloneLine ($line_id, $ignore_clone_name=FALSE, $graph_id=NULL) {
+		$line_to_clone = new Line($line_id);
+		if (empty($graph_id)) {
+			$graph_id = $line_to_clone->getGraphId();
+		}
+		$line = new Line();
+		if ($ignore_clone_name) {
+			$clone_alias = $line_to_clone->getAlias();
+		} else {
+			$clone_alias = 'Clone of ' . $line_to_clone->getAlias();
+			// If it's too long, we truncate
+			if (strlen($clone_alias) > 255) {
+				$clone_alias = substr($clone_alias,0,255);
+			}
+		}
+		$line->setAlias($clone_alias);
+		$line->setTarget($line_to_clone->getTarget());
+		$line->setColor($line_to_clone->getColor());
+		$line->setGraphId($graph_id);
+		$line->store();
 	}
     
 }

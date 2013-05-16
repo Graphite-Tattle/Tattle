@@ -38,6 +38,9 @@ class Graph extends fActiveRecord
 			case 'list':
 				$id = $obj->prepareGraphId();
 				return 'graphs.php?action=list&graph_id=' . (empty($id)?'':(new fNumber($id))->__toString());
+			case 'clone':
+				$id = $obj->prepareGraphId();
+				return 'graphs.php?action=clone&graph_id=' . (empty($id)?'':(new fNumber($id))->__toString());
 
 		}
 	}
@@ -74,6 +77,35 @@ class Graph extends fActiveRecord
           }
         }
        return $link;
+	}
+	
+	static public function cloneGraph ($graph_id, $dashboard_id=NULL) {
+		$graph_to_clone = new Graph($graph_id);
+		if (empty($dashboard_id)) {
+			$dashboard_id = $graph_to_clone->getDashboardId();
+		}
+		$graph = new Graph();
+		$clone_name = 'Clone of ' . $graph_to_clone->getName();
+		// If it's too long, we truncate
+		if (strlen($clone_name) > 255) {
+			$clone_name = substr($clone_name,0,255);
+		}
+		$graph->setName($clone_name);
+		$graph->setArea($graph_to_clone->getArea());
+		$graph->setVtitle($graph_to_clone->getVtitle());
+		$graph->setDescription($graph_to_clone->getDescription());
+		$graph->setDashboardId($dashboard_id);
+		$graph->setWeight($graph_to_clone->getWeight());
+		$graph->setTimeValue($graph_to_clone->getTimeValue());
+		$graph->setUnit($graph_to_clone->getUnit());
+		$graph->setCustomOpts($graph_to_clone->getCustomOpts());
+		$graph->store();
+			
+		// Clone of the lines
+		$lines = Line::findAll($graph_id);
+		foreach($lines as $line_to_clone) {
+			Line::cloneLine($line_to_clone->getLineId(),TRUE,$graph->getGraphId());
+		}
 	}
 
 

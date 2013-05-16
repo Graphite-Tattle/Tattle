@@ -97,7 +97,7 @@ if (!is_null($dashboard_id)) {
               <a href="<?=Graph::makeURL('delete',$graph); ?>" class="btn">Delete</a>
               <a href="<?=Dashboard::makeUrl('view',$dashboard); ?>" class="btn">View</a>
               <div class="required"><em>*</em> Required field</div>
-	      <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
+	      	  <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
               <input type="hidden" name="user_id" value="<?=fSession::get('user_id'); ?>" />
             </div>
          </fieldset>
@@ -133,7 +133,12 @@ if (!is_null($dashboard_id)) {
         <td><?=$line->prepareTarget(); ?></td>
         <td><?=$line->prepareColor(); ?></td>
         <td><a href="<?=Line::makeURL('edit', $line); ?>">Edit</a> |
-        <a href="<?=Line::makeURL('delete', $line); ?>">Delete</a></td>
+        <a href="<?=Line::makeURL('delete', $line); ?>">Delete</a> |
+        <form id="form_clone_<?=(new fNumber($line->prepareLineId()))->__toString(); ?>" method="post" action="<?=Line::makeURL('clone', $line); ?>" style="display: initial;">
+        	<a href="#" onclick="$('#form_clone_<?=(new fNumber($line->prepareLineId()))->__toString(); ?>').submit(); return false;">Clone</a>
+        	<input type="hidden" name="token" value="<?=fRequest::generateCSRFToken("/lines.php"); ?>" />
+        </form>
+        </td>
         </tr>
     <?php } ?>
     </tbody></table>

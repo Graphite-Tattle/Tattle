@@ -5,7 +5,7 @@ fAuthorization::requireLoggedIn();
 
 fRequest::overrideAction();
 
-$action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete', 'view'));
+$action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete', 'view', 'clone'));
 
 $line_id = fRequest::get('line_id', 'integer');
 $graph_id = fRequest::get('graph_id', 'integer');
@@ -78,4 +78,29 @@ if ('delete' == $action) {
 
   include VIEW_PATH . '/add_edit_line.php';	
 	
+} elseif ('clone' == $action) {
+	$line_to_clone = new Line($line_id);
+	$graph_id = $line_to_clone->getGraphId();
+	$graph = new Graph($graph_id);
+	if (fRequest::isPost()) {
+		try {
+			fRequest::validateCSRFToken(fRequest::get('token'));
+			
+			Line::cloneLine($line_id);
+			
+			$graph_url = Graph::makeUrl('edit',$graph);
+			fMessaging::create('affected', $graph_url, $line_to_clone->getAlias());
+			fMessaging::create('success', $graph_url,
+			'The Line ' . $line_to_clone->getAlias() . ' was successfully cloned');
+			fURL::redirect($graph_url);
+		} catch (fExpectedException $e) {
+			fMessaging::create('error', fURL::get(), $e->getMessage());
+		}
+	}
+	
+	$dashboard = new Dashboard($graph->getDashboardId());
+	$dashboard_id = $graph->getDashboardId();
+	$lines = Line::findAll($graph_id);
+	
+	include VIEW_PATH . '/add_edit_graph.php';
 }

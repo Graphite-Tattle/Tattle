@@ -108,7 +108,11 @@ if (isset($dashboard_id)) {
         <td><?=$graph->prepareVtitle(); ?></td>
         <td><?=$graph->prepareArea(); ?></td>        
         <td><a href="<?=Graph::makeURL('edit', $graph); ?>">Edit</a> |
-        <a href="<?=Graph::makeURL('delete', $graph); ?>">Delete</a></td>
+        <a href="<?=Graph::makeURL('delete', $graph); ?>">Delete</a> |
+        <form id="form_clone_<?=(new fNumber($graph->prepareGraphId()))->__toString(); ?>" method="post" action="<?=Graph::makeURL('clone', $graph); ?>" style="display: initial;">
+        	<a href="#" onclick="$('#form_clone_<?=(new fNumber($graph->prepareGraphId()))->__toString(); ?>').submit(); return false;">Clone</a>
+        	<input type="hidden" name="token" value="<?=fRequest::generateCSRFToken("/graphs.php"); ?>" />
+        </form></td>
         </tr>
     <?php } ?>
     </tbody></table>

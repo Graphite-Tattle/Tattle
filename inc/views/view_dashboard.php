@@ -12,7 +12,7 @@
 	    	<?php 
 	    		foreach ($quick_times_desired as $print => $value) {
 			?>
-	    	<li class="inline">* <a href="<?=addOrReplaceInURL(fURL::getDomain().fURL::getWithQueryString(),"from",$value) ?>"><?=$print ?></a></li>
+                <li class="inline">* <a href="<?=addOrReplaceInURL("?".fURL::getQueryString(), "from", $value)?>"><?=$print ?></a></li>
 			<?php 	
 				}
 	    	?>

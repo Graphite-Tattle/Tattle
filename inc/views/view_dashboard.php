@@ -7,6 +7,18 @@
 ?>
 <center> <!-- cssblasphemy but i need it look decent real quick --> 
     <h1><?=$dashboard->getName(); ?>&nbsp<small><?=$dashboard->getDescription(); ?></small></h1>
+    <div>
+	    <ul class="inline">
+	    	<?php 
+	    		foreach ($quick_times_desired as $print => $value) {
+			?>
+	    	<li class="inline">* <a href="<?=addOrReplaceInURL(fURL::getDomain().fURL::getWithQueryString(),"from",$value) ?>"><?=$print ?></a></li>
+			<?php 	
+				}
+	    	?>
+	    	<li class="inline">*</li>
+	    </ul>
+	</div>
     <div class="row">
 	<?php
         $graph_count = 0;

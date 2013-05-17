@@ -51,10 +51,15 @@ class Graph extends fActiveRecord
         $lines = Line::findAll($obj->getGraphId());
         foreach($lines as $line) {
            $link .= 'target=';
-           $target =  'alias(' . $line->getTarget() . '%2C%22' . $line->getAlias() . '%22)';
-           if ($line->getColor() != '') {
-             $target = 'color(' . $target . '%2C%22' . $line->getColor() . '%22)';
-           }
+           $alias = $line->getAlias();
+           if (empty($alias)) {
+           	 $target = $line->getTarget();
+           } else {
+	           $target =  'alias(' . $line->getTarget() . '%2C%22' . $line->getAlias() . '%22)';
+	           if ($line->getColor() != '') {
+	             $target = 'color(' . $target . '%2C%22' . $line->getColor() . '%22)';
+	           }
+           } 
            $link .= $target .'&';
         }
         if (!is_null($parent)) {

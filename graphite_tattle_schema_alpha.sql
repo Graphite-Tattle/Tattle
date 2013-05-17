@@ -90,8 +90,7 @@ CREATE TABLE `lines` (
   `target` varchar(1000) NOT NULL DEFAULT '',
   `alias` varchar(255) DEFAULT NULL,
   `graph_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`line_id`),
-  UNIQUE KEY `graph_id` (`graph_id`,`alias`)
+  PRIMARY KEY (`line_id`)
 ) CHARSET=utf8;
 
 CREATE TABLE `subscriptions` (

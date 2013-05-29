@@ -4,7 +4,7 @@ $tmpl->set('title', $page_title);
 $breadcrumbs[] = array('name' => 'Dashboard', 'url' => Dashboard::makeURL('list'),'active' => false);
 //$breadcrumbs[] = array('name' => 'Edit Dashboard', 'url' => Dashboard::makeURL('edit',$graph),'active' => false);
 $breadcrumbs[] = array('name' => $graph->prepareName(), 'url' => Graph::makeURL('edit',$graph),'active'=> false);
-$breadcrumbs[] = array('name' => $page_title, 'url' => fURL::getWithQueryString(),'active'=> true);
+$breadcrumbs[] = array('name' => $page_title, 'url' => '?'.fURL::getQueryString(),'active'=> true);
 $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
 $query_string = '';
@@ -19,7 +19,7 @@ if (isset($graph_id) && $action != 'edit') {
 ?>
   <div class="row">
     <div class="span6">
-      <form action="<?=fURL::get(); ?>?action=<?=$action.$query_string; ?>" method="post">
+      <form action="?action=<?=$action.$query_string; ?>" method="post">
         <div class="main" id="main">
           <fieldset>
                 <div class="clearfix">

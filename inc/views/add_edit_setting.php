@@ -2,7 +2,7 @@
 $page_title = ($action == 'add' ? 'Override setting' : 'Edit Setting');
 $tmpl->set('title', $page_title);
 $breadcrumbs[] = array('name' => 'Settings', 'url' => Setting::makeURL('list'),'active' => false);
-$breadcrumbs[] = array('name' => $page_title, 'url' => fURL::getWithQueryString(),'active'=> true);
+$breadcrumbs[] = array('name' => $page_title, 'url' => '?'.fURL::getQueryString(),'active'=> true);
 //$tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
 $query_string = '';
@@ -18,7 +18,7 @@ if (isset($setting_type)) {
 ?>
   <div class="row">
     <div class="span6">
-      <form action="<?=fURL::get(); ?>?action=<?=$action.$query_string; ?>" method="post">
+      <form action="?action=<?=$action.$query_string; ?>" method="post">
         <div class="main" id="main">
           <fieldset>
                 <div class="clearfix">

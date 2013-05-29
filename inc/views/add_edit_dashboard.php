@@ -1,7 +1,7 @@
 <?
 $page_title = $action == 'add' ? 'Add a Dashboard' : 'Edit Dashboard';
 $tmpl->set('title', $page_title);
-$breadcrumbs[] = array('name' => $page_title,'url' => fURL::getWithQueryString(),'active'=> true);
+$breadcrumbs[] = array('name' => $page_title,'url' => '?'.fURL::getQueryString(),'active'=> true);
 $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
 if (isset($dashboard_id)) {
@@ -12,7 +12,7 @@ if (isset($dashboard_id)) {
 ?>
   <div class="row">
     <div class="span4">
-      <form class="form-stacked" action="<?=fURL::get(); ?>?action=<?=$action.$query_string; ?>" method="post">
+      <form class="form-stacked" action="?action=<?=$action.$query_string; ?>" method="post">
         <div class="main" id="main">
           <fieldset>
                 <div class="clearfix">
@@ -108,7 +108,11 @@ if (isset($dashboard_id)) {
         <td><?=$graph->prepareVtitle(); ?></td>
         <td><?=$graph->prepareArea(); ?></td>        
         <td><a href="<?=Graph::makeURL('edit', $graph); ?>">Edit</a> |
-        <a href="<?=Graph::makeURL('delete', $graph); ?>">Delete</a></td>
+        <a href="<?=Graph::makeURL('delete', $graph); ?>">Delete</a> |
+        <form id="form_clone_<?=(int)$graph->getGraphId(); ?>" method="post" action="<?=Graph::makeURL('clone', $graph); ?>" style="display: initial;">
+        	<a href="#" onclick="$('#form_clone_<?=(int)$graph->getGraphId(); ?>').submit(); return false;">Clone</a>
+        	<input type="hidden" name="token" value="<?=fRequest::generateCSRFToken("/graphs.php"); ?>" />
+        </form></td>
         </tr>
     <?php } ?>
     </tbody></table>

@@ -3,7 +3,7 @@ $page_title = ($action == 'add' ? 'Add a Graph' : 'Edit Graph');
 $tmpl->set('title', $page_title);
 $breadcrumbs[] = array('name' => 'Dashboard', 'url' => Dashboard::makeURL('list'),'active' => false);
 $breadcrumbs[] = array('name' => $dashboard->encodeName(), 'url' => Dashboard::makeUrl('edit',$graph),'active' => false);
-$breadcrumbs[] = array('name' => $page_title, 'url' => fURL::getWithQueryString(),'active' => true);
+$breadcrumbs[] = array('name' => $page_title, 'url' => '?'.fURL::getQueryString(),'active' => true);
 $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
 if (!is_null($dashboard_id)) {
@@ -16,7 +16,7 @@ if (!is_null($dashboard_id)) {
 ?>
   <div class="row">
     <div class="span4">
-      <form action="<?=fURL::get(); ?>?action=<?=$action.$query_string; ?>" method="post" class="form-stacked">
+      <form action="?action=<?=$action.$query_string; ?>" method="post" class="form-stacked">
         <div class="main" id="main">
           <fieldset>
             <div class="clearfix">
@@ -97,7 +97,7 @@ if (!is_null($dashboard_id)) {
               <a href="<?=Graph::makeURL('delete',$graph); ?>" class="btn">Delete</a>
               <a href="<?=Dashboard::makeUrl('view',$dashboard); ?>" class="btn">View</a>
               <div class="required"><em>*</em> Required field</div>
-	      <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
+	      	  <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
               <input type="hidden" name="user_id" value="<?=fSession::get('user_id'); ?>" />
             </div>
          </fieldset>
@@ -133,7 +133,12 @@ if (!is_null($dashboard_id)) {
         <td><?=$line->prepareTarget(); ?></td>
         <td><?=$line->prepareColor(); ?></td>
         <td><a href="<?=Line::makeURL('edit', $line); ?>">Edit</a> |
-        <a href="<?=Line::makeURL('delete', $line); ?>">Delete</a></td>
+        <a href="<?=Line::makeURL('delete', $line); ?>">Delete</a> |
+        <form id="form_clone_<?=(int)$line->getLineId(); ?>" method="post" action="<?=Line::makeURL('clone', $line); ?>" class="inline no-margin">
+        	<a href="#" onclick="$('#form_clone_<?=(int)$line->getLineId(); ?>').submit(); return false;">Clone</a>
+        	<input type="hidden" name="token" value="<?=fRequest::generateCSRFToken("/lines.php"); ?>" />
+        </form>
+        </td>
         </tr>
     <?php } ?>
     </tbody></table>

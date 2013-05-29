@@ -30,11 +30,13 @@ class Graph extends fActiveRecord
 			case 'add':
 				return 'graphs.php?action=add&dashboard_id=' . $obj->getDashboardId();
 			case 'edit':
-				return 'graphs.php?action=edit&graph_id=' . $obj->prepareGraphId();
+				return 'graphs.php?action=edit&graph_id=' . (int)$obj->getGraphId();
 			case 'delete':
-				return 'graphs.php?action=delete&graph_id=' . $obj->prepareGraphId();
+				return 'graphs.php?action=delete&graph_id=' . (int)$obj->getGraphId();
 			case 'list':
-				return 'graphs.php?action=list&graph_id=' . $obj->prepareGraphId();
+				return 'graphs.php?action=list&graph_id=' . (int)$obj->getGraphId();
+			case 'clone':
+				return 'graphs.php?action=clone&graph_id=' . (int)$obj->getGraphId();
 
 		}
 	}
@@ -45,10 +47,15 @@ class Graph extends fActiveRecord
         $lines = Line::findAll($obj->getGraphId());
         foreach($lines as $line) {
            $link .= 'target=';
-           $target =  'alias(' . $line->getTarget() . '%2C%22' . $line->getAlias() . '%22)';
-           if ($line->getColor() != '') {
-             $target = 'color(' . $target . '%2C%22' . $line->getColor() . '%22)';
-           }
+           $alias = $line->getAlias();
+           if (empty($alias)) {
+           	 $target = $line->getTarget();
+           } else {
+	           $target =  'alias(' . $line->getTarget() . '%2C%22' . $line->getAlias() . '%22)';
+	           if ($line->getColor() != '') {
+	             $target = 'color(' . $target . '%2C%22' . $line->getColor() . '%22)';
+	           }
+           } 
            $link .= $target .'&';
         }
         if (!is_null($parent)) {
@@ -71,6 +78,35 @@ class Graph extends fActiveRecord
           }
         }
        return $link;
+	}
+	
+	static public function cloneGraph ($graph_id, $dashboard_id=NULL) {
+		$graph_to_clone = new Graph($graph_id);
+		if (empty($dashboard_id)) {
+			$dashboard_id = $graph_to_clone->getDashboardId();
+		}
+		$graph = new Graph();
+		$clone_name = 'Clone of ' . $graph_to_clone->getName();
+		// If it's too long, we truncate
+		if (strlen($clone_name) > 255) {
+			$clone_name = substr($clone_name,0,255);
+		}
+		$graph->setName($clone_name);
+		$graph->setArea($graph_to_clone->getArea());
+		$graph->setVtitle($graph_to_clone->getVtitle());
+		$graph->setDescription($graph_to_clone->getDescription());
+		$graph->setDashboardId($dashboard_id);
+		$graph->setWeight($graph_to_clone->getWeight());
+		$graph->setTimeValue($graph_to_clone->getTimeValue());
+		$graph->setUnit($graph_to_clone->getUnit());
+		$graph->setCustomOpts($graph_to_clone->getCustomOpts());
+		$graph->store();
+			
+		// Clone of the lines
+		$lines = Line::findAll($graph_id);
+		foreach($lines as $line_to_clone) {
+			Line::cloneLine($line_to_clone->getLineId(),TRUE,$graph->getGraphId());
+		}
 	}
 
 

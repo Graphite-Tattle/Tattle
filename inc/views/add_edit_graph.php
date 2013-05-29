@@ -134,8 +134,8 @@ if (!is_null($dashboard_id)) {
         <td><?=$line->prepareColor(); ?></td>
         <td><a href="<?=Line::makeURL('edit', $line); ?>">Edit</a> |
         <a href="<?=Line::makeURL('delete', $line); ?>">Delete</a> |
-        <form id="form_clone_<?=(new fNumber($line->prepareLineId()))->__toString(); ?>" method="post" action="<?=Line::makeURL('clone', $line); ?>" style="display: initial;">
-        	<a href="#" onclick="$('#form_clone_<?=(new fNumber($line->prepareLineId()))->__toString(); ?>').submit(); return false;">Clone</a>
+        <form id="form_clone_<?=(int)$line->getLineId(); ?>" method="post" action="<?=Line::makeURL('clone', $line); ?>" class="inline no-margin">
+        	<a href="#" onclick="$('#form_clone_<?=(int)$line->getLineId(); ?>').submit(); return false;">Clone</a>
         	<input type="hidden" name="token" value="<?=fRequest::generateCSRFToken("/lines.php"); ?>" />
         </form>
         </td>

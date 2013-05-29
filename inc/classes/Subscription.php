@@ -56,14 +56,11 @@ class Subscription extends fActiveRecord
 			case 'list':
 				return 'subscription.php';
 			case 'add':
-				$id = $obj->prepareCheck_Id();
-				return 'subscription.php?action=add&check_id=' . (empty($id)?'':(new fNumber($id))->__toString());
+				return 'subscription.php?action=add&check_id=' . (int)$obj->getCheckId();
 			case 'edit':
-				$id = $obj->prepareSubscription_Id();
-				return 'subscription.php?action=edit&subscription_id=' . (empty($id)?'':(new fNumber($id))->__toString());
+				return 'subscription.php?action=edit&subscription_id=' . (int)$obj->getSubscriptionId();
 			case 'delete':
-				$id = $obj->prepareSubscription_Id();
-				return 'subscription.php?action=delete&subscription_id=' . (empty($id)?'':(new fNumber($id))->__toString());
+				return 'subscription.php?action=delete&subscription_id=' . (int)$obj->getSubscriptionId();
 		}	
 	}        
 

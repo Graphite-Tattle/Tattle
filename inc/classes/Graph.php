@@ -30,17 +30,13 @@ class Graph extends fActiveRecord
 			case 'add':
 				return 'graphs.php?action=add&dashboard_id=' . $obj->getDashboardId();
 			case 'edit':
-				$id = $obj->prepareGraphId();
-				return 'graphs.php?action=edit&graph_id=' . (empty($id)?'':(new fNumber($id))->__toString());
+				return 'graphs.php?action=edit&graph_id=' . (int)$obj->getGraphId();
 			case 'delete':
-				$id = $obj->prepareGraphId();
-				return 'graphs.php?action=delete&graph_id=' . (empty($id)?'':(new fNumber($id))->__toString());
+				return 'graphs.php?action=delete&graph_id=' . (int)$obj->getGraphId();
 			case 'list':
-				$id = $obj->prepareGraphId();
-				return 'graphs.php?action=list&graph_id=' . (empty($id)?'':(new fNumber($id))->__toString());
+				return 'graphs.php?action=list&graph_id=' . (int)$obj->getGraphId();
 			case 'clone':
-				$id = $obj->prepareGraphId();
-				return 'graphs.php?action=clone&graph_id=' . (empty($id)?'':(new fNumber($id))->__toString());
+				return 'graphs.php?action=clone&graph_id=' . (int)$obj->getGraphId();
 
 		}
 	}

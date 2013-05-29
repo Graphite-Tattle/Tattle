@@ -18,7 +18,7 @@ if (!isset($dashboard_id)) {
 }
 
 if (!isset($action)) {
-  $action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete', 'view'));
+  $action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete', 'view', 'export'));
 }
 
 // Don't require login for tv monitors that just need to view the dashboards. Will add a public/private feature for dashboards as phase two
@@ -154,6 +154,24 @@ if ('edit' == $action) {
 
   include VIEW_PATH . '/delete.php';
 
+} elseif ('export' == $action) {
+	
+	$dashboard = new Dashboard($dashboard_id);
+	
+	$json_name = $dashboard->getName();
+	$json_name = str_replace(" ", "_", $json_name) . ".json";
+    
+	header("Pragma: public");
+	header("Expires: 0");
+	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+	header("Content-Type: application/force-download");
+	header("Content-Type: application/octet-stream");
+	header("Content-Type: application/download");
+	header("Content-Disposition: attachment; filename=\"" . $json_name . "\"");
+	header("Content-Transfer-Encoding: binary");
+	
+	echo $dashboard->export_in_json(),"\n";
+	
 } else {
   $dashboards = Dashboard::findAll();
   include VIEW_PATH . '/list_dashboards.php';

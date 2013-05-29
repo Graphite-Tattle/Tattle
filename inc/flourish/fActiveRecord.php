@@ -2957,6 +2957,23 @@ abstract class fActiveRecord
 			);
 		}
 	}
+	
+	public function export_in_json()
+	{
+		$output = "{";
+		$values = $this->values;
+		foreach(array_keys($values) as $key) {
+			$output .= '"'.(isset($key)?$key:'').'":"'.(isset($values[$key])?$values[$key]:'').'",';
+		}
+		if (strlen($output) > 1) {
+			$output[strlen($output)-1] = "}";
+		} else {
+			$output = "{}";
+		}
+		return $output;
+	}
+	
+	
 }
 
 

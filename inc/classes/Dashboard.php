@@ -40,9 +40,39 @@ class Dashboard extends fActiveRecord
 				return 'dashboard.php?action=delete&dashboard_id=' . (int)$obj->getDashboardId();
 			case 'view':
 				return 'dashboard.php?action=view&dashboard_id=' . (int)$obj->getDashboardId();
+			case 'export':
+				return 'dashboard.php?action=export&dashboard_id=' . (int)$obj->getDashboardId();
 			case 'clean':
 				return 'dash/' . (int)$obj->getDashboardId();
                 
 		}	
 	}
+	
+	public function export_in_json ()
+	{
+		$dashboard_id = $this->getDashboardId();
+		$json_env = parent::export_in_json();
+	
+		// Find all the lines of this graph
+		$graphs = Graph::findAll($dashboard_id);
+		$json_graphs_array = array();
+		foreach ($graphs as $graph_in_dashboard) {
+			// Export them in JSON
+			$json_graphs_array[] = $graph_in_dashboard->export_in_json();
+		}
+		// Implode them
+		$json_graph = "\"graphs\":[";
+		if (!empty($json_graphs_array)) {
+			$json_graph .= implode(",", $json_graphs_array);
+		}
+		$json_graph .= "]";
+	
+		// Replace the last } of the json
+		$json_env[strlen($json_env)-1] = ",";
+		// Concat the graph with its lines
+		$json_env .= ($json_graph . "}");
+	
+		return $json_env;
+	}
+	
 }

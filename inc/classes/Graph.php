@@ -109,5 +109,31 @@ class Graph extends fActiveRecord
 		}
 	}
 
+	public function export_in_json ()
+	{
+		$graph_id = $this->getGraphId();
+		$json_env = parent::export_in_json();
+		
+		// Find all the lines of this graph
+		$lines = Line::findAll($graph_id);
+		$json_lines_array = array();
+		foreach ($lines as $line_in_graph) {
+			// Export them in JSON
+			$json_lines_array[] = $line_in_graph->export_in_json();
+		}
+		// Implode them
+		$json_lines = "\"lines\":[";
+		if (!empty($json_lines_array)) {
+			$json_lines .= implode(",", $json_lines_array);
+		}
+		$json_lines .= "]";
+		
+		// Erase the last } of the json
+		$json_env[strlen($json_env)-1] = ",";
+		// Concat the graph with its lines
+		$json_env .= ($json_lines . "}");
+		
+		return $json_env;
+	}
 
 }

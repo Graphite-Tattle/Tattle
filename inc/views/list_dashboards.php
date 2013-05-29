@@ -30,7 +30,9 @@ try {
         <td>
         <a href="<?=Dashboard::makeURL('view', $dashboard); ?>">View</a> |
         <a href="<?=Dashboard::makeURL('edit', $dashboard); ?>">Edit</a> |
-        <a href="<?=Dashboard::makeURL('delete', $dashboard); ?>">Delete</a></td>
+        <a href="<?=Dashboard::makeURL('delete', $dashboard); ?>">Delete</a> |
+        <a href="<?=Dashboard::makeURL('export', $dashboard); ?>" target="_blank">Export</a>
+        </td>
         </tr>
     <?php } ?>
     </tbody></table>

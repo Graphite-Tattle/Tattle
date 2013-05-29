@@ -136,7 +136,7 @@ class Check extends fActiveRecord
 	  $target = Check::constructTarget($obj);
           $target = str_replace("&quot;","\"",$target);
           $target = urlencode($target);
-          $check_url = $GLOBALS['GRAPHITE_URL'] . '/render/?' .
+          $check_url = $GLOBALS['PROCESSOR_GRAPHITE_URL'] . '/render/?' .
             'target=' . $target .
             '&from=-'. $obj->prepareSample() . 'minutes' .
             '&format=json';
@@ -170,7 +170,7 @@ class Check extends fActiveRecord
           $from = $regression_size + $obj->getSample();
           $until = $regression_size;
 
-          $check_url = $GLOBALS['GRAPHITE_URL'] . '/render/?' .
+          $check_url = $GLOBALS['PROCESSOR_GRAPHITE_URL'] . '/render/?' .
             'target=' . $obj->prepareTarget() .
             '&from=-' . $from . 'minutes' .
             '&until=-' . $until . 'minutes' .

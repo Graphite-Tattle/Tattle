@@ -47,7 +47,11 @@ class Dashboard extends fActiveRecord
 		switch ($type)
 		{
 			case 'list':
-				return 'dashboard.php';
+				if (empty($obj)) {
+					return 'dashboard.php';
+				} else {
+					return 'dashboard.php?filter_group_id=' . $obj;
+				}
 			case 'add':
 				return 'dashboard.php?action=add';
 			case 'edit':
@@ -58,6 +62,10 @@ class Dashboard extends fActiveRecord
 				return 'dashboard.php?action=view&dashboard_id=' . (int)$obj->getDashboardId();
 			case 'export':
 				return 'dashboard.php?action=export&dashboard_id=' . (int)$obj->getDashboardId();
+			case 'mass_export':
+				return 'dashboard.php?action=mass_export';
+			case 'import':
+				return 'dashboard.php?action=import';
 			case 'clean':
 				return 'dash/' . (int)$obj->getDashboardId();
                 
@@ -89,6 +97,32 @@ class Dashboard extends fActiveRecord
 		$json_env .= ($json_graph . "}");
 	
 		return $json_env;
+	}
+	
+	
+	static public function import_from_json_to_group($json,$group_id=NULL)
+	{
+		$json_array = json_decode($json,TRUE);
+		if (!empty($json_array)) {
+			if (array_key_exists("user_id",$json_array)) {
+				// In this case, we only have a dashboard, not an array of dashboard
+				// We convert it into an array
+				$json_array = array($json_array);
+			}
+			foreach ($json_array as $dashboard_to_create) {
+				$column_to_ignore = array('dashboard_id','group_id','graphs');
+				$new_dashboard = fActiveRecord::array_to_dbentry($dashboard_to_create, __CLASS__,$column_to_ignore);
+				if ($new_dashboard !== NULL) {
+					$new_dashboard->setGroupId(empty($group_id)?$GLOBALS['DEFAULT_GROUP_ID']:$group_id);
+					$new_dashboard->store();
+					if (in_array('graphs', array_keys($dashboard_to_create))) {
+						foreach ($dashboard_to_create['graphs'] as $graph) {
+							Graph::import_from_array_to_dashboard($graph, $new_dashboard->getDashboardId());
+						}
+					}
+				}
+			}
+		}
 	}
 	
 }

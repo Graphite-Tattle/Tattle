@@ -2973,6 +2973,24 @@ abstract class fActiveRecord
 		return $output;
 	}
 	
+	static public function array_to_dbentry ($input, $class, $columns_to_ignore=NULL)
+	{
+		if (!empty($input)) {
+			$new_dbentry = new $class();
+			$has_at_least_one_column = false;
+			foreach ($input as $column => $value) {
+				if (!empty($columns_to_ignore) && !in_array($column, $columns_to_ignore)) {
+					$new_dbentry->set($column,$value);
+					$has_at_least_one_column = true;
+				}
+			}
+			if ($has_at_least_one_column) {
+				return $new_dbentry;
+			} 
+		}
+		return NULL;
+	}
+	
 	
 	static public function is_menu_active ($menu_to_active,$type=NULL)
 	{

@@ -80,6 +80,7 @@ if (isset($dashboard_id)) {
 	      <input class="btn primary" type="submit" value="Save" />
               <input class="btn" type="submit" name="action::delete" value="Delete" />
               <a href="<?=Dashboard::makeUrl('view',$dashboard); ?>" class="btn">View</a>
+              <a href="<?=Dashboard::makeURL('export', $dashboard); ?>" target="_blank" class="btn">Export</a>
               <div class="required"><em>*</em> Required field</div>
 	      <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
               <input type="hidden" name="user_id" value="<?=fSession::get('user_id'); ?>" />

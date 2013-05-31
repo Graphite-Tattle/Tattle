@@ -24,7 +24,7 @@ if (!isset($dashboard_id)) {
 }
 
 if (!isset($action)) {
-  $action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete', 'view', 'export'));
+  $action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete', 'view', 'export', 'mass_export', 'import'));
 }
 
 // Don't require login for tv monitors that just need to view the dashboards. Will add a public/private feature for dashboards as phase two
@@ -177,6 +177,59 @@ if ('edit' == $action) {
 	header("Content-Transfer-Encoding: binary");
 	
 	echo $dashboard->export_in_json(),"\n";
+} elseif ('mass_export' == $action) {
+	
+	if (in_array('id_mass_export',array_keys($_POST))) {
+		$dashboards_to_export = $_POST['id_mass_export'];
+		$number_of_dashboards = count($dashboards_to_export);
+		if ( $number_of_dashboards == 1) {
+			$dashboard = new Dashboard($dashboards_to_export[0]);
+			$json_to_send = $dashboard->export_in_json();
+			$json_name = $dashboard->getName();
+			$json_name = str_replace(" ", "_", $json_name) . ".json";
+		} else {
+			$json_to_send = "[";
+			foreach ($dashboards_to_export as $dashboard_id) {
+				$dashboard = new Dashboard($dashboard_id);
+				$json_to_send .= $dashboard->export_in_json();
+				$json_to_send .= ",";
+			}
+			$json_to_send[strlen($json_to_send)-1] = "]";
+			$json_name = "Array_of_".$number_of_dashboards."_dashboards.json";
+		}
+		
+		header("Pragma: public");
+		header("Expires: 0");
+		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+		header("Content-Type: application/force-download");
+		header("Content-Type: application/octet-stream");
+		header("Content-Type: application/download");
+		header("Content-Disposition: attachment; filename=\"" . $json_name . "\"");
+		header("Content-Transfer-Encoding: binary");
+		
+		echo $json_to_send,"\n";
+	}
+	
+} elseif ('import' == $action) {	
+	
+	if ((isset($_FILES['uploadedfile']['tmp_name'])&&($_FILES['uploadedfile']['error'] == UPLOAD_ERR_OK))) {
+		$file = $_FILES['uploadedfile']['tmp_name'];
+		$content = fread(fopen($file, "r"), filesize($file));
+		$filter_group_id = $_POST['filter_group_id'];
+		if ($filter_group_id < 0) {
+			Dashboard::import_from_json_to_group($content);
+		} else {
+			Dashboard::import_from_json_to_group($content,$filter_group_id);
+		}
+	}
+	
+	if ($filter_group_id == -1) {
+	  	$dashboards = Dashboard::findAll();
+	  } else {
+	  	$dashboards = Dashboard::findAllByFilter($filter_group_id);
+	  }
+	include VIEW_PATH . '/list_dashboards.php';
+	
 	
 } else {
   if ($filter_group_id == -1) {

@@ -135,5 +135,22 @@ class Graph extends fActiveRecord
 		
 		return $json_env;
 	}
+	
+	static public function import_from_array_to_dashboard($input,$dashboard_id)
+	{
+		if (!empty($input)) {
+			$columns_to_ignore = array('graph_id','dashboard_id','lines');
+			$new_graph = fActiveRecord::array_to_dbentry($input, __CLASS__,$columns_to_ignore);
+			if ($new_graph !== NULL) {
+				$new_graph->setDashboardId($dashboard_id);
+				$new_graph->store();
+				if (in_array('lines', array_keys($input))) {
+					foreach ($input['lines'] as $line) {
+						Line::import_from_array_to_graph($line, $new_graph->getGraphId());
+					}
+				}
+			}
+		}
+	}
 
 }

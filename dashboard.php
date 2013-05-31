@@ -110,22 +110,50 @@ if ('edit' == $action) {
 
   $graphs = Graph::findAll($dashboard_id);
   
+  $other_dashboards_in_group = Dashboard::findAllByFilter($dashboard->getGroupId());
+  
   $ignored_values = array("action", "dashboard_id");
   $quick_times_desired = array(
-  		"last 10 minutes" => "-10min",
-  		"last hour" => "-1h",
-  		"last 2 hours" => "-2h",
-  		"last 8 hours" => "-8h",
-  		"last 12 hours" => "-12h",
-  		"last day" => "-1d",
-  		"last 2 days" => "-2d",
-  		"last 3 days" => "-3d",
-  		"last week" => "-1w",
-  		"last 2 weeks" => "-2w",
-  		"last month" => "-1month",
-  		"last 2 months" => "-2month",
-  		"last 3 months" => "-3month"
+  		"Last 10 minutes" => "-10min",
+  		"Last hour" => "-1h",
+  		"Last 2 hours" => "-2h",
+  		"Last 8 hours" => "-8h",
+  		"Last 12 hours" => "-12h",
+  		"Last day" => "-1d",
+  		"Last 2 days" => "-2d",
+  		"Last 3 days" => "-3d",
+  		"Last week" => "-1w",
+  		"Last 2 weeks" => "-2w",
+  		"Last month" => "-1month",
+  		"Last 2 months" => "-2month",
+  		"Last 3 months" => "-3month"
     );
+  
+  $quick_bgcolor_desired = array(
+  		"Red" => "red",
+  		"Green" => "green",
+  		"Blue" => "blue",
+  		"Yellow" => "yellow",
+  		"Black" => "black",
+  		"White" => "white"
+  );
+  
+  $quick_sizes_desired = array(
+  		"100 x 50" => array("width" => "100", "height" => "50"),
+  		"300 x 150" => array("width" => "300", "height" => "150"),
+  		"600 x 300" => array("width" => "600", "height" => "300"),
+  		"900 x 450" => array("width" => "900", "height" => "450"),
+  );
+  
+  $display_options_links = fRequest::get('display_options_links','integer');
+  if (empty($display_options_links) || $display_options_links > 3 || $display_options_links < 0) {
+  	// The only possibles values are 0 to 3
+  	// 0 -> Nothing displayed
+  	// 1 -> Only options are displayed
+  	// 2 -> Only links are displayed
+  	// 3 -> Both are displayed
+  	$display_options_links = 0;
+  }
   
   include VIEW_PATH . '/view_dashboard.php';	
 	

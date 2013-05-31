@@ -13,3 +13,20 @@
 .inline {
 	display:inline-block;
 }
+
+.no-margin{margin:0;}
+
+.dashboardoptions {top:35px;width:10%;position: absolute;display:initial!important;}
+.dashboardoptions + div + div#graphscontainer {margin-left:10%;}
+.dashboardoptions ul {max-height:150px;overflow:hidden;overflow-x:hidden;overflow-y:auto;overflow:-moz-scrollbars-vertical;}
+.dashboardoptions hr {margin : 10px 0;}
+.dashboardoptions table, .dashboardoptions tr, .dashboardoptions td {border:0;margin:0;padding:0;}
+.dashboardoptions .colorname{text-align:right; padding-right:2px;}
+
+.dashboardslinks {right:0;top:35px;width:10%;position: absolute;display:initial!important;}
+.dashboardslinks + div#graphscontainer {margin-right:10%;}
+
+.optionsbtn{position: absolute; left:4%; top:5px;}
+.linksbtn{position: absolute;right:4%;top:5px;}
+
+table th.last,table td.last{width: 30px;text-align: center}

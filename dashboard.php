@@ -9,9 +9,15 @@ if (isset($_SERVER['REQUEST_URI'])) {
 }
    
 
+if (!isset($filter_group_id)) {
+	$filter_group_id = fRequest::get('filter_group_id','integer');
+	if (empty($filter_group_id) || ($filter_group_id < 0)) {
+		$filter_group_id = -1;
+	}
+}
 
 fRequest::overrideAction();
-$breadcrumbs[] = array('name' => 'Dashboards', 'url' => Dashboard::makeUrl('list'),'active' => false);
+$breadcrumbs[] = array('name' => 'Dashboards', 'url' => Dashboard::makeUrl('list',$filter_group_id),'active' => false);
 
 if (!isset($dashboard_id)) {
   $dashboard_id = fRequest::get('dashboard_id','integer');
@@ -173,6 +179,10 @@ if ('edit' == $action) {
 	echo $dashboard->export_in_json(),"\n";
 	
 } else {
-  $dashboards = Dashboard::findAll();
+  if ($filter_group_id == -1) {
+  	$dashboards = Dashboard::findAll();
+  } else {
+  	$dashboards = Dashboard::findAllByFilter($filter_group_id);
+  }
   include VIEW_PATH . '/list_dashboards.php';
 }

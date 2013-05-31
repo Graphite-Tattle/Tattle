@@ -25,6 +25,22 @@ class Dashboard extends fActiveRecord
           array()
           );
 	}   
+	
+	/**
+	 * Returns all meetups on the system
+	 *
+	 * @param  string  $sort_column  The column to sort by
+	 * @param  string  $sort_dir     The direction to sort the column
+	 * @return fRecordSet  An object containing all meetups
+	 */
+	static function findAllByFilter($group_id)
+	{
+		return fRecordSet::build(
+				__CLASS__,
+				array('group_id=' => $group_id),
+				array()
+		);
+	}
     
     static public function makeURL($type, $obj=NULL)
 	{

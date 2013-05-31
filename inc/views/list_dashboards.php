@@ -36,6 +36,19 @@ try {
         </tr>
     <?php } ?>
     </tbody></table>
+	<p class="pull-right">
+		Filter group :
+		<select id="list_of_filters" onclick="$(location).attr('href',$('#list_of_filters').val());return false;">
+			<option value="<?=Dashboard::makeURL('list',-1)?>">All dashboards</option>
+			<?php 
+				foreach (Group::findAll() as $group) {
+			?>
+					<option value="<?=Dashboard::makeURL('list',$group->getGroupId())?>" <?=($filter_group_id==$group->getGroupId())?'selected="selected"':''?>><?=$group->getName();?></option>
+			<?php
+				}
+			?>
+		</select>
+	</p>
     <?
 } catch (fEmptySetException $e) {
 	?>

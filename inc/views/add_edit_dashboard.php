@@ -64,6 +64,18 @@ if (isset($dashboard_id)) {
                <input id="dashboard-refresh_rate" class="span3" type="text" size="30" name="refresh_rate" value="<?=$dashboard->getRefreshRate(); ?>" />
              </div>
             </div>
+            <div class="clearfix">
+            	<label for="dashboard-group">Group</label>
+            	<div class="input">
+            		<select name="group_id">
+            			<?php 
+            				foreach (Group::findAll() as $group) {
+								fHTML::printOption($group->getName(), $group->getGroupId(), ($action == 'add')?$filter_group_id:$dashboard->getGroupId());
+							}
+            			?>
+            		</select>
+            	</div>
+            </div>
             <div class="actions span4">
 	      <input class="btn primary" type="submit" value="Save" />
               <input class="btn" type="submit" name="action::delete" value="Delete" />

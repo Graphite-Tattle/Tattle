@@ -85,7 +85,7 @@ if (!$this->get('full_screen')) { ?>
             <?
 
               $current_url = '?'.fURL::getQueryString();
-              echo '<li' . ($current_url == '' ? ' class="active"' : '') . '><a href="index.php">Alerts</a></li>'. "\n";
+              echo '<li' . (fActiveRecord::is_menu_active('index') ? ' class="active"' : '') . '><a href="index.php">Alerts</a></li>'. "\n";
               $threshold_check_list = Check::makeURL('list', 'threshold');
               echo '<li' . (fActiveRecord::is_menu_active('check','type=threshold') ? ' class="active"' : '') . '><a href="' . $threshold_check_list . '" >Threshold Checks</a></li>' . "\n";
               $predictive_check_list = Check::makeURL('list', 'predictive');
@@ -94,6 +94,8 @@ if (!$this->get('full_screen')) { ?>
               echo '<li' . (fActiveRecord::is_menu_active('subscription') ? ' class="active"' : '') .'><a href="' . $subscription_list . '" >Subscriptions</a></li>' . "\n";
               $dashboard_list = Dashboard::makeURL('list');
               echo '<li' . (fActiveRecord::is_menu_active('dashboard') ? ' class="active"' : '') . '><a href="' . $dashboard_list . '">Dashboards</a></li>';
+              $group_list = Group::makeURL('list');
+              echo '<li' . (fActiveRecord::is_menu_active('group') ? ' class="active"' : '') . '><a href="' . $group_list . '">Groups</a></li>';
               $setting_list = Setting::makeURL('list','user');
               echo '<li' . (fActiveRecord::is_menu_active('setting','type=user') ? ' class="active"' : '') . '><a href="' . $setting_list . '" >Settings</a></li>' . "\n";
 if (fAuthorization::checkAuthLevel('admin')) {

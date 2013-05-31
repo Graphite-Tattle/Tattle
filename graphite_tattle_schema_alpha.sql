@@ -30,6 +30,7 @@ CREATE TABLE `dashboards` (
   `graph_height` int(11) NOT NULL DEFAULT '300',
   `graph_width` int(11) NOT NULL DEFAULT '300',
   `refresh_rate` int(11) NOT NULL DEFAULT 0,
+  `group_id` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`dashboard_id`),
   UNIQUE KEY `user_id` (`user_id`,`name`)
 ) CHARSET=utf8;
@@ -105,3 +106,12 @@ CREATE TABLE `subscriptions` (
   KEY `check_id` (`check_id`),
   KEY `user_id` (`user_id`)
 ) CHARSET=utf8;
+
+CREATE TABLE `groups` (
+  `group_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` varchar(1000) NOT NULL,
+  PRIMARY KEY (`group_id`),
+  KEY `name` (`name`)
+) CHARSET=utf8;
+INSERT INTO groups VALUES (1, 'Default group', 'This group is the default group. It can\'t be deleted nor edited.');

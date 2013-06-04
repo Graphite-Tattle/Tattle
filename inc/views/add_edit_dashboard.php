@@ -76,8 +76,8 @@ if (isset($dashboard_id)) {
             		</select>
             	</div>
             </div>
-            <div class="actions span4">
-	      <input class="btn primary" type="submit" value="Save" />
+            <div class="actions">
+	      <input class="btn btn-primary" type="submit" value="Save" />
               <input class="btn" type="submit" name="action::delete" value="Delete" />
               <a href="<?=Dashboard::makeUrl('view',$dashboard); ?>" class="btn">View</a>
               <a href="<?=Dashboard::makeURL('export', $dashboard); ?>" target="_blank" class="btn">Export</a>
@@ -89,7 +89,7 @@ if (isset($dashboard_id)) {
        </div>       
      </form>
     </div>
-    <div class="span10">   
+    <div class="span8">   
    <? if ($action == 'edit') { ?>
    <p class="info"><a href="<?=Graph::makeURL('add',$dashboard); ?>">Add Graph</a></p>
  <?php
@@ -98,7 +98,7 @@ if (isset($dashboard_id)) {
 	$affected = fMessaging::retrieve('affected', fURL::get());
 	?>
     <div>
-	<table class="zebra-striped">
+	<table class="table table-bordered table-striped" id="table-graphs">
           <thead>
           <tr>
           <th>Weight</th>    

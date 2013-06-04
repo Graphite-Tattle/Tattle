@@ -17,11 +17,11 @@ $tmpl->place('header');
 try {
 	$dashboards->tossIfEmpty();
 	$affected = fMessaging::retrieve('affected', fURL::get());
-	?><a href="<?=Dashboard::makeURL('add'); ?>" class="btn primary">Add Dashboard</a>
+	?><a href="<?=Dashboard::makeURL('add'); ?>" class="btn btn-primary">Add Dashboard</a>
 	<form method="post" id="formImport" action="<?=Dashboard::makeURL('import'); ?>" enctype="multipart/form-data" class="inline no-margin" style="padding-left: 10px;">
 		<input type="hidden" value="<?= $filter_group_id?>" name="filter_group_id" />
 		<p class="inline">
-			<a href="#" onclick="if(test_file_present()){$('#formImport').submit()};return false;" class="btn primary">Import</a>
+			<a href="#" onclick="if(test_file_present()){$('#formImport').submit()};return false;" class="btn btn-primary">Import</a>
 			this one :
 			<input type="file" name="uploadedfile" id="fileInput" />
 		</p>
@@ -40,8 +40,8 @@ try {
 			?>
 		</select>
 	</p>
-	<form method="POST" action="<?=Dashboard::makeURL('mass_export');?>" target="_blank">
-		<table class="zebra-striped">
+	<form method="POST" id="form_mass_export" action="<?=Dashboard::makeURL('mass_export');?>" target="_blank">
+		<table class="table table-bordered table-striped">
 	          <thead>
 	          <tr>    
 	          <th>Name</th>
@@ -50,7 +50,7 @@ try {
 	          <th>Columns</th>
 	          <th>Background Color</th>
 	          <th>Action</th>
-	          <th class="last"><input type="submit" value="Export selected" /></th>
+	          <th class="last"><input type="submit" value="Export selected" onclick="$('#form_mass_export').submit();deselectAll(); return false;" /></th>
 	          </tr>    
 	          </thead>
 	          <tbody>
@@ -70,7 +70,7 @@ try {
 	        <a href="<?=Dashboard::makeURL('delete', $dashboard); ?>">Delete</a> |
 	        <a href="<?=Dashboard::makeURL('export', $dashboard); ?>" target="_blank">Export</a>
 	        </td>
-	        <td class="last"><input type="checkbox" name="id_mass_export[]" class="no-margin" value="<?=$dashboard->getDashboardId()?>" /></td>
+	        <td class="last"><input type="checkbox" name="id_mass_export[]" class="no-margin input-dashboard" value="<?=$dashboard->getDashboardId()?>" /></td>
 	        </tr>
 	    <?php } ?>
 	    </tbody></table>

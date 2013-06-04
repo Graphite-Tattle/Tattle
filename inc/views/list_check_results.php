@@ -23,8 +23,8 @@ $tmpl->place('header');
     $check_results->tossIfEmpty();
     $affectd = fMessaging::retrieve('affected',fURL::get());
    ?>
-        <a class="btn small primary" href="<?=CheckResult::makeURL('ackAll', $check = new Check($check_id)); ?>">Clear All</a>
-        <table class="zebra-striped">
+        <a class="btn small btn-primary" href="<?=CheckResult::makeURL('ackAll', $check = new Check($check_id)); ?>">Clear All</a>
+        <table class="table table-bordered table-striped">
     <tr>
     <th>Status</th>
     <th>Value</th>

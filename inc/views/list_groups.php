@@ -6,9 +6,9 @@ $tmpl->place('header');
 try {
 	$groups->tossIfEmpty();
 	$affected = fMessaging::retrieve('affected', fURL::get());
-	?><a href="<?=Group::makeURL('add'); ?>" class="btn primary">Add Group</a>
+	?><a href="<?=Group::makeURL('add'); ?>" class="btn btn-primary">Add Group</a>
 	
-	<table class="zebra-striped">
+	<table class="table table-bordered table-striped">
           <thead>
           <tr>    
           <th>Name</th>

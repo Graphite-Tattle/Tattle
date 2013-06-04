@@ -28,7 +28,7 @@ $tmpl->place('header');
 <form action="<?=$form_url; ?>" method="post">
 	<p class="warning"><?=$delete_text; ?></p>
 	<p>
-		<input class="btn danger" type="submit" value="Yes, delete this <?=$class_name;?>" />
+		<input class="btn btn-danger" type="submit" value="Yes, delete this <?=$class_name;?>" />
 		<a href="<?=$list_url; ?>">No, please keep it</a>
 		<input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
 	</p>

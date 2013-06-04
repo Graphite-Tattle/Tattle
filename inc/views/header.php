@@ -39,7 +39,7 @@ if ($this->get('addeditdocready')) { ?>
 if (!$this->get('full_screen')) { ?>
     <style type="text/css">
       body {
-        padding-top: 60px;
+        /*padding-top: 60px;*/
       }
     </style>
 <?php } ?>
@@ -77,35 +77,37 @@ if ($this->get('full_screen') && $this->get('refresh') > 0) {
 
 <?php
 if (!$this->get('full_screen')) { ?>
-   <div class="topbar">
-      <div class="topbar-inner">
-        <div class="container-fluid">
+   <div class="navbar navbar-inverse">
+      <div class="navbar-inner">
+        <div class="container">
           <a class="brand" href="index.php">Tattle </a>
-          <ul class="nav">
-            <?
-
-              $current_url = '?'.fURL::getQueryString();
-              echo '<li' . (fActiveRecord::is_menu_active('index') ? ' class="active"' : '') . '><a href="index.php">Alerts</a></li>'. "\n";
-              $threshold_check_list = Check::makeURL('list', 'threshold');
-              echo '<li' . (fActiveRecord::is_menu_active('check','type=threshold') ? ' class="active"' : '') . '><a href="' . $threshold_check_list . '" >Threshold Checks</a></li>' . "\n";
-              $predictive_check_list = Check::makeURL('list', 'predictive');
-              echo '<li' . (fActiveRecord::is_menu_active('check','type=predictive') ? ' class="active"' : '') . '><a href="' . $predictive_check_list . '" >Predictive Checks</a></li>' . "\n";
-              $subscription_list = Subscription::makeURL('list');
-              echo '<li' . (fActiveRecord::is_menu_active('subscription') ? ' class="active"' : '') .'><a href="' . $subscription_list . '" >Subscriptions</a></li>' . "\n";
-              $dashboard_list = Dashboard::makeURL('list');
-              echo '<li' . (fActiveRecord::is_menu_active('dashboard') ? ' class="active"' : '') . '><a href="' . $dashboard_list . '">Dashboards</a></li>';
-              $group_list = Group::makeURL('list');
-              echo '<li' . (fActiveRecord::is_menu_active('group') ? ' class="active"' : '') . '><a href="' . $group_list . '">Groups</a></li>';
-              $setting_list = Setting::makeURL('list','user');
-              echo '<li' . (fActiveRecord::is_menu_active('setting','type=user') ? ' class="active"' : '') . '><a href="' . $setting_list . '" >Settings</a></li>' . "\n";
-if (fAuthorization::checkAuthLevel('admin')) {
-              $setting_list = Setting::makeURL('list','system');
-              echo '<li' . (fActiveRecord::is_menu_active('setting','type=system') ? ' class="active"' : '') . '><a href="' . $setting_list . '" >System Settings</a></li>' . "\n";
-              $user_list = User::makeURL('list');
-              echo '<li' . (fActiveRecord::is_menu_active('user') ? ' class="active"' : '') . '><a href="' . User::makeURL('list') . '" >Users</a></li>';
-}
-?>
-          </ul>
+          <div class="nav-collapse collapse">
+	          <ul class="nav">
+	            <?
+	
+	              $current_url = '?'.fURL::getQueryString();
+	              echo '<li' . (fActiveRecord::is_menu_active('index') ? ' class="active"' : '') . '><a href="index.php">Alerts</a></li>'. "\n";
+	              $threshold_check_list = Check::makeURL('list', 'threshold');
+	              echo '<li' . (fActiveRecord::is_menu_active('check','type=threshold') ? ' class="active"' : '') . '><a href="' . $threshold_check_list . '" >Threshold Checks</a></li>' . "\n";
+	              $predictive_check_list = Check::makeURL('list', 'predictive');
+	              echo '<li' . (fActiveRecord::is_menu_active('check','type=predictive') ? ' class="active"' : '') . '><a href="' . $predictive_check_list . '" >Predictive Checks</a></li>' . "\n";
+	              $subscription_list = Subscription::makeURL('list');
+	              echo '<li' . (fActiveRecord::is_menu_active('subscription') ? ' class="active"' : '') .'><a href="' . $subscription_list . '" >Subscriptions</a></li>' . "\n";
+	              $dashboard_list = Dashboard::makeURL('list');
+	              echo '<li' . (fActiveRecord::is_menu_active('dashboard') ? ' class="active"' : '') . '><a href="' . $dashboard_list . '">Dashboards</a></li>';
+	              $group_list = Group::makeURL('list');
+	              echo '<li' . (fActiveRecord::is_menu_active('group') ? ' class="active"' : '') . '><a href="' . $group_list . '">Groups</a></li>';
+	              $setting_list = Setting::makeURL('list','user');
+	              echo '<li' . (fActiveRecord::is_menu_active('setting','type=user') ? ' class="active"' : '') . '><a href="' . $setting_list . '" >Settings</a></li>' . "\n";
+	if (fAuthorization::checkAuthLevel('admin')) {
+	              $setting_list = Setting::makeURL('list','system');
+	              echo '<li' . (fActiveRecord::is_menu_active('setting','type=system') ? ' class="active"' : '') . '><a href="' . $setting_list . '" >System Settings</a></li>' . "\n";
+	              $user_list = User::makeURL('list');
+	              echo '<li' . (fActiveRecord::is_menu_active('user') ? ' class="active"' : '') . '><a href="' . User::makeURL('list') . '" >Users</a></li>';
+	}
+	?>
+	          </ul>
+	     </div>
  <?php   if (is_numeric(fSession::get('user_id'))) { ?>
  <p class="pull-right">
      <span style="color:white;">Logged in as <a href="<?=User::makeUrl('edit',fSession::get('user_id'));?>"><?=fSession::get('user_name'); ?></a></span>

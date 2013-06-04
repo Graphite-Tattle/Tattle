@@ -23,19 +23,18 @@ $tmpl = new fTemplating(VIEW_PATH);
 //} else {
 //  $tmpl->enableMinification('development', JS_CACHE, TATTLE_ROOT);
 //}
-$tmpl->add('css','bootstrap/bootstrap.min.css');
+$tmpl->add('css','bootstrap/bootstrap.css');
 $tmpl->add('css','assets/css/jquery-ui.css');
 $tmpl->add('css','assets/css/tattle.css');
 
-$tmpl->add('js','assets/js/jquery.min.js');
+$tmpl->add('js','assets/js/jquery-2.0.1.min.js');
 $tmpl->add('js','assets/js/jquery-ui.min.js');
+
 $tmpl->add('js','assets/js/jquery.collapsible.js');
 $tmpl->add('js','assets/js/jquery.graphite.js');
 $tmpl->add('js','assets/js/tattle.js');
 
-$tmpl->add('js','bootstrap/js/bootstrap-modal.js');
-$tmpl->add('js','bootstrap/js/bootstrap-twipsy.js');
-$tmpl->add('js','bootstrap/js/bootstrap-popover.js');
+$tmpl->add('js','bootstrap/js/bootstrap.js');
 
 
 $tmpl->set('header', 'header.php');

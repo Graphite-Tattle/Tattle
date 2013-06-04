@@ -15,8 +15,8 @@ $(document).ready(function() {
 });
 </script>
 
-<a class="small btn primary" href="<?= Check::makeURL('add', $check_type);?>">Add Check</a>
-<table class="zebra-striped">
+<a class="small btn btn-primary" href="<?= Check::makeURL('add', $check_type);?>">Add Check</a>
+<table class="table table-bordered table-striped">
           <thead>
 		<tr>
     <th><?=fCRUD::printSortableColumn('name','Name'); ?></th>

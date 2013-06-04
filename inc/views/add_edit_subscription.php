@@ -86,7 +86,7 @@ if (isset($subscription_id)) {
               </div>
             </div><!-- /clearfix -->
             <div class="actions">
-              <input class="btn primary" type="submit" value="Save" />
+              <input class="btn btn-primary" type="submit" value="Save" />
               <?php if ($action == 'edit') { ?>
                  <a class="btn" href="<?=Subscription::makeUrl('delete',$subscription); ?>">Delete</a>
               <?php } ?>
@@ -98,12 +98,12 @@ if (isset($subscription_id)) {
        </div>
      </form>
     </div>
-    <div class="span10">
+    <div class="span8">
       <fieldset>
         <p>Check : <?=$check->prepareName(); ?></p>
         <p>Target : <?=Check::constructTarget($check); ?></p>
         <p id="graphiteGraph"><?=Check::showGraph($check); ?></p>
-        <input class="btn primary" type="submit" value="Reload Graph" onClick="reloadGraphiteGraph()"/>
+        <input class="btn btn-primary" type="submit" value="Reload Graph" onClick="reloadGraphiteGraph()"/>
         <select id="graphiteDateRange" class="span3">
           <? $dateRange = array('-12hours'   => '12 Hours', '-1days' => '1 Day', '-3days' => '3 Days', '-7days' => '7 Days', '-14days' => '14 Days', '-30days' => '30 Days', '-60days' => '60 Days');
             foreach ($dateRange as $value => $text) {

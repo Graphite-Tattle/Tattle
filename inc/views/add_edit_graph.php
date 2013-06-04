@@ -93,7 +93,7 @@ if (!is_null($dashboard_id)) {
               </div>
             </div><!-- /clearfix -->
 	    <div class="actions">
-	      <input class="btn primary" type="submit" value="Save" />
+	      <input class="btn btn-primary" type="submit" value="Save" />
               <a href="<?=Graph::makeURL('delete',$graph); ?>" class="btn">Delete</a>
               <a href="<?=Dashboard::makeUrl('view',$dashboard); ?>" class="btn">View</a>
               <div class="required"><em>*</em> Required field</div>
@@ -104,7 +104,7 @@ if (!is_null($dashboard_id)) {
        </div>
      </form>
     </div>
-    <div class="span10">
+    <div class="span8">
     <?php if ($action == 'edit') {  ?>
         <img src="<?=Graph::drawGraph($graph,$dashboard); ?>">
     <p class="info"><a href="<?=Line::makeURL('add',$graph); ?>">Add Line</a></p>
@@ -114,7 +114,7 @@ if (!is_null($dashboard_id)) {
 	$affected = fMessaging::retrieve('affected', fURL::get());
 	?>
     <div>
-	<table class="zebra-striped">
+	<table class="table table-bordered table-striped">
           <thead>
           <tr>
           <th>Alias</th>

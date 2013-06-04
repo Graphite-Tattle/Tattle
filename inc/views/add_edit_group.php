@@ -13,26 +13,28 @@ if (isset($group_id)) {
 ?>
   <div class="row">
     <div class="span6">
-      <form action="?action=<?=$action.$query_string; ?>" method="post">
+      <form action="?action=<?=$action.$query_string; ?>" method="post" class="form-horizontal">
         <div class="main" id="main">
           <fieldset>
-                <div class="clearfix">
-	      <label for="group-name">Name<em>*</em></label>
-              <div class="input">
+                <div class="control-group">
+	      <label for="group-name" class="control-label">Name<em>*</em></label>
+              <div class="controls">
 	        <input id="group-name" class="span3" type="text" size="30" name="name" value="<?=$group->encodeName(); ?>" />
               </div>
             </div><!-- /clearfix -->
-            <div class="clearfix">
-              <label for="group-description">Description<em>*</em></label>
-              <div class="input">             
+            <div class="control-group">
+              <label for="group-description" class="control-label">Description<em>*</em></label>
+              <div class="controls">             
                  <textarea class="span3" id="group-description" name="description" rows="3"><?=$group->encodeDescription(); ?></textarea>
               </div>
             </div>
-        <div class="actions">
-	      <input class="btn primary" type="submit" value="Save" />
+        <div class="actions control-group">
+        	<div class="controls">
+	      <input class="btn btn-primary" type="submit" value="Save" />
               <input class="btn" type="submit" name="action::delete" value="Delete" />
               <div class="required"><em>*</em> Required field</div>
 	      <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
+            </div>
             </div>
          </fieldset>
        </div>       

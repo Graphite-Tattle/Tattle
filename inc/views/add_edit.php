@@ -80,7 +80,7 @@ $tmpl->place('header');
            </fieldset>
            <fieldset>
              <div class="actions">
-             <input class="btn primary" type="submit" value="Save" />
+             <input class="btn btn-primary" type="submit" value="Save" />
              <? if ($action == 'edit') { ?><a href="<?=Check::makeURL('delete', $check_type, $check); ?>" class="btn" >Delete</a><?php } ?>
              <div class="required"><em>*</em> Required field</div>
              <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
@@ -93,14 +93,14 @@ $tmpl->place('header');
        </div>
      </form>
     </div>
-    <div class="span10">
+    <div class="span8">
       <?php if ($action == 'edit') { ?>
         <div class="sidebar" id="sidebar">
           <fieldset>
             <p>Check : <?=$check->prepareName(); ?></p>
             <p>Target : <?=Check::constructTarget($check); ?></p>
             <p id="graphiteGraph"><?=Check::showGraph($check); ?></p>
-            <input class="btn primary" type="submit" value="Reload Graph" onClick="reloadGraphiteGraph()"/>
+            <input class="btn btn-primary" type="submit" value="Reload Graph" onClick="reloadGraphiteGraph()"/>
             <select id="graphiteDateRange" class="span3">
               <? $dateRange = array('-12hours'   => '12 Hours', '-1days' => '1 Day', '-3days' => '3 Days', '-7days' => '7 Days', '-14days' => '14 Days', '-30days' => '30 Days', '-60days' => '60 Days');
                 foreach ($dateRange as $value => $text) {

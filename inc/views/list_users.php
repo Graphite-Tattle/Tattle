@@ -8,7 +8,7 @@ try {
 	$users->tossIfEmpty();
 	$affected = fMessaging::retrieve('affected', fURL::get());
 	?>
-<table class="zebra-striped">
+<table class="table table-bordered table-striped">
           <thead>
 		<tr>
     <th>Username</th>

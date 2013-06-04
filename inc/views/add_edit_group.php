@@ -40,8 +40,6 @@ if (isset($group_id)) {
        </div>       
      </form>
     </div>
-    <div class="span10"> 
-    </div>
   </div>
 </div>
 <?php

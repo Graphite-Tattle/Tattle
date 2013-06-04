@@ -28,6 +28,10 @@ $tmpl->place('header');
 				$($(this).closest('tr')).removeClass('highlighted');
 			}
 		});
+
+		$('#list_of_filters').change(function(){
+			$(location).attr('href',$('#list_of_filters').val());
+		});
 	});
 </script>
 <?php 
@@ -46,7 +50,7 @@ try {
 	
 	<p class="pull-right">
 		Filter group :
-		<select id="list_of_filters" onclick="$(location).attr('href',$('#list_of_filters').val());return false;">
+		<select id="list_of_filters">
 			<option value="<?=Dashboard::makeURL('list',-1)?>">All dashboards</option>
 			<?php 
 				foreach (Group::findAll() as $group) {
@@ -80,8 +84,12 @@ try {
 	        <td><?=$dashboard->prepareDescription(); ?></td>
 	        <td>
 	        	<?php 
-	        		$dashboard_s_group = new Group($dashboard->getGroupId());
-	        		echo ($dashboard_s_group->getName());
+		        	try {
+		        		$dashboard_s_group = new Group($dashboard->getGroupId());
+		        		echo ($dashboard_s_group->getName());
+		        	} catch (fNotFoundException $e) {
+						echo "No group found";
+		        	}
 	        	?>
 	        </td>
 	        <td><?=$dashboard->prepareColumns(); ?></td>
@@ -112,7 +120,7 @@ try {
 		</form>
 		<p class="pull-right">
 			Filter group :
-			<select id="list_of_filters" onclick="$(location).attr('href',$('#list_of_filters').val());return false;">
+			<select id="list_of_filters">
 					<option value="<?=Dashboard::makeURL('list',-1)?>">All dashboards</option>
 				<?php 
 					foreach (Group::findAll() as $group) {

@@ -5,9 +5,10 @@ fAuthorization::requireLoggedIn();
 
 fRequest::overrideAction();
 
-$action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete', 'view', 'clone'));
+$action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete', 'view', 'clone', 'clone_into'));
 
 $dashboard_id = fRequest::get('dashboard_id', 'integer?');
+$dashboard_dest_id = fRequest::get('dashboard_dest_id', 'integer?');
 $graph_id = fRequest::get('graph_id', 'integer?');
 $manage_url = $_SERVER['SCRIPT_NAME'];
 
@@ -107,4 +108,26 @@ if ('edit' == $action) {
 	
 	include VIEW_PATH . '/add_edit_dashboard.php';
 	
+}  elseif ('clone_into' == $action) {
+	
+	if (fRequest::isPost()) {
+		$graph_to_clone = new Graph($graph_id);
+		$dashboard = new Dashboard($dashboard_dest_id);
+		try {
+			fRequest::validateCSRFToken(fRequest::get('token'));
+				
+			Graph::cloneGraph($graph_id,$dashboard_dest_id);
+			
+			$url_redirect = Dashboard::makeURL('list');
+				
+			fMessaging::create('affected',$url_redirect , $graph_to_clone->getName());
+			fMessaging::create('success', "/" . $url_redirect,
+			'The Graph "' . $graph_to_clone->getName() . '" was successfully cloned into the Dashboard "' . $dashboard->getName() . '"');
+			fURL::redirect($url_redirect);
+		} catch (fExpectedException $e) {
+			fMessaging::create('error', fURL::get(), $e->getMessage());
+		}
+	}
+
+	include VIEW_PATH . '/list_dashboards.php';
 }

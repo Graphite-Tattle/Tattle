@@ -10,6 +10,17 @@ if (isset($dashboard_id)) {
   $query_string = '';
 }
 ?>
+<script type="text/javascript">
+	$(function(){
+		$('.btn_popover').each(function(){
+			id=$(this).attr('id')
+			$(this).popover({
+				content : $("#form_clone_into_"+id).html(),
+				html : true
+			});
+		});
+	});
+</script>
   <div class="row">
     <div class="span4">
       <form class="form-stacked" action="?action=<?=$action.$query_string; ?>" method="post">
@@ -125,7 +136,27 @@ if (isset($dashboard_id)) {
         <form id="form_clone_<?=(int)$graph->getGraphId(); ?>" method="post" action="<?=Graph::makeURL('clone', $graph); ?>" style="display: initial;">
         	<a href="#" onclick="$('#form_clone_<?=(int)$graph->getGraphId(); ?>').submit(); return false;">Clone</a>
         	<input type="hidden" name="token" value="<?=fRequest::generateCSRFToken("/graphs.php"); ?>" />
-        </form></td>
+        </form> |
+        <div id="form_clone_into_<?=(int)$graph->getGraphId(); ?>" style="display:none;">
+        <form id="" method="post" action="<?=Graph::makeURL('clone_into', $graph); ?>" class="inline no-margin">
+        	<input type="hidden" name="token" value="<?=fRequest::generateCSRFToken("/graphs.php"); ?>" />
+        	Select destination : 
+        	<select name="dashboard_dest_id">
+        		<?php 
+        			foreach (Dashboard::findAll() as $dashboard) {
+						if ($dashboard->prepareDashboardId() != $graph->prepareDashboardId()) {
+        		?>
+        			<option value="<?=(int)$dashboard->getDashboardId(); ?>"><?=$dashboard->prepareName() ?></option>
+        		<?php 
+        				}
+        			}
+        		?>
+        	</select>
+        	<input type="submit" value="Clone !" class="btn btn-primary"/>
+        </form>
+        </div>
+        <a href="#" id="<?=(int)$graph->getGraphId(); ?>" class="btn_popover">Clone into</a>
+        </td>
         </tr>
     <?php } ?>
     </tbody></table>

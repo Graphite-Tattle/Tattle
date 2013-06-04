@@ -37,6 +37,8 @@ class Graph extends fActiveRecord
 				return 'graphs.php?action=list&graph_id=' . (int)$obj->getGraphId();
 			case 'clone':
 				return 'graphs.php?action=clone&graph_id=' . (int)$obj->getGraphId();
+			case 'clone_into':
+				return 'graphs.php?action=clone_into&graph_id=' . (int)$obj->getGraphId();
 
 		}
 	}

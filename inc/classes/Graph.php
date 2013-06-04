@@ -140,6 +140,7 @@ class Graph extends fActiveRecord
 	
 	static public function import_from_array_to_dashboard($input,$dashboard_id)
 	{
+		$result = true;
 		if (!empty($input)) {
 			$columns_to_ignore = array('graph_id','dashboard_id','lines');
 			$new_graph = fActiveRecord::array_to_dbentry($input, __CLASS__,$columns_to_ignore);
@@ -147,12 +148,17 @@ class Graph extends fActiveRecord
 				$new_graph->setDashboardId($dashboard_id);
 				$new_graph->store();
 				if (in_array('lines', array_keys($input))) {
+					$new_graph_id = $new_graph->getGraphId();
 					foreach ($input['lines'] as $line) {
-						Line::import_from_array_to_graph($line, $new_graph->getGraphId());
+						$result_line = (Line::import_from_array_to_graph($line, $new_graph_id));
+						$result = $result && $result_line;
 					}
 				}
+			} else {
+				$result = false;
 			}
 		}
+		return $result;
 	}
 
 }

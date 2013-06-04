@@ -64,15 +64,18 @@ class Line extends fActiveRecord
 	
 	static public function import_from_array_to_graph($input,$graph_id)
 	{
+		$result = true;
 		if (!empty($input)) {
 			$columns_to_ignore = array('line_id','graph_id');
 			$new_line = fActiveRecord::array_to_dbentry($input, __CLASS__,$columns_to_ignore);
 			if ($new_line !== NULL) {
 				$new_line->setGraphId($graph_id);
 				$new_line->store();
+			} else {
+				$result = false;
 			}
 		}
-		
+		return $result;
 	}
     
 }

@@ -102,6 +102,7 @@ class Dashboard extends fActiveRecord
 	
 	static public function import_from_json_to_group($json,$group_id=NULL)
 	{
+		$result = true;
 		$json_array = json_decode($json,TRUE);
 		if (!empty($json_array)) {
 			if (array_key_exists("user_id",$json_array)) {
@@ -116,13 +117,21 @@ class Dashboard extends fActiveRecord
 					$new_dashboard->setGroupId(empty($group_id)?$GLOBALS['DEFAULT_GROUP_ID']:$group_id);
 					$new_dashboard->store();
 					if (in_array('graphs', array_keys($dashboard_to_create))) {
+						$new_dashboard_id = $new_dashboard->getDashboardId();
 						foreach ($dashboard_to_create['graphs'] as $graph) {
-							Graph::import_from_array_to_dashboard($graph, $new_dashboard->getDashboardId());
+							$result_graph = (Graph::import_from_array_to_dashboard($graph, $new_dashboard_id));
+							$result = $result && $result_graph;
 						}
 					}
+				} else {
+					$result = false;
 				}
 			}
+		} else {
+			fMessaging::create('error', "/".Dashboard::makeUrl('list'),"File empty or malformed");
+			$result = false;
 		}
+		return $result;
 	}
 	
 }

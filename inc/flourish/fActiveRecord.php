@@ -2975,18 +2975,28 @@ abstract class fActiveRecord
 	
 	static public function array_to_dbentry ($input, $class, $columns_to_ignore=NULL)
 	{
-		if (!empty($input)) {
-			$new_dbentry = new $class();
-			$has_at_least_one_column = false;
-			foreach ($input as $column => $value) {
-				if (!empty($columns_to_ignore) && !in_array($column, $columns_to_ignore)) {
-					$new_dbentry->set($column,$value);
-					$has_at_least_one_column = true;
+		try {
+			if (!empty($input)) {
+				$new_dbentry = new $class();
+				$has_at_least_one_column = false;
+				foreach ($input as $column => $value) {
+					if (!empty($columns_to_ignore) && !in_array($column, $columns_to_ignore)) {
+						$new_dbentry->set($column,$value);
+						$has_at_least_one_column = true;
+					}
 				}
+				if ($has_at_least_one_column) {
+					return $new_dbentry;
+				} 
 			}
-			if ($has_at_least_one_column) {
-				return $new_dbentry;
-			} 
+		} catch (fProgrammerException $e) {
+			$messages = fMessaging::retrieve('error', "/".Dashboard::makeUrl('list'));
+			if (!empty($messages)) {
+				$messages .= "<br/>";
+			} else {
+				$messages = "";
+			}
+			fMessaging::create('error', "/".Dashboard::makeUrl('list'),$messages . "An error occured by creating a new ".$class." : ".$e->getMessage());
 		}
 		return NULL;
 	}

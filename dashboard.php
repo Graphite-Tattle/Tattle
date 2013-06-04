@@ -245,18 +245,16 @@ if ('edit' == $action) {
 		$content = fread(fopen($file, "r"), filesize($file));
 		$filter_group_id = $_POST['filter_group_id'];
 		if ($filter_group_id < 0) {
-			Dashboard::import_from_json_to_group($content);
+			$result_ok = Dashboard::import_from_json_to_group($content);
 		} else {
-			Dashboard::import_from_json_to_group($content,$filter_group_id);
+			$result_ok = Dashboard::import_from_json_to_group($content,$filter_group_id);
+		}
+		if ($result_ok) {
+			fMessaging::create('success', "/" . Dashboard::makeUrl('list'),'The Dashboard was successfully imported');
 		}
 	}
 	
-	if ($filter_group_id == -1) {
-	  	$dashboards = Dashboard::findAll();
-	  } else {
-	  	$dashboards = Dashboard::findAllByFilter($filter_group_id);
-	  }
-	include VIEW_PATH . '/list_dashboards.php';
+    fURL::redirect(Dashboard::makeUrl('list',$filter_group_id));
 	
 	
 } else {

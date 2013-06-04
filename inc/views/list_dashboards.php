@@ -12,6 +12,23 @@ $tmpl->place('header');
 			return true;
 		}
 	}
+
+	function deselectAll() {
+		$('td.last input').each(function(){
+			$(this).removeAttr('checked');
+			$($(this).closest('tr')).removeClass('highlighted');
+		});
+	}
+
+	$(function(){
+		$('.input-dashboard').click(function(){
+			if ($(this).is(":checked")) {
+				$($(this).closest('tr')).addClass('highlighted');
+			} else {
+				$($(this).closest('tr')).removeClass('highlighted');
+			}
+		});
+	});
 </script>
 <?php 
 try {

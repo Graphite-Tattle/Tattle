@@ -10,9 +10,7 @@
 	font-size:12px Arial;
 }
 
-.inline {
-	display:inline-block;
-}
+.inline {display:inline-block;}
 
 .no-margin{margin:0;}
 
@@ -30,6 +28,7 @@
 .linksbtn{position: absolute;right:4%;top:5px;}
 
 table th.last,table td.last{width: 40px;text-align: center}
+.table-striped tbody tr.highlighted td{background: #FFCA3A!important;}
 
 #table-graphs .popover{max-width: initial;}
 .actions{
@@ -48,3 +47,4 @@ footer {
 	padding-top: 17px;
 	border-top: 1px solid #eee;
 }
+

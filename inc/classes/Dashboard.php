@@ -128,7 +128,7 @@ class Dashboard extends fActiveRecord
 				}
 			}
 		} else {
-			fMessaging::create('error', "/".Dashboard::makeUrl('list'),"File empty or malformed");
+			fMessaging::create('error', "/".Dashboard::makeUrl('list'),"Empty or malformed file");
 			$result = false;
 		}
 		return $result;

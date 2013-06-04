@@ -136,14 +136,16 @@ if (!$this->get('full_screen')) { ?>
 <?php
 
 if (fMessaging::check('error', fURL::get())) {
-  echo '<div class="alert-message error">';
+  echo '<div class="alert alert-error">';
+  echo '<button type="button" class="close" data-dismiss="alert">&times;</button>';
     fMessaging::show('error', fURL::get());
   echo '</div>';
 }
 
 
 if (fMessaging::check('success', fURL::get())) {
-  echo '<div class="alert-message success">';
+  echo '<div class="alert alert-success">';
+  echo '<button type="button" class="close" data-dismiss="alert">&times;</button>';
     fMessaging::show('success', fURL::get());
   echo '</div>';
 }

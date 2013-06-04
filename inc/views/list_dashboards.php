@@ -67,7 +67,7 @@ try {
 	          <th>Columns</th>
 	          <th>Background Color</th>
 	          <th>Action</th>
-	          <th class="last"><input type="submit" value="Export selected" onclick="$('#form_mass_export').submit();deselectAll(); return false;" /></th>
+	          <th class="last"><input type="submit" class="btn" value="Export selected" onclick="$('#form_mass_export').submit();deselectAll(); return false;" /></th>
 	          </tr>    
 	          </thead>
 	          <tbody>

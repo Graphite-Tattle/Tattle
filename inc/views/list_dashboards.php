@@ -78,7 +78,12 @@ try {
 	    	<tr>
 	        <td><?=$dashboard->prepareName(); ?></td>
 	        <td><?=$dashboard->prepareDescription(); ?></td>
-	        <td></td>
+	        <td>
+	        	<?php 
+	        		$dashboard_s_group = new Group($dashboard->getGroupId());
+	        		echo ($dashboard_s_group->getName());
+	        	?>
+	        </td>
 	        <td><?=$dashboard->prepareColumns(); ?></td>
 	        <td><?=$dashboard->prepareBackgroundColor(); ?></td>
 	        <td>

@@ -64,14 +64,13 @@ class CheckResult extends fActiveRecord
 		switch ($type)
 		{
 			case 'list':
-				return 'result.php?action=list&check_id=' . $obj->prepareCheckId();
-                return '';
+				return 'result.php?action=list&check_id=' . (int)$obj->getCheckId();
 			case 'edit':
-				return 'result.php?action=edit&check_id=' . $obj->prepareCheckId();
+				return 'result.php?action=edit&check_id=' . (int)$obj->getCheckId();
 			case 'delete':
-				return 'result.php?action=delete&check_id=' . $obj->prepareCheckId();
+				return 'result.php?action=delete&check_id=' . (int)$obj->getCheckId();
 			case 'ackAll':
-				return 'result.php?action=ackAll&check_id=' . $obj->prepareCheckId();
+				return 'result.php?action=ackAll&check_id=' . (int)$obj->getCheckId();
 		}	
 	}       
 }

@@ -129,4 +129,33 @@ function subarray_standard_deviation($data_array) {
   //Take the square root of the result from line 5
   return sqrt($sd_squared);
 }
+
+function addOrReplaceInURL ($url, $key=NULL, $value=NULL) {
+	if (!is_null($key) && !is_null($value)) {
+		$pos_qm = strpos($url,"?");
+		if ($pos_qm === false) {
+			// In this case, there isn't any key in the url
+			$url .= "?" . $key . "=" . $value;
+		} else { 
+			$pos_amp_or_qm_and_key = preg_match('/(?P<ampOrQm>[&\?])' . $key . '=?(?P<val>[^&]*)?/', $url, $matches);
+			if ($pos_amp_or_qm_and_key !== false && $pos_amp_or_qm_and_key > 0) {
+				if ('' !== $matches['val']) {
+					$url = str_replace($matches['ampOrQm'].$key."=".$matches['val'], $matches['ampOrQm'].$key."=".$value, $url);
+				}
+				// In case of malformed url
+				else {
+					if (strpos($url,$matches['ampOrQm'].$key."=") !== false) {
+						$url = str_replace($matches['ampOrQm'].$key."=", $matches['ampOrQm'].$key."=".$value, $url);
+					} else {
+						$url = str_replace($matches['ampOrQm'].$key, $matches['ampOrQm'].$key."=".$value, $url);
+					}
+				}
+			} else {
+				// In this case, there isn't the key in the url
+				$url .= ("&".$key."=".$value);
+			}
+		}
+	}
+	return $url;
+}
 ?>

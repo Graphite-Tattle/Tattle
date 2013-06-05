@@ -56,11 +56,11 @@ class Subscription extends fActiveRecord
 			case 'list':
 				return 'subscription.php';
 			case 'add':
-				return 'subscription.php?action=add&check_id=' . $obj->prepareCheck_Id();
+				return 'subscription.php?action=add&check_id=' . (int)$obj->getCheckId();
 			case 'edit':
-				return 'subscription.php?action=edit&subscription_id=' . $obj->prepareSubscription_Id();
+				return 'subscription.php?action=edit&subscription_id=' . (int)$obj->getSubscriptionId();
 			case 'delete':
-				return 'subscription.php?action=delete&subscription_id=' . $obj->prepareSubscription_Id();
+				return 'subscription.php?action=delete&subscription_id=' . (int)$obj->getSubscriptionId();
 		}	
 	}        
 

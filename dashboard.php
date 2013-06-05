@@ -103,6 +103,24 @@ if ('edit' == $action) {
     } 
 
   $graphs = Graph::findAll($dashboard_id);
+  
+  $ignored_values = array("action", "dashboard_id");
+  $quick_times_desired = array(
+  		"last 10 minutes" => "-10min",
+  		"last hour" => "-1h",
+  		"last 2 hours" => "-2h",
+  		"last 8 hours" => "-8h",
+  		"last 12 hours" => "-12h",
+  		"last day" => "-1d",
+  		"last 2 days" => "-2d",
+  		"last 3 days" => "-3d",
+  		"last week" => "-1w",
+  		"last 2 weeks" => "-2w",
+  		"last month" => "-1month",
+  		"last 2 months" => "-2month",
+  		"last 3 months" => "-3month"
+    );
+  
   include VIEW_PATH . '/view_dashboard.php';	
 	
 } elseif ('delete' == $action) {

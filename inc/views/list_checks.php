@@ -3,7 +3,15 @@ $tmpl->set('title', 'Self Service Alerts based on Graphite metrics');
 $active_tab_alerts = " class=active";
 $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
-
+?>
+<script type="text/javascript">
+$(function(){
+	$('#list_of_filters').change(function(){
+		$(location).attr('href',$('#list_of_filters').val());
+	});
+});
+</script>
+<?php 
 try {
 	$checks->tossIfEmpty();
 	$affected = fMessaging::retrieve('affected', fURL::get());
@@ -16,6 +24,19 @@ $(document).ready(function() {
 </script>
 
 <a class="small btn btn-primary" href="<?= Check::makeURL('add', $check_type);?>">Add Check</a>
+<p class="pull-right">
+	Filter group :
+	<select id="list_of_filters">
+		<option value="<?=Check::makeURL('list', $check_type,-1)?>">All checks</option>
+		<?php 
+			foreach (Group::findAll() as $group) {
+		?>
+				<option value="<?=Check::makeURL('list', $check_type,$group->getGroupId())?>" <?=($filter_group_id==$group->getGroupId())?'selected="selected"':''?>><?=$group->getName();?></option>
+		<?php
+			}
+		?>
+	</select>
+</p>
 <table class="table table-bordered table-striped">
           <thead>
 		<tr>
@@ -81,7 +102,22 @@ $(document).ready(function() {
     <?php } 
 } catch (fEmptySetException $e) {
 	?>
-	<p class="info">There are currently no <?=$check_type?> based checks. <a href="<?=Check::makeURL('add', $check_type); ?>">Add one now</a></p>
+	<div class="info">
+		There are currently no <?=$check_type?> based checks for this group. <a href="<?=Check::makeURL('add', $check_type); ?>&filter_group_id=<?=$filter_group_id?>">Add one now</a>
+		<p class="pull-right">
+			Filter group :
+			<select id="list_of_filters">
+				<option value="<?=Check::makeURL('list', $check_type,-1)?>">All checks</option>
+				<?php 
+					foreach (Group::findAll() as $group) {
+				?>
+						<option value="<?=Check::makeURL('list', $check_type,$group->getGroupId())?>" <?=($filter_group_id==$group->getGroupId())?'selected="selected"':''?>><?=$group->getName();?></option>
+				<?php
+					}
+				?>
+			</select>
+		</p>
+	</div>
 	<?php
 }
 ?>

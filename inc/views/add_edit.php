@@ -76,7 +76,19 @@ $tmpl->place('header');
 ?>
                 <input id="check-repeat_delay" class="span3" type="text" size="20" name="repeat_delay" value="<?=$check_delay; ?>" />
               </div>
-           </div><!-- /clearfix -->
+           </div>
+           <div class="clearfix">
+             <label class="masterTooltip" title="The group to classify in" for="check-group">Group</label>
+             <div class="input">
+            	<select name="group_id">
+            		<?php 
+            			foreach (Group::findAll() as $group) {
+							fHTML::printOption($group->getName(), $group->getGroupId(), ($action == 'add')?$filter_group_id:$check->getGroupId());
+						}
+            		?>
+            	</select>
+             </div>
+           </div>
            </fieldset>
            <fieldset>
              <div class="actions">

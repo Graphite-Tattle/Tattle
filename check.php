@@ -13,6 +13,11 @@ $check_id = fRequest::get('check_id', 'integer');
 
 $check_list_url = Check::makeURL('list', $check_type);
 
+$filter_group_id = fRequest::get('filter_group_id','integer');
+if (empty($filter_group_id) || ($filter_group_id < 0)) {
+	$filter_group_id = -1;
+}
+
 $breadcrumbs[] = array('name' => ucfirst($check_type) . ' Checks', 'url' => Check::makeURL('list', $check_type), 'active'=> false);
 // --------------------------------- //
 if ('delete' == $action) {
@@ -98,7 +103,11 @@ if ('delete' == $action) {
 
 } else {
   $page_num = fRequest::get('page', 'int', 1);
-  $checks = Check::findAll($check_type, $sort, $sort_dir, $GLOBALS['PAGE_SIZE'], $page_num);
+  if ($filter_group_id == -1) {
+	$checks = Check::findAll($check_type, $sort, $sort_dir, $GLOBALS['PAGE_SIZE'], $page_num);
+  } else {
+  	$checks = Check::findAllByGroupId($check_type, $filter_group_id, $sort, $sort_dir, $GLOBALS['PAGE_SIZE'], $page_num);
+  }
 
   if ($check_type == 'threshold') {
     include VIEW_PATH . '/list_checks.php';

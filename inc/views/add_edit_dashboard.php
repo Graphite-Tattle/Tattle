@@ -106,27 +106,101 @@ if (isset($dashboard_id)) {
  <?php
    try {
 	$graphs->tossIfEmpty();
+	$number_of_graphs = $graphs->count(TRUE);
 	$affected = fMessaging::retrieve('affected', fURL::get());
+	
+	if ($number_of_graphs > 1) {
 	?>
+		<script type="text/javascript">
+			function getPosition(element)
+			{
+			        var left = 0;
+			        var top = 0;
+			        // Retrieve the element
+			        var e = document.getElementById(element);
+			        // While we have a parent
+			        while (e.offsetParent != undefined && e.offsetParent != null)
+			        {
+			                // We add the parent position
+			                left += e.offsetLeft + (e.clientLeft != null ? e.clientLeft : 0);
+			                top += e.offsetTop + (e.clientTop != null ? e.clientTop : 0);
+			                e = e.offsetParent;
+			        }
+			        return new Array(left,top);
+			}
+		
+			function construct_table_hider () {
+				var new_div = $('<div>');
+				var pos = getPosition('sortable');
+				$(new_div).css('width',$('#sortable').width())
+						  .css('height',$('#sortable').height())
+						  .css('display','none')
+						  .attr('id','tableHider')
+						  .addClass('sortable-loader');
+				$('table').append(new_div);
+			}
+		
+			function hide_table() {
+				var pos = getPosition('sortable');
+				$('#tableHider').css('left',pos[0]).css('top',pos[1]);
+				$('#tableHider').show();
+			}
+		
+			function hide_popover(){
+				$('.btn_popover').each(function(){
+					$(this).popover('hide');
+				});
+			}
+		
+			$(function(){
+				construct_table_hider();
+				
+				$('.btn_popover').each(function(){
+					id=$(this).attr('id')
+					$(this).popover({
+						content : $("#form_clone_into_"+id).html(),
+						html : true
+					});
+				});
+		
+				$('#sortable').sortable({
+					placeholder: "sortable-placeholder",
+					start : hide_popover,
+					update : function (event,ui){
+						hide_table();
+						var new_weights = new Array();
+						var i = 0;
+						$('#sortable tr').each(function(){
+							new_weights.push($(this).attr('id') + ":" + i);
+							i++;
+						});
+						$(location).attr('href','<?=Graph::makeURL('drag_reorder')?>'+new_weights.join(","));
+					}
+				});
+			});
+		</script>
+	<?php }?>
     <div>
 	<table class="table table-bordered table-striped" id="table-graphs">
           <thead>
           <tr>
-          <th>Weight</th>    
           <th>Name</th>
           <th>Description</th>
           <th>Vtitle</th>
           <th>Area</th>
           <th>Action</th>
+          <?php if ($number_of_graphs > 1) {?>
+          	<th>Reorder&nbsp;*</th>
+          <?php }?>
           </tr>    
           </thead>
-          <tbody>
+          <tbody id="sortable">
 	<?php
 	$first = TRUE;
+	$index = 0;
 	foreach ($graphs as $graph) {
 		?>
-    	<tr>
-        <td><?=$graph->prepareWeight(); ?></td>
+    	<tr id="<?=$graph->getGraphId()?>">
         <td><?=$graph->prepareName(); ?></td>
         <td><?=$graph->prepareDescription(); ?></td>
         <td><?=$graph->prepareVtitle(); ?></td>
@@ -143,10 +217,10 @@ if (isset($dashboard_id)) {
         	Select destination : 
         	<select name="dashboard_dest_id">
         		<?php 
-        			foreach (Dashboard::findAll() as $dashboard) {
-						if ($dashboard->prepareDashboardId() != $graph->prepareDashboardId()) {
+        			foreach (Dashboard::findAll() as $dashboard_dest) {
+						if ($dashboard_dest->prepareDashboardId() != $graph->prepareDashboardId()) {
         		?>
-        			<option value="<?=(int)$dashboard->getDashboardId(); ?>"><?=$dashboard->prepareName() ?></option>
+        			<option value="<?=(int)$dashboard_dest->getDashboardId(); ?>"><?=$dashboard_dest->prepareName() ?></option>
         		<?php 
         				}
         			}
@@ -157,9 +231,28 @@ if (isset($dashboard_id)) {
         </div>
         <a href="#" id="<?=(int)$graph->getGraphId(); ?>" class="btn_popover">Clone into</a>
         </td>
+        <?php if ($number_of_graphs > 1) {?>
+	        <td>
+	        	<?php if ($index == 0) {?>
+	        		<span class="disabled"><i class="icon-arrow-up pointer"></i></span>
+	        	<?php } else { ?>
+	        		<a href="<?=Graph::makeURL('reorder',$graph,'previous')?>" onclick="hide_table();return true;"><i class="icon-arrow-up pointer" title="Previous"></i></a>
+	        	<?php } ?>
+	        	<?php if ($index == $number_of_graphs-1) {?>
+	        		<span class="disabled"><i class="icon-arrow-down pointer"></i></span>
+	        	<?php } else { ?>
+	        		<a href="<?=Graph::makeURL('reorder',$graph,'next')?>" onclick="hide_table();return true;"><i class="icon-arrow-down pointer" title="Next"></i></a>
+	        	<?php } ?>
+	        </td>
+	    <?php } ?>
         </tr>
-    <?php } ?>
+    <?php
+    	$index++;
+		 } ?>
     </tbody></table>
+    <?php if ($number_of_graphs > 1) {?>
+    	<p class="text-info"><em>* You can also use "drag and drop" to reorder the graphs.</em></p>
+    <?php } ?>
     <?
 } catch (fEmptySetException $e) {
 	?>

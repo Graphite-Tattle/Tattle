@@ -20,8 +20,8 @@ class Graph extends fActiveRecord
           array('weight' => 'asc')
           );
 	}
-
-    static public function makeURL($type, $obj=NULL)
+	
+    static public function makeURL($type, $obj=NULL, $move=NULL)
 	{
 		switch ($type)
 		{
@@ -39,6 +39,10 @@ class Graph extends fActiveRecord
 				return 'graphs.php?action=clone&graph_id=' . (int)$obj->getGraphId();
 			case 'clone_into':
 				return 'graphs.php?action=clone_into&graph_id=' . (int)$obj->getGraphId();
+			case 'reorder':
+				return 'graphs.php?action=reorder&graph_id=' . $obj->getGraphId() . '&move=' . $move;
+			case 'drag_reorder':
+				return 'graphs.php?action=reorder&drag_order=';
 
 		}
 	}

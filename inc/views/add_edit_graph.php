@@ -51,19 +51,6 @@ if (!is_null($dashboard_id)) {
               </div>
             </div><!-- /clearfix -->
             <div class="clearfix">
-              <label for="graph-weight">Weight<em>*</em></label>
-              <div class="input">
-                <select name="weight" class="span3">
-                <?
-                 $weights = array(0,1,2,3,4,5,6,7,8,9,10);
-                 foreach ($weights as $value) {
-                   fHTML::printOption($value, $value, $graph->getWeight());
-                 }
-                ?>
-                </select>
-              </div>
-            </div><!-- /clearfix -->
-            <div class="clearfix">
               <label for="graph-range">Range<em>*</em></label>
               <div class="input">
                 <select name="time_value" class="span3">
@@ -111,8 +98,65 @@ if (!is_null($dashboard_id)) {
  <?php
    try {
 	$lines->tossIfEmpty();
+	$number_of_lines = $lines->count(TRUE);
 	$affected = fMessaging::retrieve('affected', fURL::get());
+	
+	if ($number_of_lines > 1) {
 	?>
+		<script type="text/javascript">
+			function getPosition(element)
+			{
+			        var left = 0;
+			        var top = 0;
+			        // Retrieve the element
+			        var e = document.getElementById(element);
+			        // While we have a parent
+			        while (e.offsetParent != undefined && e.offsetParent != null)
+			        {
+			                // We add the parent position
+			                left += e.offsetLeft + (e.clientLeft != null ? e.clientLeft : 0);
+			                top += e.offsetTop + (e.clientTop != null ? e.clientTop : 0);
+			                e = e.offsetParent;
+			        }
+			        return new Array(left,top);
+			}
+		
+			function construct_table_hider () {
+				var new_div = $('<div>');
+				var pos = getPosition('sortable');
+				$(new_div).css('width',$('#sortable').width())
+						  .css('height',$('#sortable').height())
+						  .css('display','none')
+						  .attr('id','tableHider')
+						  .addClass('sortable-loader');
+				$('table').append(new_div);
+			}
+		
+			function hide_table() {
+				var pos = getPosition('sortable');
+				$('#tableHider').css('left',pos[0]).css('top',pos[1]);
+				$('#tableHider').show();
+			}
+		
+			$(function(){
+				construct_table_hider();
+				
+				$('#sortable').sortable({
+					placeholder: "sortable-placeholder",
+					update : function (event,ui){
+						hide_table();
+						var new_weights = new Array();
+						var i = 0;
+						$('#sortable tr').each(function(){
+							new_weights.push($(this).attr('id') + ":" + i);
+							i++;
+						});
+						$(location).attr('href','<?=Line::makeURL('drag_reorder')?>'+new_weights.join(","));
+					}
+				});
+			});
+		</script>
+	<?php } ?>
     <div>
 	<table class="table table-bordered table-striped">
           <thead>
@@ -121,14 +165,18 @@ if (!is_null($dashboard_id)) {
           <th>Target</th>
           <th>Color</th>
           <th>Action</th>
+          <?php if ($number_of_lines > 1) {?>
+          	<th>Reorder&nbsp;*</th>
+          <?php }?>
           </tr>
           </thead>
-          <tbody>
+          <tbody id="sortable">
 	<?php
 	$first = TRUE;
+	$index = 0;
 	foreach ($lines as $line) {
 		?>
-    	<tr>
+    	<tr id="<?=$line->getLineId()?>">
         <td><?=$line->prepareAlias(); ?></td>
         <td><?=$line->prepareTarget(); ?></td>
         <td><?=$line->prepareColor(); ?></td>
@@ -139,9 +187,28 @@ if (!is_null($dashboard_id)) {
         	<input type="hidden" name="token" value="<?=fRequest::generateCSRFToken("/lines.php"); ?>" />
         </form>
         </td>
+         <?php if ($number_of_lines > 1) {?>
+	        <td>
+	        	<?php if ($index == 0) {?>
+	        		<span class="disabled"><i class="icon-arrow-up pointer"></i></span>
+	        	<?php } else { ?>
+	        		<a href="<?=Line::makeURL('reorder',$line,'previous')?>" onclick="hide_table();return true;"><i class="icon-arrow-up pointer" title="Previous"></i></a>
+	        	<?php } ?>
+	        	<?php if ($index == $number_of_lines-1) {?>
+	        		<span class="disabled"><i class="icon-arrow-down pointer"></i></span>
+	        	<?php } else { ?>
+	        		<a href="<?=Line::makeURL('reorder',$line,'next')?>" onclick="hide_table();return true;"><i class="icon-arrow-down pointer" title="Next"></i></a>
+	        	<?php } ?>
+	        </td>
+	    <?php } ?>
         </tr>
-    <?php } ?>
+    <?php
+    	$index++;
+		 } ?>
     </tbody></table>
+    <?php if ($number_of_lines > 1) {?>
+    	<p class="text-info"><em>* You can also use "drag and drop" to reorder the graphs.</em></p>
+     <?php } ?>
     <?
 } catch (fEmptySetException $e) {
 	?>

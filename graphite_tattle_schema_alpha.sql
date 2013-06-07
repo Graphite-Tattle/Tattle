@@ -92,6 +92,7 @@ CREATE TABLE `lines` (
   `target` varchar(1000) NOT NULL DEFAULT '',
   `alias` varchar(255) DEFAULT NULL,
   `graph_id` int(11) DEFAULT NULL,
+  `weight` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`line_id`)
 ) CHARSET=utf8;
 

@@ -5,7 +5,7 @@ fAuthorization::requireLoggedIn();
 
 fRequest::overrideAction();
 
-$action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete', 'view', 'clone'));
+$action = fRequest::getValid('action', array('list', 'add', 'edit', 'delete', 'view', 'clone', 'reorder'));
 
 $line_id = fRequest::get('line_id', 'integer');
 $graph_id = fRequest::get('graph_id', 'integer');
@@ -103,4 +103,85 @@ if ('delete' == $action) {
 	$lines = Line::findAll($graph_id);
 	
 	include VIEW_PATH . '/add_edit_graph.php';
+	
+} elseif ('reorder' == $action) {
+	
+	$drag_order = fRequest::get('drag_order');
+	$error = false;
+	
+	if (empty($drag_order)) {
+		// In this case, the user clicks on the arrow
+		$move = fRequest::getValid('move', array('previous', 'next'));
+		$line_to_move = new Line($line_id);
+		$graph_id = $line_to_move->getGraphId();
+		$lines_in_graph = Line::findAll($graph_id);
+		
+		$number_of_lines = $lines_in_graph->count(TRUE); 
+		$skip_next = false;
+		
+		for ($i=0; $i < $number_of_lines; $i++) {
+			if (!$skip_next) {
+				$current_line = $lines_in_graph[$i];
+				if ($current_line->getLineId() != $line_id) {
+					// This isn't the concerned line
+					$current_line->setWeight($i);
+				} else {
+					if ('previous' == $move) {
+						if ($i > 0) {
+							$current_line->setWeight($i-1);
+							$previous_line = $lines_in_graph[$i-1];
+							$previous_line->setWeight($i);
+						}
+					} else if ('next' == $move) {
+						if ($i < $number_of_lines -1) {
+							$current_line->setWeight($i+1);
+							$next_line = $lines_in_graph[$i+1];
+							$next_line->setWeight($i);
+							$skip_next = true;
+						}
+					}
+				}
+			} else {
+				$skip_next = false;
+			}
+		}
+		
+	} else {
+		// In this case the user has used the drag and drop functionnality
+		$array_of_weights = explode(",", $drag_order);
+		$lines_in_graph = array();
+		foreach ($array_of_weights as $new_weight) {
+			$expl = explode(":",$new_weight);
+			$current_line = new Line($expl[0]);
+			if (empty($graph_id)) {
+				$graph_id = $current_line->getGraphId();
+			} else {
+				// Check if all the lines are in the same graph
+				if ($graph_id != $current_line->getGraphId()) {
+					$error = true;
+					break;
+				}
+			}
+			$current_line->setWeight($expl[1]);
+			$lines_in_graph[] = $current_line;
+		}
+	}
+	
+	
+	if (!$error) {
+		foreach ($lines_in_graph as $line_to_store) {
+			$line_to_store -> store();
+		}
+		
+		$graph = new Graph($graph_id);
+		$url_redirect = Graph::makeURL('edit',$graph);
+		fMessaging::create("success", "/graphs.php","The lines have been successfully reordered");
+		
+	} else {
+		$url_redirect = Dashboard::makeURL('list');
+		fMessaging::create("success", "/dashboard.php","An error occured and the lines couldn't be reordered");
+	}
+
+
+	fURL::redirect($url_redirect);
 }

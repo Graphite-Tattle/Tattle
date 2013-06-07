@@ -17,11 +17,11 @@ class Line extends fActiveRecord
        return fRecordSet::build(
           __CLASS__,
           array('graph_id=' =>$graph_id),
-          array()
+          array('weight' => 'asc')
           );
 	}   
     
-    static public function makeURL($type, $obj=NULL)
+    static public function makeURL($type, $obj=NULL, $move=NULL)
 	{
 		switch ($type)
 		{
@@ -37,6 +37,10 @@ class Line extends fActiveRecord
 				return 'lines.php?action=list&line_id=' . (int)$obj->getLineId();
 			case 'clone':
 				return 'lines.php?action=clone&line_id=' . (int)$obj->getLineId();
+			case 'reorder':
+				return 'lines.php?action=reorder&line_id=' . $obj->getLineId() . '&move=' . $move;
+			case 'drag_reorder':
+				return 'lines.php?action=reorder&drag_order=';
 		}	
 	}
 	

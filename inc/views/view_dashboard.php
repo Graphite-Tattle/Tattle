@@ -8,7 +8,8 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
 	<div class="navbar-inner">
 		<div class="container text-center">
-			<a href="<?=Dashboard::makeURL('list')?>" class="btn btn-primary">Return to list</a>
+			<a href="<?=Dashboard::makeURL('list',$dashboard->getGroupId())?>" class="btn btn-primary">Return to list</a>
+			<a href="<?=Dashboard::makeURL('edit',$dashboard)?>" class="btn btn-primary">Edit this dashboard</a>
 		
 	<?php 
 		if (($display_options_links%2)==1) {

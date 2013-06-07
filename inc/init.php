@@ -28,7 +28,7 @@ $tmpl->add('css','assets/css/jquery-ui.css');
 $tmpl->add('css','assets/css/tattle.css');
 
 $tmpl->add('js','assets/js/jquery-2.0.1.min.js');
-$tmpl->add('js','assets/js/jquery-ui.min.js');
+$tmpl->add('js','assets/js/jquery-ui.js');
 
 $tmpl->add('js','assets/js/jquery.collapsible.js');
 $tmpl->add('js','assets/js/jquery.graphite.js');

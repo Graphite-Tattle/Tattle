@@ -62,10 +62,11 @@ table th.last,table td.last{width: 40px;text-align: center}
 #table-graphs .popover{max-width: initial;}
 .sortable-loader {
 	background-color:rgba(250,250,250,0.5);
-	background-image :url("images/loader.gif");
 	background-repeat: no-repeat;
 	background-position: center center;
 	position : absolute;
+	text-align: center;
+	vertical-align: middle;
 }
 .table-striped tbody tr.sortable-placeholder td{
 	height : 50px;

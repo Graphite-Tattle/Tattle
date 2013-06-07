@@ -113,7 +113,7 @@ try {
 		<form method="post" id="formImport" action="<?=Dashboard::makeURL('import'); ?>" enctype="multipart/form-data" class="inline no-margin" style="padding-left: 10px;">
 			<input type="hidden" value="<?= $filter_group_id?>" name="filter_group_id" />
 			<p class="inline">
-				<a href="#" onclick="if(test_file_present()){$('#formImport').submit()};return false;" class="btn primary">Import</a>
+				<a href="#" onclick="if(test_file_present()){$('#formImport').submit()};return false;" class="btn btn-primary">Import</a>
 				this one :
 				<input type="file" name="uploadedfile" id="fileInput" />
 			</p>

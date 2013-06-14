@@ -71,6 +71,8 @@ class CheckResult extends fActiveRecord
 				return 'result.php?action=delete&check_id=' . (int)$obj->getCheckId();
 			case 'ackAll':
 				return 'result.php?action=ackAll&check_id=' . (int)$obj->getCheckId();
+			case 'notifyAll':
+				return 'result.php?action=notifyAll&check_id=' . (int)$obj->getCheckId();
 		}	
 	}       
 }

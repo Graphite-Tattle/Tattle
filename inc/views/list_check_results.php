@@ -12,11 +12,40 @@ $tmpl->place('header');
         <?php
   } ?>
 <fieldset>
-    <div style="padding-bottom:15px;">
-        <span>Name : <?=$check->prepareName(); ?></span> |
-        <span>Target : <?=Check::constructTarget($check); ?></span>
-    </div>
-    <span><?=Check::showGraph($check,true,'-48hours',620,true); ?></span>
+	<div class="span8">
+	    <div style="padding-bottom:15px;">
+	        <span>Name : <?=$check->prepareName(); ?></span> |
+	        <span>Target : <?=Check::constructTarget($check); ?></span>
+	    </div>
+	    <span><?=Check::showGraph($check,true,'-48hours',620,true); ?></span>
+	</div>
+	<div class="span4">
+		<form method="POST" action="<?=CheckResult::makeURL('notifyAll',$check)?>" class="form-horizontal">
+			<fieldset>
+				<legend>Mail everyone</legend>
+				<em class="text-info" style="margin-bottom:10px;display:block;">Send a mail to all the people who subscribe to this check</em>
+				<div class="control-group">
+					<label class="control-label" for="subject">Subject&nbsp;*</label>
+					<div class="controls">
+						<input type="text" id="subject" name="subject_mail" value="<?=isset($subject_mail)?$subject_mail:"";?>"/>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="content">Content&nbsp;*</label>
+					<div class="controls">
+						<textarea id="content" name="content_mail"><?= isset($content_mail)?$content_mail:"";?></textarea>
+					</div>
+				</div>
+				<input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
+				<div class="control-group actions">
+					<div class="controls">
+						<input type="submit" value="Send this mail" class="btn btn-primary"/>
+						<div class="required"><em>*</em> Required field</div>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
 </fieldset>
 <?php
   try {

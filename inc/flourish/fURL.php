@@ -265,7 +265,7 @@ class fURL
 	static public function is_menu_active ($menu_to_active,$type=NULL)
 	{
 		$menu_included_in = array(
-				'result.php' => 'checkResult',
+				'result.php' => 'index',
 				'graphs.php' => 'dashboard',
 				'lines.php' => 'dashboard',
 				'groups.php' => 'group',

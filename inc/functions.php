@@ -158,4 +158,23 @@ function addOrReplaceInURL ($url, $key=NULL, $value=NULL) {
 	}
 	return $url;
 }
+
+/**
+ * The parameters should be in format : "hh:mm"
+ */
+function compare_hours ($hour1,$hour2) {
+	if ($hour1 == $hour2) {
+		return 0;
+	} else {
+		$array_hour1 = explode(":", $hour1);
+		$array_hour2 = explode(":", $hour2);
+		if ($array_hour1[0] > $array_hour2[0]) {
+			return 1;
+		} else if ($array_hour1[0] < $array_hour2[0]) {
+			return -1;
+		} else {
+			return (($array_hour1[1] > $array_hour2[1])?1:-1);
+		}
+	}
+}
 ?>

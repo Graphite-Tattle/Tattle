@@ -55,6 +55,10 @@ CREATE TABLE `checks` (
   `regression_type` varchar(255) DEFAULT NULL,
   `number_of_regressions` int(11) DEFAULT NULL,
   `group_id` int(11) NOT NULL DEFAULT '1',
+  `hour_start` varchar(5) DEFAULT NULL;
+  `hour_end` varchar(5) DEFAULT NULL;
+  `day_start` varchar(3) DEFAULT NULL;
+  `day_end` varchar(3) DEFAULT NULL;
   PRIMARY KEY (`check_id`),
   UNIQUE KEY `user_id` (`user_id`,`name`)
 ) CHARSET=utf8;

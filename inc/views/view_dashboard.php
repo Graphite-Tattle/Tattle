@@ -40,10 +40,17 @@
 	    	<div class="sized-div">
 			    <ul>
 			    	<?php 
-			    		foreach ($quick_times_desired as $print => $value) {
+			    		foreach ($quick_times_desired as $print => $time) {
+
+							if (is_array($time)) {
 					?>
-			    	<li><a href="<?=fURL::replaceInQueryString("from", $value)?>"><?=$print ?></a></li>
-					<?php 	
+						<li><a href="<?=fURL::replaceInQueryString(array_keys($time),array_values($time)) ?>"><?=$print ?></a></li>
+					<?php
+						} else {
+					?>
+			    		<li><a href="<?=fURL::replaceInQueryString("from", $time)?>"><?=$print ?></a></li>
+					<?php 
+							}	
 						}
 			    	?>
 			    </ul>

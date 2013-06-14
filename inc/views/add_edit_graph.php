@@ -209,7 +209,7 @@ if (!is_null($dashboard_id)) {
 		 } ?>
     </tbody></table>
     <?php if ($number_of_lines > 1) {?>
-    	<p class="text-info"><em>* You can also use "drag and drop" to reorder the graphs.</em></p>
+    	<p class="text-info"><em>* You can also use "drag and drop" to reorder the lines.</em></p>
      <?php } ?>
     <?
 } catch (fEmptySetException $e) {

@@ -63,6 +63,7 @@ class Line extends fActiveRecord
 		$line->setTarget($line_to_clone->getTarget());
 		$line->setColor($line_to_clone->getColor());
 		$line->setGraphId($graph_id);
+		$line->setWeight($line_to_clone->getWeight());
 		$line->store();
 	}
 	

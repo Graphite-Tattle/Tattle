@@ -27,7 +27,7 @@ try {
                      echo '<a href="' . Setting::makeURL('list','user',NULL,$user->getUserId()) . '">Settings</a>';
                    } ?>
        <?php if (fAuthorization::checkAuthLevel('admin') && $user->getUserId() != 1) {
-           ?> <a href="<?=User::makeUrl('delete',$user); ?>">Delete</a></td>
+           ?>| <a href="<?=User::makeUrl('delete',$user); ?>">Delete</a></td>
        <?php } ?>
         </tr>
     <?php } ?>

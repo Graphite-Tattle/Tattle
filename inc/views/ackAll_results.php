@@ -8,7 +8,7 @@ $tmpl->place('header');
     <strong><?=$check->prepareName(); ?></strong>?
   </p>
   <p>
-    <input class="danger btn" type="submit" value="Yes, acknowledge all" />
+    <input class="btn-danger btn" type="submit" value="Yes, acknowledge all" />
     <a class="btn" href="<?=Check::makeURL('list', $check->prepareType()); ?>">No, please keep it</a>
     <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
   </p>

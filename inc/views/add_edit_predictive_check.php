@@ -35,11 +35,58 @@ $tmpl->place('header');
 			$("#define_period").show();
 		}
 	}
-	<?php if ($action == "add") { ?>
-		$(function(){
+	function compute_period () {
+		var explanation = "This check is available ";
+		if (!$("input[name=no_time_filter]").is(":checked")) {
+			var start_hr = parseInt($("select[name=start_hr]").val());
+			var start_min = parseInt($("select[name=start_min]").val());
+			var end_hr = parseInt($("select[name=end_hr]").val());
+			var end_min = parseInt($("select[name=end_min]").val());
+			if ((start_hr != end_hr) || (start_min != end_min)) {
+				explanation += "from "  + (start_hr<10?"0":"") + start_hr
+										+ ":"
+										+ (start_min<10?"0":"") + start_min
+										+ " to "
+										+ (end_hr<10?"0":"") + end_hr
+										+ ":"
+										+ (end_min<10?"0":"") + end_min;
+				if ((start_hr > end_hr)||((start_hr == end_hr) && (start_min > end_min))) {
+					explanation += " of the next day";
+				}
+			} else {
+				explanation += "the whole day";
+			}
+		} else {
+			explanation += "the whole day";
+		}
+		explanation += " and ";
+		if (!$("input[name=no_day_filter]").is(":checked")) {
+			var array_days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+			var array_days_display = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "satursday"];
+			var start_day = array_days.indexOf($("select[name=start_day]").val());
+			var end_day = array_days.indexOf($("select[name=end_day]").val());
+			if (start_day != end_day) {
+				explanation += "from " + array_days_display[start_day] + " to " + array_days_display[end_day];
+				if (start_day > end_day) {
+					explanation += " of the next week";
+				}
+			} else {
+				explanation += "the whole week";
+			}
+		} else {
+			explanation += "the whole week";
+		}
+		$("#explanation").html(explanation);
+	}
+	$(function(){
+		compute_period();
+		<?php if ($action == "add") { ?>
 			expand_form ();
+		<?php } ?>
+		$("#define_period").change(function(){
+			compute_period();
 		});
-	<?php } ?>
+	});
 </script>
 <?php if ($action == "edit") { ?>
 <a href="#" id="expansion_btn" class="btn btn-primary" onclick="expand_form();return false;">Hide the graph</a>
@@ -128,10 +175,10 @@ $tmpl->place('header');
 						} else {
 							$start_hr = 0;
 							$start_min = 0;
-							$end_hr = 0;
-							$end_min = 0;
-							$start_day = "mon";
-							$end_day = "mon";
+							$end_hr = 23;
+							$end_min = 59;
+							$start_day = "sun";
+							$end_day = "sat";
 						}
 	         		?>
 	         		<div class="controls">
@@ -207,7 +254,7 @@ $tmpl->place('header');
 											"Satursday" => "sat"
 		         					);
 		         					foreach ($days as $print => $value) {
-										echo "<option value='".$value."'>".$print."</option>";
+										echo "<option value='".$value."'".(($value == $start_day)?" selected='selected'":"").">".$print."</option>";
 									}
 		         				?>
 		         			</select>
@@ -217,12 +264,17 @@ $tmpl->place('header');
 		         			<select class="span3" name="end_day">
 		         				<?php 
 									foreach ($days as $print => $value) {
-										echo "<option value='".$value."'>".$print."</option>";
+										echo "<option value='".$value."'".(($value == $end_day)?" selected='selected'":"").">".$print."</option>";
 									}
 		         				?>
 		         			</select>
 		         		</div>
 		         	</div>
+	         	</div>
+	         	<div class="control-group">
+	         		<div class="controls">
+	         			<em id="explanation" class="text-info"></em>
+	         		</div>
 	         	</div>
 	         </div>
          </fieldset>

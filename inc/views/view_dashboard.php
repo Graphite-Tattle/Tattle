@@ -110,7 +110,13 @@
 	
 	<div id="graphscontainer">
 <center> <!-- cssblasphemy but i need it look decent real quick --> 
-    <h1><?=$dashboard->getName(); ?>&nbsp<small><?=$dashboard->getDescription(); ?></small></h1>
+    <h1>
+    	<span id="loader"><img src="../../assets/img/loader2.gif"/></span>
+    	<?=$dashboard->getName(); ?>
+    	&nbsp
+    	<small><?=$dashboard->getDescription(); ?></small>
+    </h1>
+    <p id="explanation" style="display:none;"><em class="text-info">You can select a period on a graph to zoom in</em></p>
     <div class="row">
 	<?php
         $graph_count = 0;
@@ -132,7 +138,9 @@
 		  }
         
 		?>
-        <span class="inline"><a href="<?=Graph::makeUrl('edit',$graph); ?>"><img src="<?=$url_graph ?>" rel=<?=($graph_count >= $columns ? 'popover-above' : 'popover-below'); ?> title="<?=$graph->getName(); ?>" data-content="<?=$graph->getDescription(); ?>" /></a></span>
+        <span class="inline zoomable">
+        		<img src="<?=$url_graph ?>" rel=<?=($graph_count >= $columns ? 'popover-above' : 'popover-below'); ?> title="<?=$graph->getName(); ?>" data-content="<?=$graph->getDescription(); ?>" />
+        </span>
     <?php 
           $graph_count++;
            if ( $graph_count == $columns) {
@@ -143,6 +151,196 @@
 </div>
 </div>
 </center>
+<script type="text/javascript" src="../../assets/js/moment.js"></script>
+<script type="text/javascript">
+	var loaded_graphs = 0;
+	var pos_click = 0;
+
+	function getPosition(_this) {
+	        var left = 0;
+	        var top = 0;
+	        // Retrieve the element
+	        var e = _this;
+	        // While we have a parent
+	        while (e.offsetParent != undefined && e.offsetParent != null)
+	        {
+	                // We add the parent position
+	                left += e.offsetLeft + (e.clientLeft != null ? e.clientLeft : 0);
+	                top += e.offsetTop + (e.clientTop != null ? e.clientTop : 0);
+	                e = e.offsetParent;
+	        }
+	        return new Array(left,top);
+	}
+
+	function getParamValue(param,url) {
+		var u = url == undefined ? document.location.href : url;
+		var reg = new RegExp('(\\?|&|^)'+param+'=(.*?)(&|$)');
+		matches = u.match(reg);
+		return (matches != null && matches[2] != undefined) ? decodeURIComponent(matches[2]).replace(/\+/g,' ') : '';
+	}
+
+	function getGoodUnit (unit) {
+		if ("secondes".indexOf(unit) > -1) {
+			return "secondes";
+		} else if ("minutes".indexOf(unit) > -1) {
+			return "minutes";
+		} else if ("hours".indexOf(unit) > -1) {
+			return "hours";
+		} else if ("days".indexOf(unit) > -1) {
+			return "days";
+		} else if ("weeks".indexOf(unit) > -1) {
+			return "weeks";
+		} else if ("months".indexOf(unit) > -1) {
+			return "months";
+		} else if ("years".indexOf(unit) > -1) {
+			return "years";
+		} else {
+			return "";
+		}
+	}
+
+	$(function(){
+
+		$(".zoomable img").each(function(){
+			$(this).load(function(){
+				loaded_graphs++;
+				
+				if (loaded_graphs == $(".zoomable").size()) {
+					$("#loader").hide();
+					$("#explanation").show();
+					$(".zoomable img").each(function(){
+						var current_graph = this;
+						var pos=getPosition(current_graph);
+						var new_div = $("<div>").width($(current_graph).width())
+												.height($(current_graph).height())
+												.css("position","absolute")
+												.css("z-index","500")
+												.css('left',pos[0]+"px")
+												.css('top',pos[1]+"px")
+												.attr('class','zoom-div');
+						$(this).parent().append(new_div);
+						
+						$(new_div).mousedown(function(e){
+							if (e.pageX < pos[0] + 72) {
+								pos_click = pos[0] + 72;
+							} else if (e.pageX > pos[0] + $(current_graph).width() - 8 ) {
+								pos_click = pos[0] + $(current_graph).width() - 8
+							} else {
+								pos_click = e.pageX;
+							}
+						});
+						$(new_div).mouseout(function(e){
+							pos_click = 0;
+							pos_t = 0;
+							$('#time_selector').remove();
+						});
+						$(new_div).mousemove(function(e){
+							if (pos_click > 0) {
+								$('#time_selector').remove();
+								if (e.pageX < pos[0] + 72) {
+									pos_t = pos[0] + 72;
+								} else if (e.pageX > pos[0] + $(current_graph).width() - 8 ) {
+									pos_t = pos[0] + $(current_graph).width() - 8
+								} else {
+									pos_t = e.pageX;
+								}
+								var time_selector = "<div>";
+								time_selector=$(time_selector).width(Math.abs(pos_click-pos_t))
+											.height($(current_graph).height())
+											.css('left',((pos_click>pos_t)?pos_t:pos_click)+"px")
+											.css('top',pos[1]+"px")
+											.attr('id','time_selector');
+								$(current_graph).parent().append(time_selector);
+							}
+						});
+						$(new_div).mouseup(function(e){
+							var diff = Math.abs(pos_t - pos_click);
+							if (diff > 0) {
+								try {
+									var lowest = (pos_t > pos_click)?pos_click:pos_t;
+									var pos_lowest = lowest - (pos[0] + 72);
+									var url_graph = $(current_graph).attr("src");
+									var from = getParamValue("from",url_graph);
+									var until = getParamValue("until",url_graph);
+	
+									// We built the until
+									var until_moment = moment();
+									if (until != "") {
+										var test_moment = moment(until,"HH:mm_YYYYMMDD");
+										if (test_moment.isValid()) {
+											until_moment = test_moment;
+										} else {
+											if (until.indexOf("midnight") == 0) {
+												until_moment = until_moment.subtract("minutes",until_moment.format("mm"));
+												until_moment = until_moment.subtract("hours",until_moment.format("HH"));
+												until = until.substring(8,until.length);
+											}
+											if (until[0] == "-") {
+												var reg=new RegExp('-(\\d)+(.+)');
+												var until_reg = until.match(reg);
+												if (until_reg != null) {
+													until_moment = until_moment.subtract(getGoodUnit(until_reg[2]),until_reg[1]);
+												}
+											}
+										}
+									}
+	
+									// Now, we built the from
+									var from_moment = moment(until_moment);
+									test_moment = moment(from,"HH:mm_YYYYMMDD");
+									if (test_moment.isValid()) {
+										from_moment = test_moment;
+									} else {
+										if (from.indexOf("midnight") == 0) {
+											from_moment = from_moment.subtract("minutes",from_moment.format("mm"));
+											from_moment = from_moment.subtract("hours",from_moment.format("HH"));
+											from = from.substring(8,from.length);
+										}
+										if (from[0] == "-") {
+											var reg=new RegExp('-(\\d)+(.+)');
+											var from_reg = from.match(reg);
+											if (from_reg != null) {
+												from_moment = from_moment.subtract(getGoodUnit(from_reg[2]),from_reg[1]);
+											}
+										}
+									}
+									var diff_moment = until_moment.diff(from_moment);
+									if (diff_moment > 60000) {
+										var nb_pixel_graph = $(current_graph).width() - 80;
+										var from_zoom = (pos_lowest / nb_pixel_graph) * diff_moment;
+										var until_zoom = ((nb_pixel_graph - (pos_lowest + diff)) / nb_pixel_graph) * diff_moment;
+										var from_duration = moment.duration(from_zoom);
+										var until_duration = moment.duration(until_zoom);
+										var new_from = from_moment.add(from_duration).format("HH:mm_YYYYMMDD");
+										var new_until = until_moment.subtract(until_duration).format("HH:mm_YYYYMMDD");
+										
+										$(".zoomable img").each(function(){
+											var url_graph_to_zoom = $(this).attr("src");
+											var old_from = getParamValue("from",url_graph_to_zoom);
+											var old_until = getParamValue("until",url_graph_to_zoom);
+											url_graph_to_zoom = url_graph_to_zoom.replace("from="+old_from,"from="+new_from);
+											if (old_until == "") {
+												url_graph_to_zoom += "until="+new_until;
+											} else {
+												url_graph_to_zoom = url_graph_to_zoom.replace("until="+old_until,"until="+new_until);
+											}
+											$(this).attr("src",url_graph_to_zoom);
+										});
+									}
+								}	catch(err) {
+									
+								}
+							}
+							pos_click = 0;
+							pos_t = 0;
+							$('#time_selector').remove();
+						});
+					});
+				}
+			});
+		});
+	});
+</script>
 <?php 
 if (!$full_screen) {
 echo '<a href="' . Dashboard::makeUrl('edit',$dashboard) . '">Edit Dashboard</a> | <a href="' . Graph::makeUrl('add',$dashboard) .'">Add Graph</a> | <a href="?' . fURL::getQueryString() . '&full_screen=true">Full Screen</a>';

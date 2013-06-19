@@ -131,9 +131,8 @@ if (isset($dashboard_id)) {
 		
 			function construct_table_hider () {
 				var new_div = $('<div>');
-				var pos = getPosition('sortable');
-				$(new_div).css('width',$('#sortable').width()+"px")
-						  .css('height',$('#sortable').height()+"px")
+				$(new_div).width($('#sortable').width()+"px")
+						  .height($('#sortable').height()+"px")
 						  .css('line-height',$('#sortable').height()+"px")
 						  .css('display','none')
 						  .attr('id','tableHider')

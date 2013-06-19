@@ -133,8 +133,7 @@ Error" . $check_type . " is : ". $check->getError() . "
   }
 }
 
-function notify_multiple_users ($id_user_from,$recipients,$subject,$body) {
-	$user_from = new User($id_user_from);
+function notify_multiple_users ($user_from,$recipients,$subject,$body) {
 	$email = new fEmail();
 	// This sets up fSMTP to connect to the gmail SMTP server
 	// with a 5 second timeout. Gmail requires a secure connection.

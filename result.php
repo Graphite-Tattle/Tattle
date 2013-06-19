@@ -42,6 +42,9 @@ if ($action == 'ackAll') {
 			} else {
 				fRequest::validateCSRFToken(fRequest::get('token'));
 				$recipients = array();
+				$id_user_session  = fSession::get('user_id');
+				$user_session = new User($id_user_session);
+				$recipients[] = array("mail" => $user_session->getEmail(), "name" => $user_session->getUsername());
 				$alt_ids = array();
 				$subscription_alt = Subscription::findAll($check_id,NULL,NULL,NULL,TRUE);
 				foreach ($subscription_alt as $alt) {
@@ -52,17 +55,14 @@ if ($action == 'ackAll') {
 				$subscriptions = $db->query("SELECT DISTINCT user_id,check_id FROM subscriptions WHERE check_id=".$check_id.";");
 				foreach ($subscriptions as $sub) {
 					$user_id = $sub['user_id'];
-					if (!in_array($user_id,$alt_ids)) {
+					if (!in_array($user_id,$alt_ids) && $user_id != $id_user_session) {
 						$user = new User($sub['user_id']);
 						$recipients[] = array("mail" => $user->getEmail(), "name" => $user->getUsername());
 					}
 				}
-				echo "<pre>";
-				print_r($recipients);
-				echo "</pre>";
 				if (!empty($recipients)) {
 					// Send the mail to everybody
-					notify_multiple_users (fSession::get('user_id'),$recipients,$subject_mail,$content_mail);
+					notify_multiple_users ($user_session,$recipients,$subject_mail,$content_mail);
 					fMessaging::create('success', fURL::get(), 'The mail "'.$subject_mail.'" was successfully sent to all the users who subscribe to "' . $check->getName() . '"');
 				} else {
 					fMessaging::create('error', fURL::get(),"Nobody subscribe to this check");

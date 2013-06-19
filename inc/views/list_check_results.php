@@ -27,19 +27,22 @@ $tmpl->place('header');
 				<div class="control-group">
 					<label class="control-label" for="subject">Subject&nbsp;*</label>
 					<div class="controls">
-						<input type="text" id="subject" name="subject_mail" value="<?=isset($subject_mail)?$subject_mail:"";?>"/>
+						<input type="text" id="subject" name="subject_mail" value='Message about : "<?=$check->getName();?>"'/>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="content">Content&nbsp;*</label>
 					<div class="controls">
-						<textarea id="content" name="content_mail"><?= isset($content_mail)?$content_mail:"";?></textarea>
+						<textarea id="content" name="content_mail"></textarea>
 					</div>
 				</div>
 				<input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
 				<div class="control-group actions">
 					<div class="controls">
-						<input type="submit" value="Send this mail" class="btn btn-primary"/>
+						<input type="submit" 
+						value="Send this mail" 
+						class="btn btn-primary" 
+						onclick="if(($('#subject').val() == '') || ($('#content').val() == '')) {alert('You have to set a subject and a content before sending the mail.');return false;}"/>
 						<div class="required"><em>*</em> Required field</div>
 					</div>
 				</div>

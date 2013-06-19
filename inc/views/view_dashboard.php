@@ -111,7 +111,7 @@
 	<div id="graphscontainer">
 <center> <!-- cssblasphemy but i need it look decent real quick --> 
     <h1>
-    	<span id="loader"><img src="../../assets/img/loader2.gif"/></span>
+    	<span id="loader"><img src="assets/img/loader2.gif"/></span>
     	<?=$dashboard->getName(); ?>
     	&nbsp
     	<small><?=$dashboard->getDescription(); ?></small>
@@ -151,7 +151,7 @@
 </div>
 </div>
 </center>
-<script type="text/javascript" src="../../assets/js/moment.js"></script>
+<script type="text/javascript" src="assets/js/moment.js"></script>
 <script type="text/javascript">
 	var loaded_graphs = 0;
 	var pos_click = 0;
@@ -172,6 +172,7 @@
 	        return new Array(left,top);
 	}
 
+	// Function that extract a param from the url
 	function getParamValue(param,url) {
 		var u = url == undefined ? document.location.href : url;
 		var reg = new RegExp('(\\?|&|^)'+param+'=(.*?)(&|$)');
@@ -179,6 +180,7 @@
 		return (matches != null && matches[2] != undefined) ? decodeURIComponent(matches[2]).replace(/\+/g,' ') : '';
 	}
 
+	// That function transforms a graphite unit into a unit that moment.js understands
 	function getGoodUnit (unit) {
 		if ("secondes".indexOf(unit) > -1) {
 			return "secondes";
@@ -201,16 +203,21 @@
 
 	$(function(){
 
+		var now = moment();
 		$(".zoomable img").each(function(){
 			$(this).load(function(){
 				loaded_graphs++;
-				
+				// We need to wait for all the graphs to be loaded
+				// If we dont, the div that tracks the mouse movements won't be on the right place
+				// If all the graphs are loaded
 				if (loaded_graphs == $(".zoomable").size()) {
+					// Hide the loader
 					$("#loader").hide();
 					$("#explanation").show();
 					$(".zoomable img").each(function(){
 						var current_graph = this;
 						var pos=getPosition(current_graph);
+						// That div will track the mouse movements
 						var new_div = $("<div>").width($(current_graph).width())
 												.height($(current_graph).height())
 												.css("position","absolute")
@@ -221,22 +228,28 @@
 						$(this).parent().append(new_div);
 						
 						$(new_div).mousedown(function(e){
+							// With this axis and title, the graph begin at 72px from the left border
 							if (e.pageX < pos[0] + 72) {
 								pos_click = pos[0] + 72;
 							} else if (e.pageX > pos[0] + $(current_graph).width() - 8 ) {
-								pos_click = pos[0] + $(current_graph).width() - 8
+								// And it ends at 8px from the right border
+								pos_click = pos[0] + $(current_graph).width() - 8;
 							} else {
 								pos_click = e.pageX;
 							}
 						});
 						$(new_div).mouseout(function(e){
+							// If the mouse is out, reset the value and remove the selector
 							pos_click = 0;
 							pos_t = 0;
 							$('#time_selector').remove();
 						});
 						$(new_div).mousemove(function(e){
-							if (pos_click > 0) {
+							// If the user has clicked
+							if (pos_click > 0) {
+								// Remove the div that displays the selector
 								$('#time_selector').remove();
+								// Compute the current position like when the user clicked
 								if (e.pageX < pos[0] + 72) {
 									pos_t = pos[0] + 72;
 								} else if (e.pageX > pos[0] + $(current_graph).width() - 8 ) {
@@ -244,6 +257,7 @@
 								} else {
 									pos_t = e.pageX;
 								}
+								// Create the div that displays the selector
 								var time_selector = "<div>";
 								time_selector=$(time_selector).width(Math.abs(pos_click-pos_t))
 											.height($(current_graph).height())
@@ -255,26 +269,32 @@
 						});
 						$(new_div).mouseup(function(e){
 							var diff = Math.abs(pos_t - pos_click);
-							if (diff > 0) {
+							// If a time was selected, not just a click
+							if (diff > 0) {
 								try {
 									var lowest = (pos_t > pos_click)?pos_click:pos_t;
+									// Compute the number of pixel from left border of the graph
 									var pos_lowest = lowest - (pos[0] + 72);
 									var url_graph = $(current_graph).attr("src");
 									var from = getParamValue("from",url_graph);
 									var until = getParamValue("until",url_graph);
 	
 									// We built the until
-									var until_moment = moment();
+									var until_moment = moment(now);
 									if (until != "") {
+										// We try to parse the given "until"
 										var test_moment = moment(until,"HH:mm_YYYYMMDD");
 										if (test_moment.isValid()) {
 											until_moment = test_moment;
 										} else {
+											// If it begin by midnight
 											if (until.indexOf("midnight") == 0) {
+												// We substract the hours and minutes
 												until_moment = until_moment.subtract("minutes",until_moment.format("mm"));
 												until_moment = until_moment.subtract("hours",until_moment.format("HH"));
 												until = until.substring(8,until.length);
 											}
+											// Now we compute the rest of the until
 											if (until[0] == "-") {
 												var reg=new RegExp('-(\\d)+(.+)');
 												var until_reg = until.match(reg);
@@ -285,7 +305,7 @@
 										}
 									}
 	
-									// Now, we built the from
+									// Now, we built the "from" exactly as the "until"
 									var from_moment = moment(until_moment);
 									test_moment = moment(from,"HH:mm_YYYYMMDD");
 									if (test_moment.isValid()) {
@@ -305,15 +325,18 @@
 										}
 									}
 									var diff_moment = until_moment.diff(from_moment);
+									// If the zoom is greater than a minute
 									if (diff_moment > 60000) {
-										var nb_pixel_graph = $(current_graph).width() - 80;
+										var nb_pixel_graph = $(current_graph).width() - (72 + 8);
 										var from_zoom = (pos_lowest / nb_pixel_graph) * diff_moment;
 										var until_zoom = ((nb_pixel_graph - (pos_lowest + diff)) / nb_pixel_graph) * diff_moment;
 										var from_duration = moment.duration(from_zoom);
 										var until_duration = moment.duration(until_zoom);
 										var new_from = from_moment.add(from_duration).format("HH:mm_YYYYMMDD");
 										var new_until = until_moment.subtract(until_duration).format("HH:mm_YYYYMMDD");
-										
+										// Show the loader
+										$("#loader").show();
+										// We apply the zoom to all the graph
 										$(".zoomable img").each(function(){
 											var url_graph_to_zoom = $(this).attr("src");
 											var old_from = getParamValue("from",url_graph_to_zoom);
@@ -326,11 +349,14 @@
 											}
 											$(this).attr("src",url_graph_to_zoom);
 										});
+										// Hide the loader
+										$("#loader").hide();
 									}
 								}	catch(err) {
 									
 								}
 							}
+							// After a zoom, reset values and remove the selector
 							pos_click = 0;
 							pos_t = 0;
 							$('#time_selector').remove();

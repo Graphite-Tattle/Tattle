@@ -25,19 +25,19 @@ if (isset($graph_id) && $action != 'edit') {
                 <div class="control-group">
 	      <label for="line-alias" class="control-label">Alias<em>*</em></label>
               <div class="controls">
-	        <input id="line-alias" class="span3" type="text" size="30" name="alias" value="<?=$line->encodeAlias(); ?>" />
+	        <input id="line-alias" class="span10" type="text" size="30" name="alias" value="<?=$line->encodeAlias(); ?>" />
               </div>
             </div><!-- /clearfix -->
             <div class="control-group">
               <label for="line-target" class="control-label">Target<em>*</em></label>
               <div class="controls">             
-	        <input id="line-target" class="span3" type="text" size="30" name="target" value="<?=$line->encodeTarget(); ?>" />
+	        <input id="line-target" class="span10" type="text" size="30" name="target" value="<?=$line->encodeTarget(); ?>" />
               </div>
             </div><!-- /clearfix -->
             <div class="control-group">
               <label for="line-color" class="control-label">Line Color</label>
               <div class="controls">             
-                  <input id="line-color" class="span3" type="text" size="30" name="color" value="<?=$line->encodeColor(); ?>" />
+                  <input id="line-color" class="span10" type="text" size="30" name="color" value="<?=$line->encodeColor(); ?>" />
               </div>
             </div><!-- /clearfix -->      
             <div class="control-group actions">            

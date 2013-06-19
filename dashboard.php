@@ -112,7 +112,8 @@ if ('edit' == $action) {
   
   $other_dashboards_in_group = Dashboard::findAllByFilter($dashboard->getGroupId());
   
-  $ignored_values = array("action", "dashboard_id");
+  $ignored_values = array("action", "dashboard_id","display_options_links");
+  
   $quick_times_desired = array(
   		"Last 10 minutes" => "-10min",
   		"Last hour" => "-1h",

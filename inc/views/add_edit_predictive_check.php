@@ -371,7 +371,10 @@ $tmpl->place('header');
              <div class="control-group actions">
              <div class="controls">
              <input class="btn btn-primary" type="submit" value="Save" />
-             <? if ($action == 'edit') { ?><a href="<?=Check::makeURL('delete', $check_type, $check); ?>" class="btn" >Delete</a><?php } ?>
+             <? if ($action == 'edit') { ?>
+             	<a href="<?=Check::makeURL('delete', $check_type, $check); ?>" class="btn" >Delete</a>
+             	<a href="<?=CheckResult::makeURL("list",$check)?>" class="btn">View</a>
+             <?php } ?>
              <div class="required"><em>*</em> Required field</div>
              <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
 <?php if ($action == 'add') { ?>

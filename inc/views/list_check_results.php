@@ -47,6 +47,7 @@ $tmpl->place('header');
 		</form>
 	</div>
 </fieldset>
+<a class="btn" href="<?=Check::makeURL('edit', $check->getType(),$check)?>">Edit check</a>
 <?php
   try {
     $check_results->tossIfEmpty();

@@ -115,7 +115,7 @@
     <h1>
     	<img id="loader" src="assets/img/loader2.gif"/>
     	<?=$dashboard->getName(); ?>
-    	&nbsp
+    	<br/>
     	<small><?=$dashboard->getDescription(); ?></small>
     </h1>
     <p>
@@ -348,7 +348,7 @@
 											}
 											// Now we compute the rest of the until
 											if (until[0] == "-") {
-												var reg=new RegExp('-(\\d)+(.+)');
+												var reg=new RegExp('-(\\d+)(.+)');
 												var until_reg = until.match(reg);
 												if (until_reg != null) {
 													until_moment = until_moment.subtract(getGoodUnit(until_reg[2]),until_reg[1]);
@@ -369,7 +369,7 @@
 											from = from.substring(8,from.length);
 										}
 										if (from[0] == "-") {
-											var reg=new RegExp('-(\\d)+(.+)');
+											var reg=new RegExp('-(\\d+)(.+)');
 											var from_reg = from.match(reg);
 											if (from_reg != null) {
 												from_moment = from_moment.subtract(getGoodUnit(from_reg[2]),from_reg[1]);

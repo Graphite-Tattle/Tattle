@@ -43,7 +43,7 @@ if (isset($dashboard_id)) {
               <div class="input">
                 <select name="columns" class="span3">
                 <?
-                 $columns = array('1' => '1', '2'   => '2', '3' => '3');
+                 $columns = array('0'=>'0','1' => '1', '2' => '2', '3' => '3');
                  foreach ($columns as $value => $text) {
                    fHTML::printOption($text, $value, $dashboard->getColumns());
                  }

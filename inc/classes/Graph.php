@@ -142,6 +142,11 @@ class Graph extends fActiveRecord
 		return $json_env;
 	}
 	
+	public function has_y_axis_title () {
+		$title = $this->getVtitle();
+		return (!empty($title));
+	}
+	
 	static public function import_from_array_to_dashboard($input,$dashboard_id)
 	{
 		$result = true;

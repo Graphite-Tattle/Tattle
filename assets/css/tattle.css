@@ -50,6 +50,7 @@ footer {
 
 .optionsbtn{position: absolute; left:4%;}
 .linksbtn{position: absolute;right:4%;}
+.graphbtn{margin-bottom:15px;margin-top:5px;}
 
 #time_selector{border:2px solid;border-color: red;border-bottom: 0;border-top: 0;background-color:rgba(255,153,0,0.5);position:absolute;z-index:300;}
 /***************/

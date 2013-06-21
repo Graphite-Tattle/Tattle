@@ -2,14 +2,16 @@
 
   $tmpl->set('title', 'Tattle : Self Service Alerts based on Graphite metrics');
   $tmpl->set('full_screen', $full_screen);
-  $tmpl->set('refresh',$dashboard->getRefreshRate());
+//  $tmpl->set('refresh',$dashboard->getRefreshRate());
   $tmpl->place('header');
 ?>
 <div class="navbar navbar-inverse navbar-fixed-top">
 	<div class="navbar-inner">
 		<div class="container text-center">
 			<a href="<?=Dashboard::makeURL('list',$dashboard->getGroupId())?>" class="btn btn-primary">Return to list</a>
-			<a href="<?=Dashboard::makeURL('edit',$dashboard)?>" class="btn btn-primary">Edit this dashboard</a>
+			<a href="<?=Dashboard::makeURL('edit',$dashboard)?>" class="btn">Edit this dashboard</a>
+			<a href="#" class="btn" id="disable_refresh_btn" onclick="disable_refresh();return false;">Disable refresh</a>
+	    	<a href="#" class="btn" id="enable_refresh_btn" onclick="enable_refresh();return false;" style="display:none;">Enable refresh</a>
 		
 	<?php 
 		if (($display_options_links%2)==1) {
@@ -111,12 +113,15 @@
 	<div id="graphscontainer">
 <center> <!-- cssblasphemy but i need it look decent real quick --> 
     <h1>
-    	<span id="loader"><img src="assets/img/loader2.gif"/></span>
+    	<img id="loader" src="assets/img/loader2.gif"/>
     	<?=$dashboard->getName(); ?>
     	&nbsp
     	<small><?=$dashboard->getDescription(); ?></small>
     </h1>
-    <p id="explanation" style="display:none;"><em class="text-info">You can select a period on a graph to zoom in</em></p>
+    <p>
+		<em class="text-info inline" id="explanation" style="display:none;">You can select a period on a graph to zoom in</em>
+		<em class="text-warning inline" id="refresh_warning" style="display:none; margin-left:10px"><i class="icon-warning-sign"></i>&nbsp;Warning : refresh is disabled</em>
+    </p>
     <div class="row">
 	<?php
         $graph_count = 0;
@@ -138,8 +143,14 @@
 		  }
         
 		?>
-        <span class="inline zoomable">
-        		<img src="<?=$url_graph ?>" rel=<?=($graph_count >= $columns ? 'popover-above' : 'popover-below'); ?> title="<?=$graph->getName(); ?>" data-content="<?=$graph->getDescription(); ?>" />
+        <span class="zoomable inline">
+        	<img src="<?=$url_graph ?>" rel=<?=($graph_count >= $columns ? 'popover-above' : 'popover-below'); ?> title="<?=$graph->getName(); ?>" data-content="<?=$graph->getDescription(); ?>" />
+        	<input type="hidden" name="hasYAxis" value="<?=$graph->has_y_axis_title()?"true":"false"?>" />
+        	<br/>
+        	<a class="btn graphbtn btn-info" href="<?=Graph::makeUrl('edit',$graph);?>">Edit "<?= $graph->getName();?>"</a>
+        	<a class="btn graphbtn btn-inverse" href="#" target="_blank"
+        		onclick="$(this).attr('href',$($(this).parent().find('img')).attr('src')+'&width=3000&height=700');return true;"
+        	>Large view</a>
         </span>
     <?php 
           $graph_count++;
@@ -153,8 +164,41 @@
 </center>
 <script type="text/javascript" src="assets/js/moment.js"></script>
 <script type="text/javascript">
-	var loaded_graphs = 0;
-	var pos_click = 0;
+
+	var now = moment();
+	var refresh_enabled = true;
+	function refresh_page() {
+		if (refresh_enabled) {
+			var new_now = moment();
+			// Diff returns a value in miliseconds
+			var diff = new_now.diff(now);
+			// If it's time to refresh
+			if (diff > <?=$dashboard->getRefreshRate()?> * 1000) {
+				// We do so
+				window.location.reload(true);
+			} else {
+				// Else we set a new timeout with the remaining time + 1s to be sure
+				setTimeout(refresh_page,(<?=$dashboard->getRefreshRate()?> * 1000) - diff + 1000);
+			}
+		}
+	}
+	
+	function disable_refresh() {
+		refresh_enabled=false;
+		$('#disable_refresh_btn').hide();
+		$('#enable_refresh_btn').show();
+		$('#refresh_warning').show();
+		$('body').css("background-color","#F8EEEE");
+	}
+	
+	function enable_refresh() {
+		refresh_enabled=true;
+		$('#disable_refresh_btn').show();
+		$('#enable_refresh_btn').hide();
+		$('#refresh_warning').hide();
+		$('body').css("background-color","#FFFFFF");
+		setTimeout(refresh_page,(<?=$dashboard->getRefreshRate()?> * 1000));
+	}
 
 	function getPosition(_this) {
 	        var left = 0;
@@ -203,19 +247,27 @@
 
 	$(function(){
 
-		var now = moment();
+		setTimeout(refresh_page,(<?=$dashboard->getRefreshRate()?> * 1000));
+
+		var loaded_graphs = 0;
+		var pos_click = 0;
+		var dont_built_div = false;
 		$(".zoomable img").each(function(){
 			$(this).load(function(){
 				loaded_graphs++;
 				// We need to wait for all the graphs to be loaded
 				// If we dont, the div that tracks the mouse movements won't be on the right place
-				// If all the graphs are loaded
-				if (loaded_graphs == $(".zoomable").size()) {
+				// So if all the graphs are loaded
+				if (loaded_graphs >= $(".zoomable").size() && !dont_built_div) {
+					dont_built_div = true;
 					// Hide the loader
 					$("#loader").hide();
 					$("#explanation").show();
 					$(".zoomable img").each(function(){
 						var current_graph = this;
+						var input_hidden = $(current_graph).parent().find('input');
+						var left_margin = ($(input_hidden).val()=="true")?72:37;
+						var right_margin = 12;
 						var pos=getPosition(current_graph);
 						// That div will track the mouse movements
 						var new_div = $("<div>").width($(current_graph).width())
@@ -228,12 +280,12 @@
 						$(this).parent().append(new_div);
 						
 						$(new_div).mousedown(function(e){
-							// With this axis and title, the graph begin at 72px from the left border
-							if (e.pageX < pos[0] + 72) {
-								pos_click = pos[0] + 72;
-							} else if (e.pageX > pos[0] + $(current_graph).width() - 8 ) {
-								// And it ends at 8px from the right border
-								pos_click = pos[0] + $(current_graph).width() - 8;
+							// The graph begin at [left_margin]px from the left border
+							if (e.pageX < pos[0] + left_margin) {
+								pos_click = pos[0] + left_margin;
+							} else if (e.pageX > pos[0] + $(current_graph).width() - right_margin ) {
+								// And it ends at [right_margin]px from the right border
+								pos_click = pos[0] + $(current_graph).width() - right_margin;
 							} else {
 								pos_click = e.pageX;
 							}
@@ -250,10 +302,10 @@
 								// Remove the div that displays the selector
 								$('#time_selector').remove();
 								// Compute the current position like when the user clicked
-								if (e.pageX < pos[0] + 72) {
-									pos_t = pos[0] + 72;
-								} else if (e.pageX > pos[0] + $(current_graph).width() - 8 ) {
-									pos_t = pos[0] + $(current_graph).width() - 8
+								if (e.pageX < pos[0] + left_margin) {
+									pos_t = pos[0] + left_margin;
+								} else if (e.pageX > pos[0] + $(current_graph).width() - right_margin ) {
+									pos_t = pos[0] + $(current_graph).width() - right_margin;
 								} else {
 									pos_t = e.pageX;
 								}
@@ -274,7 +326,7 @@
 								try {
 									var lowest = (pos_t > pos_click)?pos_click:pos_t;
 									// Compute the number of pixel from left border of the graph
-									var pos_lowest = lowest - (pos[0] + 72);
+									var pos_lowest = lowest - (pos[0] + left_margin);
 									var url_graph = $(current_graph).attr("src");
 									var from = getParamValue("from",url_graph);
 									var until = getParamValue("until",url_graph);
@@ -325,17 +377,29 @@
 										}
 									}
 									var diff_moment = until_moment.diff(from_moment);
-									// If the zoom is greater than a minute
+									// If the zoom is greater than a minute (diff return a value in milisecond)
 									if (diff_moment > 60000) {
-										var nb_pixel_graph = $(current_graph).width() - (72 + 8);
+										var nb_pixel_graph = $(current_graph).width() - (left_margin + right_margin);
 										var from_zoom = (pos_lowest / nb_pixel_graph) * diff_moment;
 										var until_zoom = ((nb_pixel_graph - (pos_lowest + diff)) / nb_pixel_graph) * diff_moment;
 										var from_duration = moment.duration(from_zoom);
 										var until_duration = moment.duration(until_zoom);
-										var new_from = from_moment.add(from_duration).format("HH:mm_YYYYMMDD");
-										var new_until = until_moment.subtract(until_duration).format("HH:mm_YYYYMMDD");
+										from_moment = from_moment.add(from_duration);
+										until_moment = until_moment.subtract(until_duration);
+										var new_from = from_moment.format("HH:mm_YYYYMMDD");
+										var new_until = until_moment.format("HH:mm_YYYYMMDD");
+										// We have a problem with the rounded so we have to test it manually
+										// because sometimes, it has the same value
+										if (new_from == new_until) {
+											until_moment = until_moment.add("minutes",1);
+											new_until = until_moment.format("HH:mm_YYYYMMDD");
+										}
+										
 										// Show the loader
 										$("#loader").show();
+										// Disable refresh 
+										disable_refresh();
+										var reloaded_graphs = 0;
 										// We apply the zoom to all the graph
 										$(".zoomable img").each(function(){
 											var url_graph_to_zoom = $(this).attr("src");
@@ -348,9 +412,15 @@
 												url_graph_to_zoom = url_graph_to_zoom.replace("until="+old_until,"until="+new_until);
 											}
 											$(this).attr("src",url_graph_to_zoom);
+											$(this).load(function(){
+												reloaded_graphs++;
+												if (reloaded_graphs >= $(".zoomable").size()) {
+													// Hide the loader
+													$("#loader").hide();
+													reloaded_graphs = 0;
+												}
+											});
 										});
-										// Hide the loader
-										$("#loader").hide();
 									}
 								}	catch(err) {
 									

@@ -144,6 +144,7 @@ if (!is_null($dashboard_id)) {
 				
 				$('#sortable').sortable({
 					placeholder: "sortable-placeholder",
+					cancel: "#sortable .line-target",
 					update : function (event,ui){
 						hide_table();
 						var new_weights = new Array();
@@ -179,7 +180,7 @@ if (!is_null($dashboard_id)) {
 		?>
     	<tr id="<?=$line->getLineId()?>">
         <td><?=$line->prepareAlias(); ?></td>
-        <td><?=$line->prepareTarget(); ?></td>
+        <td class="line-target"><?=$line->prepareTarget(); ?></td>
         <td><?=$line->prepareColor(); ?></td>
         <td><a href="<?=Line::makeURL('edit', $line); ?>">Edit</a> |
         <a href="<?=Line::makeURL('delete', $line); ?>">Delete</a> |

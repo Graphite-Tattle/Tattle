@@ -147,7 +147,16 @@
         	<img src="<?=$url_graph ?>" rel=<?=($graph_count >= $columns ? 'popover-above' : 'popover-below'); ?> title="<?=$graph->getName(); ?>" data-content="<?=$graph->getDescription(); ?>" />
         	<input type="hidden" name="hasYAxis" value="<?=$graph->has_y_axis_title()?"true":"false"?>" />
         	<br/>
-        	<a class="btn graphbtn btn-info" href="<?=Graph::makeUrl('edit',$graph);?>">Edit "<?= $graph->getName();?>"</a>
+        	<a class="btn graphbtn btn-info" href="<?=Graph::makeUrl('edit',$graph);?>">
+        		Edit "
+        		<?php
+        			$graph_name = $graph->getName();
+        			if (strlen($graph_name) > 50) {
+						$graph_name = substr($graph_name,0,47) . "...";
+					}
+					echo $graph_name;
+        		?>"
+        	</a>
         	<a class="btn graphbtn btn-inverse" href="#" target="_blank"
         		onclick="$(this).attr('href',$($(this).parent().find('img')).attr('src')+'&width=3000&height=700');return true;"
         	>Large view</a>

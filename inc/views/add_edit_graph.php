@@ -172,7 +172,7 @@ if (!is_null($dashboard_id)) {
           <?php }?>
           </tr>
           </thead>
-          <tbody id="sortable">
+          <tbody<?=($number_of_lines > 1)?" id='sortable'":""?>>
 	<?php
 	$first = TRUE;
 	$index = 0;

@@ -71,6 +71,9 @@ table th.last,table td.last{width: 40px;text-align: center}
 	text-align: center;
 	vertical-align: middle;
 }
+#sortable{cursor:row-resize;}
+#sortable .line-target{cursor:text;}
+#sortable .popover{cursor:auto;}
 .table-striped tbody tr.sortable-placeholder td{
 	height : 50px;
 	background-color:rgba(180,255,255,0.2)!important;

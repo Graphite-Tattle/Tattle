@@ -44,8 +44,7 @@ if ('delete' == $action) {
       $line->store();
 			
       fMessaging::create('affected', fURL::get(), $graph->getName());
-      fMessaging::create('success', '?'.fURL::getQueryString(),
-                         'The Line ' . $line->getAlias(). ' was successfully updated');
+      fMessaging::create('success', fURL::get(),'The Line ' . $line->getAlias(). ' was successfully updated');
     }
   } catch (fNotFoundException $e) {
     fMessaging::create('error', Graph::makeUrl('edit',$graph), 
@@ -67,8 +66,8 @@ if ('delete' == $action) {
       fRequest::validateCSRFToken(fRequest::get('token'));
       $line->store();
       $graph_url = Graph::makeUrl('edit',$graph);
-      fMessaging::create('affected', $graph_url, $line->getAlias());
-      fMessaging::create('success', $graph_url, 
+      fMessaging::create('affected', "/graphs.php", $line->getAlias());
+      fMessaging::create('success', "/graphs.php", 
                          'The Line ' . $line->getAlias() . ' was successfully created');
       fURL::redirect($graph_url);	
     } catch (fExpectedException $e) {

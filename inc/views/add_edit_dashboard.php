@@ -166,6 +166,7 @@ if (isset($dashboard_id)) {
 		
 				$('#sortable').sortable({
 					placeholder: "sortable-placeholder",
+					cancel: "#sortable .popover",
 					start : hide_popover,
 					update : function (event,ui){
 						hide_table();
@@ -195,7 +196,7 @@ if (isset($dashboard_id)) {
           <?php }?>
           </tr>    
           </thead>
-          <tbody id="sortable">
+          <tbody<?= ($number_of_graphs > 1)?' id="sortable"':'';?>>
 	<?php
 	$first = TRUE;
 	$index = 0;

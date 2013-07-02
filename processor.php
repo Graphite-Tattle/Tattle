@@ -32,7 +32,7 @@ if (isset($_SERVER['argc'])) {
 //$debug = true; // FIXME
 
 if ($debug) {
-  print "debug enabled";
+  print "debug enabled\n";
   fCore::enableDebugging(TRUE);
 }
 

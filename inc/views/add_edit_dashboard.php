@@ -4,7 +4,7 @@ $tmpl->set('title', $page_title);
 $breadcrumbs[] = array('name' => $page_title,'url' => '?'.fURL::getQueryString(),'active'=> true);
 $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
-if (isset($dashboard_id)) {
+if ($action == 'edit' && isset($dashboard_id)) {
   $query_string = "&dashboard_id=$dashboard_id";
 } else {
   $query_string = '';

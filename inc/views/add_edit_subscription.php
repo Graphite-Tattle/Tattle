@@ -11,7 +11,7 @@ $query_string = '';
 if (isset($check_id)) {
   $query_string .= "&check_id=$check_id";
 }
-if (isset($subscription_id)) {
+if ($action == "edit" && isset($subscription_id)) {
   $query_string .= "&subscription_id=$subscription_id";
 }
 ?>

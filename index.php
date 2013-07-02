@@ -12,12 +12,17 @@ $results = NULL;
 $latest_alerts = 'SELECT c.check_id,name,r.status,count(c.check_id) as count, r.timestamp '.
                     'FROM subscriptions s '.
                     'JOIN checks c ON s.check_id = c.check_id '.
-                    'JOIN check_results r ON s.check_id = r.check_id '.
-                    'WHERE r.timestamp >= DATE_SUB(CURDATE(),INTERVAL 1 DAY) '.
+                    'JOIN check_results r ON s.check_id = r.check_id ';
+if ($GLOBALS['DATABASE_TYPE'] == "postgresql") {
+$latest_alerts = $latest_alerts . 'WHERE r.timestamp >= NOW() - INTERVAL \'1 DAY\' ';
+} else {
+$latest_alerts = $latest_alerts . 'WHERE r.timestamp >= DATE_SUB(CURDATE(),INTERVAL 1 DAY) ';
+}
+$latest_alerts = $latest_alerts .
                     'AND r.status IS NOT NULL '.
                     'AND acknowledged = 0 '.
                     'AND s.user_id = ' . fSession::get('user_id') . ' ' .
-                    'GROUP BY c.check_id ' .
+                    'GROUP BY c.check_id, r.status, r.timestamp ' .
                     'LIMIT ' . $GLOBALS['PAGE_SIZE'] . ' ' .
                     'OFFSET ' . $offset . ';';
 

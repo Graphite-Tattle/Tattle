@@ -8,7 +8,7 @@ $tmpl->place('header');
 ?>
   <div class="row">
     <div class="span4">
-      <form class="form-stacked" action="?action=<?=$action; ?>&type=<?=$check_type; ?>&check_id=<?=$check_id; ?>" method="post">
+      <form class="form-stacked" action="?action=<?=$action; ?>&type=<?=$check_type; ?><? if ($action == 'edit') { ?>&check_id=<?=$check_id; ?><? } ?>" method="post">
         <div class="main" id="main">
           <fieldset>
             <div class="clearfix">

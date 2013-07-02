@@ -38,8 +38,8 @@ if ($debug) {
 $checks = Check::findActive();
 foreach ($checks as $check) {
   $data = Check::getData($check);
-    $title = $check->prepareName();
-    fCore::debug('Processing :' . $title . "\n",FALSE);
+  $title = $check->prepareName();
+  fCore::debug('Processing :' . $title . "\n",FALSE);
   if (count($data) > 0) {
 
     if($check->getType() == 'threshold') {

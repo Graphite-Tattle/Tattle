@@ -9,7 +9,7 @@ $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
 $query_string = '';
 
-if (isset($line_id)) {
+if ($action == 'edit' && isset($line_id)) {
   $query_string = "&line_id=$line_id";
 } 
 if (isset($graph_id) && $action != 'edit') {

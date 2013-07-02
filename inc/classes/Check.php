@@ -86,7 +86,7 @@ class Check extends fActiveRecord
     {
       return fRecordSet::buildFromSQL(
         __CLASS__,
-        array("SELECT checks.* FROM checks JOIN subscriptions ON checks.check_id = subscriptions.check_id WHERE enabled = 1;")
+        array("SELECT checks.* FROM checks WHERE enabled = 1;")
       );
     }
 

@@ -18,6 +18,7 @@ $latest_alerts = 'SELECT c.check_id,name,r.status,count(c.check_id) as count, r.
                     'AND acknowledged = 0 '.
                     'AND s.user_id = ' . fSession::get('user_id') . ' ' .
                     'GROUP BY c.check_id ' .
+                    'ORDER BY r.timestamp DESC ' .
                     'LIMIT ' . $GLOBALS['PAGE_SIZE'] . ' ' .
                     'OFFSET ' . $offset . ';';
 

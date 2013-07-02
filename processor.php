@@ -60,6 +60,11 @@ foreach ($checks as $check) {
       fCore::debug("Predictive Check Result: " . $status_array[$result] . "\n",FALSE);
     }
 
+    if ($check_value === null || $check_value === false) {
+      fCore::debug("Skipping null or missing value" . "\n",FALSE);
+      continue;
+    }
+
     if (is_null($check->getLastCheckTime())) {
       $next_check = new fTimestamp();
       fCore::debug("is null?\n",FALSE);

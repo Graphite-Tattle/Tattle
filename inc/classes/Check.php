@@ -181,9 +181,9 @@ class Check extends fActiveRecord
             $value = 0;
 
             if($obj->getBaseline() == 'average') {
-              $value = subarray_average($temp_data[0]->datapoints);
+              $value = subarray_nonnull_average($temp_data[0]->datapoints);
             } elseif($obj->getBaseline() == 'median') {
-              $value = subarray_median($temp_data[0]->datapoints);
+              $value = subarray_nonnull_median($temp_data[0]->datapoints);
             }
 
             array_push($data, $value);
@@ -214,9 +214,9 @@ class Check extends fActiveRecord
     {
       $value = false;
       if ($obj->getBaseline() == 'average') {
-        $value = subarray_endvalue($data[0]->datapoints);
+        $value = subarray_nonnull_endvalue($data[0]->datapoints);
       } elseif ($obj->getBaseline() == 'median') {
-        $value = subarray_median($data[0]->datapoints);
+        $value = subarray_nonnull_median($data[0]->datapoints);
       }
       return $value;
     }

@@ -31,7 +31,7 @@ if (isset($_SERVER['argc'])) {
 }
 
 if ($debug) {
-  print "debug enabled";
+  print "debug enabled\n";
   fCore::enableDebugging(TRUE);
 }
 

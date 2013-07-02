@@ -10,6 +10,13 @@ function log_action($msg) {
   fclose($fd);
 }
 
+$mutex_row = $db->query("SELECT GET_LOCK('tattle-processor', 0) AS `locked`;")->fetchRow();
+$locked = $mutex_row['locked'] == '1';
+if (!$locked) {
+  log_action("Tattle processor could not get run lock");
+  die();
+}
+
 $time_start = microtime(true);
 
 $debug = false;
@@ -109,6 +116,8 @@ foreach ($checks as $check) {
   }
   fCore::debug("check done moving to next \n\n",FALSE);
 }
+
+$db->query("SELECT RELEASE_LOCK('tattle-processor');");
 
 $time_end = microtime(true);
 $duration = $time_end - $time_start;

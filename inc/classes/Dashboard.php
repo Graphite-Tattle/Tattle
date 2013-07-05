@@ -115,6 +115,7 @@ class Dashboard extends fActiveRecord
 				$new_dashboard = fActiveRecord::array_to_dbentry($dashboard_to_create, __CLASS__,$column_to_ignore);
 				if ($new_dashboard !== NULL) {
 					$new_dashboard->setGroupId(empty($group_id)?$GLOBALS['DEFAULT_GROUP_ID']:$group_id);
+					$new_dashboard->setUserId(fSession::get('user_id',1));
 					$new_dashboard->store();
 					if (in_array('graphs', array_keys($dashboard_to_create))) {
 						$new_dashboard_id = $new_dashboard->getDashboardId();

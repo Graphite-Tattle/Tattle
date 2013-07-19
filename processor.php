@@ -10,7 +10,11 @@ function log_action($msg) {
   fclose($fd);
 }
 
-$mutex_row = $db->query("SELECT GET_LOCK('tattle-processor', 0) AS `locked`;")->fetchRow();
+if ($GLOBALS['DATABASE_TYPE'] == "postgresql") {
+	$mutex_row = $db->query("SELECT CASE pg_try_advisory_lock(1) WHEN true THEN 1 ELSE 0 END AS locked;")->fetchRow();
+} else {
+	$mutex_row = $db->query("SELECT GET_LOCK('tattle-processor', 0) AS `locked`;")->fetchRow();
+}
 $locked = $mutex_row['locked'] == '1';
 if (!$locked) {
   log_action("Tattle processor could not get run lock");
@@ -117,8 +121,11 @@ foreach ($checks as $check) {
   fCore::debug("check done moving to next \n\n",FALSE);
 }
 
-$db->query("SELECT RELEASE_LOCK('tattle-processor');");
-
+if ($GLOBALS['DATABASE_TYPE'] == "postgresql") {
+	$db->query("SELECT pg_advisory_unlock(1);");
+} else {
+	$db->query("SELECT RELEASE_LOCK('tattle-processor');");
+}
 $time_end = microtime(true);
 $duration = $time_end - $time_start;
 

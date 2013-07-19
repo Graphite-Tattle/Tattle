@@ -15,9 +15,9 @@ $latest_alerts = 'SELECT c.check_id,name,r.status,count(c.check_id) as count, r.
                     'JOIN checks c ON s.check_id = c.check_id '.
                     'JOIN check_results r ON s.check_id = r.check_id ';
 if ($GLOBALS['DATABASE_TYPE'] == "postgresql") {
-$latest_alerts = $latest_alerts . 'WHERE r.timestamp >= NOW() - INTERVAL \'1 DAY\' ';
+    $latest_alerts = $latest_alerts . 'WHERE r.timestamp >= NOW() - INTERVAL \'1 DAY\' ';
 } else {
-$latest_alerts = $latest_alerts . 'WHERE r.timestamp >= DATE_SUB(CURDATE(),INTERVAL 1 DAY) ';
+    $latest_alerts = $latest_alerts . 'WHERE r.timestamp >= DATE_SUB(CURDATE(),INTERVAL 1 DAY) ';
 }
 $latest_alerts = $latest_alerts .
                     'AND r.status IS NOT NULL '.
@@ -34,7 +34,11 @@ $alert_count_query = 'SELECT COUNT(1) as count '.
                     'FROM subscriptions s '.
                     'INNER JOIN checks c ON s.check_id = c.check_id '.
                     'JOIN check_results r ON s.check_id = r.check_id '.
-                    'WHERE r.timestamp >= DATE_SUB(CURDATE(),INTERVAL 1 DAY) '.
+if ($GLOBALS['DATABASE_TYPE'] == "postgresql") {
+    $alert_count_query = $alert_count_query . 'WHERE r.timestamp >= NOW() - INTERVAL \'1 DAY\' ';
+} else {
+    $alert_count_query = $alert_count_query . 'WHERE r.timestamp >= DATE_SUB(CURDATE(),INTERVAL 1 DAY) ';
+}
                     'AND r.status IS NOT NULL '.
                     'AND acknowledged = 0 '.
                     'AND s.user_id = ' . fSession::get('user_id') . ' ' .

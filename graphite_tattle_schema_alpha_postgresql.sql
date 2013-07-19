@@ -101,8 +101,8 @@ CREATE TABLE subscriptions (
   method varchar(255) NOT NULL,
   status integer NOT NULL DEFAULT '0',
   frequency integer NOT NULL DEFAULT '0',
-  PRIMARY KEY (subscription_id)
+  PRIMARY KEY (subscription_id),
+  CONSTRAINT user_method UNIQUE(check_id, user_id, method)
 );
-
-CREATE INDEX subscriptions_check_id ON subscriptions (check_id);
 CREATE INDEX subscriptions_user_id ON subscriptions (user_id);
+

@@ -105,7 +105,7 @@ class Dashboard extends fActiveRecord
 		$result = true;
 		$json_array = json_decode($json,TRUE);
 		if (!empty($json_array)) {
-			if (array_key_exists("user_id",$json_array)) {
+			if (array_key_exists("name",$json_array)) {
 				// In this case, we only have a dashboard, not an array of dashboard
 				// We convert it into an array
 				$json_array = array($json_array);

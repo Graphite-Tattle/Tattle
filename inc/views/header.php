@@ -109,9 +109,14 @@ if (!$this->get('full_screen')) { ?>
 	          </ul>
 	     </div>
  <?php   if (is_numeric(fSession::get('user_id'))) { ?>
- <p class="pull-right">
-     <span style="color:white;">Logged in as <a href="<?=User::makeUrl('edit',fSession::get('user_id'));?>"><?=fSession::get('user_name'); ?></a></span>
-</p>
+ 	<ul class="nav pull-right">
+ 		<li>
+ 			<a href="<?=User::makeUrl('edit',fSession::get('user_id'));?>">
+ 				<span style="color:white;">Logged in as</span>&nbsp;
+ 				<span style="color:#0088cc;"><?=fSession::get('user_name'); ?></span>
+ 			</a>
+ 		</li>
+ 	</ul>
     <?php } ?>
 </div>
         </div>

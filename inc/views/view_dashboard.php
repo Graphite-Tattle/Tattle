@@ -10,8 +10,12 @@
 		<div class="container text-center">
 			<a href="<?=Dashboard::makeURL('list',$dashboard->getGroupId())?>" class="btn btn-primary">Return to list</a>
 			<a href="<?=Dashboard::makeURL('edit',$dashboard)?>" class="btn">Edit this dashboard</a>
-			<a href="#" class="btn" id="disable_refresh_btn" onclick="disable_refresh();return false;">Disable refresh</a>
-	    	<a href="#" class="btn" id="enable_refresh_btn" onclick="enable_refresh();return false;" style="display:none;">Enable refresh</a>
+			<?php if ($dashboard->getRefreshRate() > 0 ) {?>
+				<a href="#" class="btn" id="disable_refresh_btn" onclick="disable_refresh();return false;">Disable refresh</a>
+		    	<a href="#" class="btn" id="enable_refresh_btn" onclick="enable_refresh();return false;" style="display:none;">Enable refresh</a>
+		    <?php } else { ?>
+		    	<a href="#" class="btn" id="enable_refresh_btn" onclick="window.location.reload(true);">Refresh now</a>
+		    <?php }?>
 		
 	<?php 
 		if (($display_options_links%2)==1) {
@@ -120,7 +124,11 @@
     </h1>
     <p>
 		<em class="text-info inline" id="explanation" style="display:none;">You can select a period on a graph to zoom in</em>
-		<em class="text-warning inline" id="refresh_warning" style="display:none; margin-left:10px"><i class="icon-warning-sign"></i>&nbsp;Warning : refresh is disabled</em>
+		<?php if ($dashboard->getRefreshRate() > 0) { ?>
+			<em class="text-warning inline" id="refresh_warning" style="display:none; margin-left:10px"><i class="icon-warning-sign"></i>&nbsp;Warning : refresh is disabled</em>
+		<?php } else {?>
+			<em class="text-warning inline" id="refresh_warning" style="margin-left:10px"><i class="icon-warning-sign"></i>&nbsp;Warning : refresh is permanently disabled.</em>
+		<?php } ?>
     </p>
     <div class="row">
 	<?php
@@ -176,38 +184,41 @@
 
 	var now = moment();
 	var refresh_enabled = true;
-	function refresh_page() {
-		if (refresh_enabled) {
-			var new_now = moment();
-			// Diff returns a value in miliseconds
-			var diff = new_now.diff(now);
-			// If it's time to refresh
-			if (diff > <?=$dashboard->getRefreshRate()?> * 1000) {
-				// We do so
-				window.location.reload(true);
-			} else {
-				// Else we set a new timeout with the remaining time + 1s to be sure
-				setTimeout(refresh_page,(<?=$dashboard->getRefreshRate()?> * 1000) - diff + 1000);
+	var bg_color_body_disabled = "#F8EEEE";
+	<?php if ($dashboard->getRefreshRate() > 0) { ?>
+		function refresh_page() {
+			if (refresh_enabled) {
+				var new_now = moment();
+				// Diff returns a value in miliseconds
+				var diff = new_now.diff(now);
+				// If it's time to refresh
+				if (diff > <?=$dashboard->getRefreshRate()?> * 1000) {
+					// We do so
+					window.location.reload(true);
+				} else {
+					// Else we set a new timeout with the remaining time + 1s to be sure
+					setTimeout(refresh_page,(<?=$dashboard->getRefreshRate()?> * 1000) - diff + 1000);
+				}
 			}
 		}
-	}
-	
-	function disable_refresh() {
-		refresh_enabled=false;
-		$('#disable_refresh_btn').hide();
-		$('#enable_refresh_btn').show();
-		$('#refresh_warning').show();
-		$('body').css("background-color","#F8EEEE");
-	}
-	
-	function enable_refresh() {
-		refresh_enabled=true;
-		$('#disable_refresh_btn').show();
-		$('#enable_refresh_btn').hide();
-		$('#refresh_warning').hide();
-		$('body').css("background-color","#FFFFFF");
-		setTimeout(refresh_page,(<?=$dashboard->getRefreshRate()?> * 1000));
-	}
+		
+		function disable_refresh() {
+			refresh_enabled=false;
+			$('#disable_refresh_btn').hide();
+			$('#enable_refresh_btn').show();
+			$('#refresh_warning').show();
+			$('body').css("background-color",bg_color_body_disabled);
+		}
+		
+		function enable_refresh() {
+			refresh_enabled=true;
+			$('#disable_refresh_btn').show();
+			$('#enable_refresh_btn').hide();
+			$('#refresh_warning').hide();
+			$('body').css("background-color","#FFFFFF");
+			setTimeout(refresh_page,(<?=$dashboard->getRefreshRate()?> * 1000));
+		}
+	<?php } ?>
 
 	function getPosition(_this) {
 	        var left = 0;
@@ -256,7 +267,11 @@
 
 	$(function(){
 
-		setTimeout(refresh_page,(<?=$dashboard->getRefreshRate()?> * 1000));
+		<?php if ($dashboard->getRefreshRate() > 0) { ?>
+			setTimeout(refresh_page,(<?=$dashboard->getRefreshRate()?> * 1000));
+		<?php } else {?>
+			$('body').css("background-color",bg_color_body_disabled);
+		<?php } ?>
 
 		var loaded_graphs = 0;
 		var pos_click = 0;
@@ -406,8 +421,10 @@
 										
 										// Show the loader
 										$("#loader").show();
-										// Disable refresh 
-										disable_refresh();
+										<?php if ($dashboard->getRefreshRate() > 0) { ?>
+											// Disable refresh 
+											disable_refresh();
+										<?php } ?>
 										var reloaded_graphs = 0;
 										// We apply the zoom to all the graph
 										$(".zoomable img").each(function(){

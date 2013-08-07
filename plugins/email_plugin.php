@@ -111,7 +111,7 @@ function email_plugin_notify_master($check,$check_result,$subscription,$alt_emai
   }
   
   $html_body = "<p style='color:". $color .";'>" . $state_email_injection . "for {$check->prepareName()} </p>"
-  			 . "<p>The check returned {$check_result->prepareValue()}</p>"
+  			 . "<p>The check returned {$check_result->getValue()}</p>"
   			 . "<p>Warning" . $check_type  . " is : ". $check->getWarn() . "</p>"
   			 . "<p>Error" . $check_type . " is : ". $check->getError() . "</p>"
   			 . "<p>View Alert Details : <a href='" . $GLOBALS['TATTLE_DOMAIN'] . '/' . CheckResult::makeURL('list',$check_result) . "'>".$check->prepareName()."</a></p>";
@@ -119,7 +119,7 @@ function email_plugin_notify_master($check,$check_result,$subscription,$alt_emai
 
   $email->setBody("
   $state Alert for {$check->prepareName()}
-The check returned {$check_result->prepareValue()}
+The check returned {$check_result->getValue()}
 Warning" . $check_type  . " is : ". $check->getWarn() . "
 Error" . $check_type . " is : ". $check->getError() . "
            ");

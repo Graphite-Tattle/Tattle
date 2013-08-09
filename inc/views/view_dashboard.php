@@ -246,19 +246,19 @@
 
 	// That function transforms a graphite unit into a unit that moment.js understands
 	function getGoodUnit (unit) {
-		if ("secondes".indexOf(unit) > -1) {
+		if ("secondes".indexOf(unit) == 0) {
 			return "secondes";
-		} else if ("minutes".indexOf(unit) > -1) {
+		} else if ("minutes".indexOf(unit) == 0) {
 			return "minutes";
-		} else if ("hours".indexOf(unit) > -1) {
+		} else if ("hours".indexOf(unit) == 0) {
 			return "hours";
-		} else if ("days".indexOf(unit) > -1) {
+		} else if ("days".indexOf(unit) == 0) {
 			return "days";
-		} else if ("weeks".indexOf(unit) > -1) {
+		} else if ("weeks".indexOf(unit) == 0) {
 			return "weeks";
-		} else if ("months".indexOf(unit) > -1) {
+		} else if ("months".indexOf(unit) == 0) {
 			return "months";
-		} else if ("years".indexOf(unit) > -1) {
+		} else if ("years".indexOf(unit) == 0) {
 			return "years";
 		} else {
 			return "";

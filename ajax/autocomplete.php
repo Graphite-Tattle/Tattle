@@ -15,8 +15,14 @@ if ($GLOBALS['PRIMARY_SOURCE'] == 'GANGLIA') {
     $dir = new fDirectory($GLOBALS['WHISPER_DIR']);
     $directories = $dir->scanRecursive($path. '*');
   } else {
+    $searchPattern = "*";
+    if (!file_exists($GLOBALS['WHISPER_DIR'] . $path)) {
+      $dirParts = explode("/", $path);
+      $searchPattern = array_pop($dirParts) . $searchPattern;
+      $path = implode("/", $dirParts);
+    } 
     $dir = new fDirectory($GLOBALS['WHISPER_DIR'] . $path);
-    $directories = $dir->scan();
+    $directories = $dir->scan($searchPattern);
   }
   foreach ($directories as $directory) {
     $return_arr[] = array('value' => str_replace('.wsp','',str_replace('/','.',str_replace($GLOBALS['WHISPER_DIR'],'',$directory->getPath()))));

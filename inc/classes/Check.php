@@ -59,14 +59,11 @@ class Check extends fActiveRecord
     */
     static public function constructTarget($check)
     {
-      if($check->getType() == 'threshold') {
-        if($check->getBaseline() == 'average') {
-          return 'movingAverage(' . $check->prepareTarget() . ',' . $check->getSample() . ')';
-        } elseif($check->getBaseline() == 'median') {
-          return 'movingMedian(' . $check->prepareTarget() . ',' . $check->getSample() . ')';
-        }
+      if($check->getSample() != '1') {
+        return 'movingAverage(' . $check->prepareTarget() . ',' . $check->getSample() . ')';
+      } else {
+	    return $check->prepareTarget();
       }
-      return $check->prepareTarget();
     }
 
 

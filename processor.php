@@ -10,6 +10,13 @@ function log_action($msg) {
   fclose($fd);
 }
 
+$mutex_row = $db->query("SELECT GET_LOCK('tattle-processor', 0) AS `locked`;")->fetchRow();
+$locked = $mutex_row['locked'] == '1';
+if (!$locked) {
+  log_action("Tattle processor could not get run lock");
+  die();
+}
+
 $time_start = microtime(true);
 
 $debug = false;
@@ -31,7 +38,7 @@ if (isset($_SERVER['argc'])) {
 }
 
 if ($debug) {
-  print "debug enabled";
+  print "debug enabled\n";
   fCore::enableDebugging(TRUE);
 }
 
@@ -58,6 +65,11 @@ foreach ($checks as $check) {
       fCore::debug("Predictive current number of standard deviations: " . $check_value . "\n",FALSE);
       $result = Check::setPredictiveResultsLevel($current_value,$historical_value,$standard_deviation,$check);
       fCore::debug("Predictive Check Result: " . $status_array[$result] . "\n",FALSE);
+    }
+
+    if ($check_value === null || $check_value === false) {
+      fCore::debug("Skipping null or missing value" . "\n",FALSE);
+      continue;
     }
 
     if (is_null($check->getLastCheckTime())) {
@@ -104,6 +116,8 @@ foreach ($checks as $check) {
   }
   fCore::debug("check done moving to next \n\n",FALSE);
 }
+
+$db->query("SELECT RELEASE_LOCK('tattle-processor');");
 
 $time_end = microtime(true);
 $duration = $time_end - $time_start;

@@ -40,9 +40,9 @@ class Check extends fActiveRecord
     {
       if($check->getType() == 'threshold') {
         if($check->getBaseline() == 'average') {
-          return 'movingAverage(' . $check->prepareTarget() . ',' . $check->getSample() . ')';
+          return 'movingAverage(' . $check->prepareTarget() . ',\'' . $check->getSample() . 'min\')';
         } elseif($check->getBaseline() == 'median') {
-          return 'movingMedian(' . $check->prepareTarget() . ',' . $check->getSample() . ')';
+          return 'movingMedian(' . $check->prepareTarget() . ',\'' . $check->getSample() . 'min\')';
         }
       }
       return $check->prepareTarget();

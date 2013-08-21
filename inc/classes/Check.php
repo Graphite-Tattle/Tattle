@@ -60,12 +60,20 @@ class Check extends fActiveRecord
     static public function constructTarget($check)
     {
       if($check->getSample() != '1') {
-        return 'movingAverage(' . $check->prepareTarget() . ',' . $check->getSample() . ')';
+        if($check->getType() == 'threshold') {
+          if($check->getBaseline() == 'average') {
+            return 'movingAverage(' . $check->prepareTarget() . ',\'' . $check->getSample() . 'min\')';
+          } elseif($check->getBaseline() == 'median') {
+            return 'movingMedian(' . $check->prepareTarget() . ',\'' . $check->getSample() . 'min\')';
+          } else {
+            // TODO should add an error log here
+            return 'movingAverage(' . $check->prepareTarget() . ',\'' . $check->getSample() . 'min\')';
+          }
+        }
       } else {
-	    return $check->prepareTarget();
+        return $check->prepareTarget();
       }
     }
-
 
     /**
      * Returns all active checks on the system

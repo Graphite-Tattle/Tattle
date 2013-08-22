@@ -77,7 +77,7 @@ class Graph extends fActiveRecord
               $link .= 'areaMode=' . $obj->getArea() .'&';
           }
           if ($obj->getTime_Value() != '' && $obj->getUnit() != '') {
-              $link .= 'from=-' . $obj->getTime_Value() . $obj->getUnit() . '&';
+              $link .= 'from=' . ($obj->getStartsAtMidnight()?'midnight':'') . '-' . $obj->getTime_Value() . $obj->getUnit() . '&';
           }
           if ($obj->getCustom_Opts() != '') {
               $link .= $obj->getCustom_Opts() . '&';
@@ -106,6 +106,7 @@ class Graph extends fActiveRecord
 		$graph->setTimeValue($graph_to_clone->getTimeValue());
 		$graph->setUnit($graph_to_clone->getUnit());
 		$graph->setCustomOpts($graph_to_clone->getCustomOpts());
+		$graph->setStartsAtMidnight($graph_to_clone->getStartsAtMidnight());
 		$graph->store();
 			
 		// Clone of the lines

@@ -86,6 +86,7 @@ CREATE TABLE `graphs` (
   `time_value` int(11) NOT NULL DEFAULT '2',
   `unit` varchar(10) NOT NULL DEFAULT 'hours',
   `custom_opts` varchar(1000) NULL,
+  `starts_at_midnight` TINYINT(1) DEFAULT 0,
   PRIMARY KEY (`graph_id`),
   UNIQUE KEY `dashboard_id` (`dashboard_id`,`name`)
 ) CHARSET=utf8;

@@ -71,6 +71,9 @@ if (!is_null($dashboard_id)) {
                  }
                 ?>
                 </select>
+                <div class="input">
+                	<input type="checkbox" name="starts_at_midnight" <?= ($graph->getStartsAtMidnight())?'checked="checked"':''?> value="true"> Starts at midnight
+                </div>
               </div>
             </div><!-- /clearfix -->
             <div class="clearfix">

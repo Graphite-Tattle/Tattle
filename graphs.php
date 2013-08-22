@@ -20,6 +20,7 @@ if ('edit' == $action) {
     $lines = Line::findAll($graph_id);                
     if (fRequest::isPost()) {
       $graph->populate();
+      $graph->setStartsAtMidnight(isset($_POST['starts_at_midnight'])?$_POST['starts_at_midnight']:false);
       fRequest::validateCSRFToken(fRequest::get('token'));
       $graph->store();
 			
@@ -45,6 +46,7 @@ if ('edit' == $action) {
   if (fRequest::isPost()) {	
     try {
       $graph->populate();
+      $graph->setStartsAtMidnight(isset($_POST['starts_at_midnight'])?$_POST['starts_at_midnight']:false);
       fRequest::validateCSRFToken(fRequest::get('token'));
       $graphs_in_dashboard = Graph::findAll($dashboard_id);
       $graph->setWeight($graphs_in_dashboard->count(TRUE));

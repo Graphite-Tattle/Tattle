@@ -9,3 +9,5 @@ ALTER TABLE checks ADD COLUMN `hour_end` varchar(5) DEFAULT NULL;
 ALTER TABLE checks ADD COLUMN `day_start` varchar(3) DEFAULT NULL;
 ALTER TABLE checks ADD COLUMN `day_end` varchar(3) DEFAULT NULL;
 
+ALTER TABLE graphs ADD COLUMN `starts_at_midnight` TINYINT(1) DEFAULT 0;
+

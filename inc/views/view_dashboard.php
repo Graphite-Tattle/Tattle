@@ -433,7 +433,7 @@
 											var old_until = getParamValue("until",url_graph_to_zoom);
 											url_graph_to_zoom = url_graph_to_zoom.replace("from="+old_from,"from="+new_from);
 											if (old_until == "") {
-												url_graph_to_zoom += "until="+new_until;
+												url_graph_to_zoom += "&until="+new_until;
 											} else {
 												url_graph_to_zoom = url_graph_to_zoom.replace("until="+old_until,"until="+new_until);
 											}

@@ -1,6 +1,7 @@
 <?
 // Include main class loading config file
-define('TATTLE_ROOT', str_replace(array('ajax'),'',getcwd()));
+define('TATTLE_ROOT', str_replace(array('ajax'),'',dirname($_SERVER['SCRIPT_FILENAME'])));
+// define('TATTLE_ROOT', str_replace(array('ajax'),'',getcwd()));
 $web_root = dirname($_SERVER['PHP_SELF']);
 if ($web_root != '/') {
   $web_root .= '/';

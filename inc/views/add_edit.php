@@ -155,10 +155,12 @@ $tmpl->place('header');
 	         			if ($has_period) {
 							if (!empty($hour_start)) {
 								$hour_end = $check->getHourEnd();
-								$start_hr = explode(":", $hour_start)[0];
-								$start_min = explode(":", $hour_start)[1];
-								$end_hr = explode(":", $hour_end)[0];
-								$end_min = explode(":", $hour_end)[1];
+								$hour_start_parts = explode(":", $hour_start);
+								$start_hr = $hour_start_parts[0];
+								$start_min = $hour_start_parts[1];
+								$hour_end_parts = explode(":", $hour_end);
+								$end_hr = $hour_end_parts[0];
+								$end_min = $hour_end_parts[1];
 							} else {
 								$start_hr = 0;
 								$start_min = 0;

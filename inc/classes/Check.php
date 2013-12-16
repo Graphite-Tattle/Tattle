@@ -160,8 +160,13 @@ class Check extends fActiveRecord
           $target = urlencode($target);
           $check_url = $GLOBALS['PROCESSOR_GRAPHITE_URL'] . '/render/?' .
             'target=' . $target .
-            '&from=-'. $obj->prepareSample() . 'minutes' .
             '&format=json';
+          if ($GLOBALS['ALERTS_TIME_OFFSET'] > 0) {
+          	$check_url .= "&from=-" . ($obj->getSample() + $GLOBALS['ALERTS_TIME_OFFSET']) . "minutes"
+          				. "&until=-" . $GLOBALS['ALERTS_TIME_OFFSET'] ."minutes";
+          } else {
+	            $check_url .= '&from=-'. $obj->prepareSample() . 'minutes';
+          }
         }
         $json_data = @file_get_contents($check_url);
         if ($json_data) {

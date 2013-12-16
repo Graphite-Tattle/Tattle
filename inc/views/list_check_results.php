@@ -51,6 +51,7 @@ $tmpl->place('header');
 	</div>
 </fieldset>
 <a class="btn" href="<?=Check::makeURL('edit', $check->getType(),$check)?>">Edit check</a>
+<a href="<?=Subscription::makeURL('add', $check); ?>" class="btn">Subscribe</a>
 <?php
   try {
     $check_results->tossIfEmpty();

@@ -374,6 +374,7 @@ $tmpl->place('header');
              <? if ($action == 'edit') { ?>
              	<a href="<?=Check::makeURL('delete', $check_type, $check); ?>" class="btn" >Delete</a>
              	<a href="<?=CheckResult::makeURL("list",$check)?>" class="btn">View</a>
+             	<a href="<?=Subscription::makeURL('add', $check); ?>" class="btn">Subscribe</a>
              <?php } ?>
              <div class="required"><em>*</em> Required field</div>
              <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />

@@ -81,7 +81,11 @@ try {
 		foreach ($dashboards as $dashboard) {
 			?>
 	    	<tr>
-	        <td><?=$dashboard->prepareName(); ?></td>
+	        <td>
+	        	<a href="<?=Dashboard::makeURL('view', $dashboard); ?>">
+	        		<?=$dashboard->prepareName(); ?>
+	        	</a>
+	        </td>
 	        <td><?=$dashboard->prepareDescription(); ?></td>
 	        <td>
 	        	<?php 

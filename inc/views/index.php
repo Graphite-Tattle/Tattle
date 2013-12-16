@@ -9,6 +9,37 @@ try {
             throw new fNoRowsException();
         }
 ?>
+
+<?php 
+    //check to see if paging is needed
+    $total_pages = ceil($alert_count / $GLOBALS['PAGE_SIZE']);
+    if ($total_pages > 1) {
+      $prev_class = 'previous';
+      $prev_link = fURL::get() . '?page=' . ($page_num - 1);
+      $next_class = 'next';
+      $next_link = fURL::get() . '?page=' . ($page_num + 1);
+      if ($page_num == 1) {
+        $prev_class .= ' disabled';
+        $prev_link = '#';
+      } elseif ($page_num == $total_pages) {
+        $next_class .= ' disabled';
+        $next_link = '#';
+      }
+      ?>
+    </tbody></table>
+    <div class="pagination">
+      <ul class="pager">
+        <li class="<?=$prev_class; ?>">
+          <a href="<?=$prev_link; ?>">&larr; Previous</a>
+        </li>
+        <li><a href="#">Page <?=$page_num?> / <?=$total_pages?></a></li>
+        <li class="<?=$next_class; ?>">
+          <a href="<?=$next_link; ?>">Next &rarr;</a>
+        </li>
+      </ul>
+    </div>
+    <? } ?>
+
   <table class="table table-bordered table-striped">
     <thead>
     <tr>
@@ -32,20 +63,8 @@ try {
         </td>
         </tr>
     <?php }
-    //check to see if paging is needed
-    $total_pages = ceil($alert_count / $GLOBALS['PAGE_SIZE']);
+    //if paging is needed
     if ($total_pages > 1) {
-      $prev_class = 'previous';
-      $prev_link = fURL::get() . '?page=' . ($page_num - 1);
-      $next_class = 'next';
-      $next_link = fURL::get() . '?page=' . ($page_num + 1);
-      if ($page_num == 1) {
-        $prev_class .= ' disabled';
-        $prev_link = '#';
-      } elseif ($page_num == $total_pages) {
-        $next_class .= ' disabled';
-        $next_link = '#';
-      }
       ?>
     </tbody></table>
     <div class="pagination">
@@ -53,6 +72,7 @@ try {
         <li class="<?=$prev_class; ?>">
           <a href="<?=$prev_link; ?>">&larr; Previous</a>
         </li>
+        <li><a href="#">Page <?=$page_num?> / <?=$total_pages?></a></li>
         <li class="<?=$next_class; ?>">
           <a href="<?=$next_link; ?>">Next &rarr;</a>
         </li>

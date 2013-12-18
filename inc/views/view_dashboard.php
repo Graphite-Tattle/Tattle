@@ -147,6 +147,10 @@
 			}
 		  }
           foreach ($req as $key => $value) {
+			if ($key == "from" or $key = "until") {
+				$value = str_replace("+", "%2B", $value);
+				$value = str_replace(" ", "%2B", $value);
+			}
 			$url_graph = addOrReplaceInURL($url_graph,$key,$value);
 		  }
         

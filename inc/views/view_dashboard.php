@@ -117,7 +117,7 @@
 	<div id="graphscontainer">
 <center> <!-- cssblasphemy but i need it look decent real quick --> 
     <h1>
-    	<img id="loader" src="assets/img/loader2.gif"/>
+    	<img id="loader" src="assets/img/loader2.gif" style="display:none;"/>
     	<?=$dashboard->getName(); ?>
     	<br/>
     	<small><?=$dashboard->getDescription(); ?></small>
@@ -134,6 +134,8 @@
 	<?php
         $graph_count = 0;
         $columns = $dashboard->getColumns();
+        $height = $dashboard->getGraphHeight();
+        $width = $dashboard->getGraphWidth();
 	foreach ($graphs as $graph) {
 //           $graph_row = ($graph_count % $columns);
           $url_graph = Graph::drawGraph($graph,$dashboard);
@@ -147,18 +149,23 @@
 			}
 		  }
           foreach ($req as $key => $value) {
-			if ($key == "from" or $key = "until") {
+			if ($key == "from" or $key == "until") {
 				$value = str_replace("+", "%2B", $value);
 				$value = str_replace(" ", "%2B", $value);
+			} elseif ($key == "height") {
+				$height = $value;
+			}  elseif ($key == "width") {
+				$width = $value;
 			}
 			$url_graph = addOrReplaceInURL($url_graph,$key,$value);
 		  }
         
 		?>
-        <span class="zoomable inline">
-        	<img src="<?=$url_graph ?>" rel=<?=($graph_count >= $columns ? 'popover-above' : 'popover-below'); ?> title="<?=$graph->getName(); ?>" data-content="<?=$graph->getDescription(); ?>" />
-        	<input type="hidden" name="hasYAxis" value="<?=$graph->has_y_axis_title()?"true":"false"?>" />
-        	<br/>
+        <div class="zoomable inline">
+        	<div class="slider" style="width:<?=$width;?>px; height:<?=$height;?>px;">
+	        	<img src="<?=$url_graph ?>" rel=<?=($graph_count >= $columns ? 'popover-above' : 'popover-below'); ?> title="<?=$graph->getName(); ?>" data-content="<?=$graph->getDescription(); ?>" />
+	        	<input type="hidden" name="hasYAxis" value="<?=$graph->has_y_axis_title()?"true":"false"?>" />
+        	</div>
         	<a class="btn graphbtn btn-info" href="<?=Graph::makeUrl('edit',$graph);?>">
         		Edit "
         		<?php
@@ -172,7 +179,7 @@
         	<a class="btn graphbtn btn-inverse" href="#" target="_blank"
         		onclick="$(this).attr('href',$($(this).parent().find('img')).attr('src')+'&width=3000&height=700');return true;"
         	>Large view</a>
-        </span>
+        </div>
     <?php 
           $graph_count++;
            if ( $graph_count == $columns) {
@@ -269,6 +276,18 @@
 		}
 	}
 
+	// This function gives a day that moment.js understands 
+	// Default : 1 (monday) 
+	function getGoodDay (day) {
+		if (day == "sunday") {return 0;}
+		if (day == "satursday") {return 6;}
+		if (day == "friday") {return 5;}
+		if (day == "thursday") {return 4;}
+		if (day == "wednesday") {return 3;}
+		if (day == "tuesday") {return 2;}
+		return 1;
+	}
+
 	$(function(){
 
 		<?php if ($dashboard->getRefreshRate() > 0) { ?>
@@ -277,194 +296,172 @@
 			$('body').css("background-color",bg_color_body_disabled);
 		<?php } ?>
 
-		var loaded_graphs = 0;
-		var pos_click = 0;
-		var dont_built_div = false;
-		$(".zoomable img").each(function(){
-			$(this).load(function(){
-				loaded_graphs++;
-				// We need to wait for all the graphs to be loaded
-				// If we dont, the div that tracks the mouse movements won't be on the right place
-				// So if all the graphs are loaded
-				if (loaded_graphs >= $(".zoomable").size() && !dont_built_div) {
-					dont_built_div = true;
-					// Hide the loader
-					$("#loader").hide();
-					$("#explanation").show();
-					$(".zoomable img").each(function(){
-						var current_graph = this;
-						var input_hidden = $(current_graph).parent().find('input');
-						var left_margin = ($(input_hidden).val()=="true")?72:37;
-						var right_margin = 12;
-						var pos=getPosition(current_graph);
-						// That div will track the mouse movements
-						var new_div = $("<div>").width($(current_graph).width())
-												.height($(current_graph).height())
-												.css("position","absolute")
-												.css("z-index","500")
-												.css('left',pos[0]+"px")
-												.css('top',pos[1]+"px")
-												.attr('class','zoom-div');
-						$(this).parent().append(new_div);
-						
-						$(new_div).mousedown(function(e){
-							// The graph begin at [left_margin]px from the left border
-							if (e.pageX < pos[0] + left_margin) {
-								pos_click = pos[0] + left_margin;
-							} else if (e.pageX > pos[0] + $(current_graph).width() - right_margin ) {
-								// And it ends at [right_margin]px from the right border
-								pos_click = pos[0] + $(current_graph).width() - right_margin;
-							} else {
-								pos_click = e.pageX;
-							}
-						});
-						$(new_div).mouseout(function(e){
-							// If the mouse is out, reset the value and remove the selector
-							pos_click = 0;
-							pos_t = 0;
-							$('#time_selector').remove();
-						});
-						$(new_div).mousemove(function(e){
-							// If the user has clicked
-							if (pos_click > 0) {
-								// Remove the div that displays the selector
-								$('#time_selector').remove();
-								// Compute the current position like when the user clicked
-								if (e.pageX < pos[0] + left_margin) {
-									pos_t = pos[0] + left_margin;
-								} else if (e.pageX > pos[0] + $(current_graph).width() - right_margin ) {
-									pos_t = pos[0] + $(current_graph).width() - right_margin;
+		$(".slider").each(function(){
+			var slider_this = this;
+			var input_hidden = $("input",$(slider_this));
+			var left_margin = ($(input_hidden).val()=="true")?72:34;
+			var right_margin = <?=$width?> - 12;
+			var mini = 1;
+			var maxi = <?=$width?>;
+			var start = -1;
+			$(this).slider({
+				min : mini,
+				max : maxi,
+				start: function(event, ui) {
+					$("#slide_zone").remove();
+					start = -1;
+					$(slider_this).prepend(
+							$("<div id='slide_zone' style='height:<?=$height;?>px;'>")
+					);
+					$("#slide_zone").css("position","absolute");
+				},
+				slide: function(event, ui) {
+					if (start == -1) {
+						start = ui.value;
+						if (start < left_margin) {start = left_margin;}
+					}
+
+					var current = ui.value;
+					if (current < left_margin) {
+						current = left_margin;
+					} else if (current > right_margin) {
+						current = right_margin;
+					}
+
+					var left_border_zone = 0;
+					var width = 0;
+					if (current > start) {
+						left_border_zone = start;
+						width_zone = current - start;
+					} else {
+						left_border_zone = current;
+						width_zone = start - current;
+					}
+					$("#slide_zone").css("left", (left_border_zone)+"px");
+					$("#slide_zone").css("width",(width_zone)+"px");
+				},
+				stop : function(event, ui) {
+					$("#slide_zone").remove();
+					var current = ui.value;
+					// If we aren't on the border 
+					if (current > mini && current < maxi) {
+						// We place the curent in the graphe if it isn't 
+						if (current < left_margin) {
+							current = left_margin;
+						} else if (current > right_margin) {
+							current = right_margin;
+						}
+						// If the user REALLY zoomed 
+						if (current != start) {
+							var src = $("img",slider_this).attr("src");
+							var from_reg  = /&from=([^&]*)(&.*|$)/;
+							var until_reg = /&until=([^&]*)(&.*|$)/;
+							var from_src_match  = src.match(from_reg);
+							var until_src_match = src.match(until_reg);
+							var from_src  = from_src_match[1];
+							var until_src = (until_src_match!=null?until_src_match[1]:"");
+							
+							var until_moment = moment(now);
+							if (until_src != "") {
+								// Parse the "until" 
+								var test_moment1 = moment(until_src,"HH:mm_YYYYMMDD");
+								var test_moment2 = moment(until_src,"YYYYMMDD");
+								if (test_moment1.isValid()) {
+									until_moment = test_moment1;
+								} else if (test_moment2.isValid()) {
+									until_moment = test_moment2;
 								} else {
-									pos_t = e.pageX;
-								}
-								// Create the div that displays the selector
-								var time_selector = "<div>";
-								time_selector=$(time_selector).width(Math.abs(pos_click-pos_t))
-											.height($(current_graph).height())
-											.css('left',((pos_click>pos_t)?pos_t:pos_click)+"px")
-											.css('top',pos[1]+"px")
-											.attr('id','time_selector');
-								$(current_graph).parent().append(time_selector);
-							}
-						});
-						$(new_div).mouseup(function(e){
-							var diff = Math.abs(pos_t - pos_click);
-							// If a time was selected, not just a click
-							if (diff > 0) {
-								try {
-									var lowest = (pos_t > pos_click)?pos_click:pos_t;
-									// Compute the number of pixel from left border of the graph
-									var pos_lowest = lowest - (pos[0] + left_margin);
-									var url_graph = $(current_graph).attr("src");
-									var from = getParamValue("from",url_graph);
-									var until = getParamValue("until",url_graph);
-	
-									// We built the until
-									var until_moment = moment(now);
-									if (until != "") {
-										// We try to parse the given "until"
-										var test_moment = moment(until,"HH:mm_YYYYMMDD");
-										if (test_moment.isValid()) {
-											until_moment = test_moment;
-										} else {
-											// If it begin by midnight
-											if (until.indexOf("midnight") == 0) {
-												// We substract the hours and minutes
-												until_moment = until_moment.subtract("minutes",until_moment.format("mm"));
-												until_moment = until_moment.subtract("hours",until_moment.format("HH"));
-												until = until.substring(8,until.length);
-											}
-											// Now we compute the rest of the until
-											if (until[0] == "-") {
-												var reg=new RegExp('-(\\d+)(.+)');
-												var until_reg = until.match(reg);
-												if (until_reg != null) {
-													until_moment = until_moment.subtract(getGoodUnit(until_reg[2]),until_reg[1]);
-												}
-											}
+									// If it starts with "midnight" 
+									if (until_src.indexOf("midnight") == 0) {
+										// We substract the hours and minutes
+										until_moment = until_moment.subtract("minutes",until_moment.format("mm"));
+										until_moment = until_moment.subtract("hours",until_moment.format("HH"));
+										until_src = until_src.substring(8,until_src.length);
+									}
+									var until_day = until_src.match(/^([^-]+)-?/);
+									if (until_day != null) {
+										// We take the good day 
+										until_moment = moment(getGoodDay(until_day[1]) + "_" + now.format("WW"), "E_WW");
+										until_src = until_src.replace(until_day[1],"");
+									}
+									// Now we compute the rest of the until 
+									if (until_src[0] == "-") {
+										var reg=new RegExp('-(\\d+)(\\D+)');
+										var until_match = until_src.match(reg);
+										if (until_match != null) {
+											until_moment = until_moment.subtract(getGoodUnit(until_match[2]),until_match[1]);
 										}
 									}
-	
-									// Now, we built the "from" exactly as the "until"
-									var from_moment = moment(until_moment);
-									test_moment = moment(from,"HH:mm_YYYYMMDD");
-									if (test_moment.isValid()) {
-										from_moment = test_moment;
+								}
+							}
+							
+							var from_moment = moment(from_moment);
+							// Same thing for the "from" 
+							test_moment1 = moment(from_src,"HH:mm_YYYYMMDD");
+							test_moment2 = moment(from_src,"YYYYMMDD");
+							if (test_moment1.isValid()) {
+								from_moment = test_moment1;
+							} else if (test_moment2.isValid()) {
+								from_moment = test_moment2;
+							} else {
+								if (from_src.indexOf("midnight") == 0) {
+									from_moment = from_moment.subtract("minutes",from_moment.format("mm"));
+									from_moment = from_moment.subtract("hours",from_moment.format("HH"));
+									from_src = from_src.substring(8,from_src.length);
+								}
+								var from_day = from_src.match(/^([^-]+)-?/);
+								if (from_day != null) {
+									from_moment = moment(getGoodDay(from_day[1]) + "_" + from_moment.format("WW"), "E_WW");
+									from_src = from_src.replace(from_day[1],"");
+								}
+								if (from_src[0] == "-") {
+									var reg=new RegExp('-(\\d+)(\\D+)');
+									var from_match = from_src.match(reg);
+									if (from_match != null) {
+										from_moment = from_moment.subtract(getGoodUnit(from_match[2]),from_match[1]);
+									}
+								}
+							}
+							var diff_moment = until_moment.diff(from_moment);
+							// If the zoom is greater than a minute (diff return a value in milisecond)
+							if (diff_moment > 60000) {
+								var diff = Math.abs(start - current);
+								var lowest = ((start < current) ? start : current) - left_margin;
+								var nb_pixel_graph = right_margin - left_margin;
+								var from_zoom = (lowest / nb_pixel_graph) * diff_moment;
+								var until_zoom = ((nb_pixel_graph - (lowest + diff)) / nb_pixel_graph) * diff_moment;
+								var from_duration = moment.duration(from_zoom);
+								var until_duration = moment.duration(until_zoom);
+								from_moment = from_moment.add(from_duration);
+								until_moment = until_moment.subtract(until_duration);
+								var new_from = from_moment.format("HH:mm_YYYYMMDD");
+								var new_until = until_moment.format("HH:mm_YYYYMMDD");
+								// We have a problem with the rounded so we have to test it manually 
+								// because sometimes, it has the same value 
+								if (new_from == new_until) {
+									until_moment = until_moment.add("minutes",1);
+									new_until = until_moment.format("HH:mm_YYYYMMDD");
+								}
+
+								$(".slider img").each(function(){
+									var url_graph_to_zoom = $(this).attr("src");
+									var old_from = getParamValue("from",url_graph_to_zoom);
+									var old_until = getParamValue("until",url_graph_to_zoom);
+									url_graph_to_zoom = url_graph_to_zoom.replace("from="+old_from,"from="+new_from);
+									if (old_until == "") {
+										url_graph_to_zoom += "&until="+new_until;
 									} else {
-										if (from.indexOf("midnight") == 0) {
-											from_moment = from_moment.subtract("minutes",from_moment.format("mm"));
-											from_moment = from_moment.subtract("hours",from_moment.format("HH"));
-											from = from.substring(8,from.length);
-										}
-										if (from[0] == "-") {
-											var reg=new RegExp('-(\\d+)(.+)');
-											var from_reg = from.match(reg);
-											if (from_reg != null) {
-												from_moment = from_moment.subtract(getGoodUnit(from_reg[2]),from_reg[1]);
-											}
-										}
+										url_graph_to_zoom = url_graph_to_zoom.replace("until="+old_until,"until="+new_until);
 									}
-									var diff_moment = until_moment.diff(from_moment);
-									// If the zoom is greater than a minute (diff return a value in milisecond)
-									if (diff_moment > 60000) {
-										var nb_pixel_graph = $(current_graph).width() - (left_margin + right_margin);
-										var from_zoom = (pos_lowest / nb_pixel_graph) * diff_moment;
-										var until_zoom = ((nb_pixel_graph - (pos_lowest + diff)) / nb_pixel_graph) * diff_moment;
-										var from_duration = moment.duration(from_zoom);
-										var until_duration = moment.duration(until_zoom);
-										from_moment = from_moment.add(from_duration);
-										until_moment = until_moment.subtract(until_duration);
-										var new_from = from_moment.format("HH:mm_YYYYMMDD");
-										var new_until = until_moment.format("HH:mm_YYYYMMDD");
-										// We have a problem with the rounded so we have to test it manually
-										// because sometimes, it has the same value
-										if (new_from == new_until) {
-											until_moment = until_moment.add("minutes",1);
-											new_until = until_moment.format("HH:mm_YYYYMMDD");
-										}
-										
-										// Show the loader
-										$("#loader").show();
-										<?php if ($dashboard->getRefreshRate() > 0) { ?>
-											// Disable refresh 
-											disable_refresh();
-										<?php } ?>
-										var reloaded_graphs = 0;
-										// We apply the zoom to all the graph
-										$(".zoomable img").each(function(){
-											var url_graph_to_zoom = $(this).attr("src");
-											var old_from = getParamValue("from",url_graph_to_zoom);
-											var old_until = getParamValue("until",url_graph_to_zoom);
-											url_graph_to_zoom = url_graph_to_zoom.replace("from="+old_from,"from="+new_from);
-											if (old_until == "") {
-												url_graph_to_zoom += "&until="+new_until;
-											} else {
-												url_graph_to_zoom = url_graph_to_zoom.replace("until="+old_until,"until="+new_until);
-											}
-											$(this).attr("src",url_graph_to_zoom);
-											$(this).load(function(){
-												reloaded_graphs++;
-												if (reloaded_graphs >= $(".zoomable").size()) {
-													// Hide the loader
-													$("#loader").hide();
-													reloaded_graphs = 0;
-												}
-											});
-										});
-									}
-								}	catch(err) {
-									
-								}
+									$(this).attr("src",url_graph_to_zoom);
+								});
 							}
-							// After a zoom, reset values and remove the selector
-							pos_click = 0;
-							pos_t = 0;
-							$('#time_selector').remove();
-						});
-					});
+						}
+					}
 				}
 			});
 		});
+		
 	});
 </script>
 <?php 

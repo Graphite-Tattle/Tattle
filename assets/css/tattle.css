@@ -53,6 +53,17 @@ footer {
 .graphbtn{margin-bottom:15px;margin-top:5px;}
 
 #time_selector{border:2px solid;border-color: red;border-bottom: 0;border-top: 0;background-color:rgba(255,153,0,0.5);position:absolute;z-index:300;}
+.ui-slider-handle {display:none;}
+#slide_zone{
+	border:2px solid;
+	border-color: red;
+	border-bottom: 0;
+	border-top: 0;
+	background-color:rgba(255,153,0,0.5);
+	position:absolute;
+	z-index:300;
+}
+.slider{border:0!important; margin-bottom:10px;}
 /***************/
 
 /*************************

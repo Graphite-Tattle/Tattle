@@ -4,7 +4,7 @@ $tmpl->set('no-nav', true);
 $tmpl->place('header');
 ?>
 <div class="row">
-<div class="col-md-6">
+<div class="col-md-offset-4 col-md-6">
    <form action="?action=log_in" method="post" class="form-horizontal">
          <div class="form-group">
            <label for="username" class="col-sm-2 control-label">Username</label>

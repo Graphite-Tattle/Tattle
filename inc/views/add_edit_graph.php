@@ -68,7 +68,7 @@ if (!is_null($dashboard_id)) {
             
             <div class="checkbox">
             	<label>
-           			<input type="checkbox" name="starts_at_midnight" class="form-control" <?= ($graph->getStartsAtMidnight())?'checked="checked"':''?> value="true"> Starts at midnight
+           			<input type="checkbox" name="starts_at_midnight" <?= ($graph->getStartsAtMidnight())?'checked="checked"':''?> value="true"> Starts at midnight
            		</label>
            	</div>
             <div class="form-group">

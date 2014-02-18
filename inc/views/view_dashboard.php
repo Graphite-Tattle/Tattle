@@ -175,10 +175,11 @@
 					}
 					echo $graph_name;
         		?>"
+        		<i class=" glyphicon glyphicon-edit"></i>
         	</a>
-        	<a class="btn graphbtn btn-inverse" href="#" target="_blank"
+        	<a class="btn graphbtn btn-default" href="#" target="_blank"
         		onclick="$(this).attr('href',$($(this).parent().find('img')).attr('src')+'&width=3000&height=700');return true;"
-        	>Large view</a>
+        	>Large view <i class="glyphicon glyphicon-new-window"></i></a>
         </div>
     <?php 
           $graph_count++;

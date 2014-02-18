@@ -23,7 +23,7 @@ $tmpl = new fTemplating(VIEW_PATH);
 //} else {
 //  $tmpl->enableMinification('development', JS_CACHE, TATTLE_ROOT);
 //}
-$tmpl->add('css','bootstrap/bootstrap.css');
+$tmpl->add('css','bootstrap/css/bootstrap.css');
 $tmpl->add('css','assets/css/jquery-ui.css');
 $tmpl->add('css','assets/css/tattle.css');
 

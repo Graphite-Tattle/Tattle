@@ -43,14 +43,14 @@ try {
 		<input type="hidden" value="<?= $filter_group_id?>" name="filter_group_id" />
 		<p class="inline">
 			<a href="#" onclick="if(test_file_present()){$('#loader').show();$('#formImport').submit();};return false;" class="btn btn-primary">Import</a>
-			this one :
-			<input type="file" name="uploadedfile" id="fileInput" />
+			<span>this one :</span>
+			<input type="file" name="uploadedfile" id="fileInput" class="inline" />
 			<img id="loader" src="assets/img/loader2.gif" style="margin-left:5px; display:none;">
 		</p>
 	</form>
 	
-	<p class="pull-right">
-		Filter group :
+	<div class="pull-right">
+		<span>Filter group :</span>
 		<select id="list_of_filters">
 			<option value="<?=Dashboard::makeURL('list',-1)?>">All dashboards</option>
 			<?php 
@@ -61,7 +61,7 @@ try {
 				}
 			?>
 		</select>
-	</p>
+	</div>
 	<form method="POST" id="form_mass_export" action="<?=Dashboard::makeURL('mass_export');?>" target="_blank">
 		<table class="table table-bordered table-striped">
 	          <thead>
@@ -72,7 +72,7 @@ try {
 	          <th>Columns</th>
 	          <th>Background Color</th>
 	          <th>Action</th>
-	          <th class="last"><input type="submit" class="btn" value="Export selected" onclick="$('#form_mass_export').submit();deselectAll(); return false;" /></th>
+	          <th class="last"><input type="submit" class="btn btn-default" value="Export selected" onclick="$('#form_mass_export').submit();deselectAll(); return false;" /></th>
 	          </tr>    
 	          </thead>
 	          <tbody>

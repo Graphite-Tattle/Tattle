@@ -15,32 +15,23 @@ if (!is_null($dashboard_id)) {
 }
 ?>
   <div class="row">
-    <div class="span4">
+    <div class="col-md-3">
       <form action="?action=<?=$action.$query_string; ?>" method="post" class="form-stacked">
-        <div class="main" id="main">
-          <fieldset>
-            <div class="clearfix">
+            <div class="form-group">
               <label for="graph-name">Name<em>*</em></label>
-              <div class="input">
-                <input id="graph-name" class="span3" type="text" size="30" name="name" value="<?=$graph->encodeName(); ?>" />
-              </div>
-            </div><!-- /clearfix -->
-            <div class="clearfix">
+                <input id="graph-name" class="form-control" type="text" size="30" name="name" value="<?=$graph->encodeName(); ?>" />
+            </div>
+            <div class="form-group">
               <label for="graph-description">Description<em>*</em></label>
-              <div class="input">
-                 <textarea class="span3" id="graph-description" name="description" rows="3"><?=$graph->encodeDescription(); ?></textarea>
-              </div>
-            </div><!-- /clearfix -->
-            <div class="clearfix">
+                 <textarea class="form-control" id="graph-description" name="description" rows="3"><?=$graph->encodeDescription(); ?></textarea>
+            </div>
+            <div class="form-group">
               <label for="graph-vtitle">Y-Axis Title<em>*</em></label>
-              <div class="input">
-                  <input id="graph-vtitle" class="span3" type="text" size="30" name="vtitle" value="<?=$graph->encodeVtitle(); ?>" />
-              </div>
-            </div><!-- /clearfix -->
-            <div class="clearfix">
+              <input id="graph-vtitle" class="form-control" type="text" size="30" name="vtitle" value="<?=$graph->encodeVtitle(); ?>" />
+            </div>
+            <div class="form-group">
               <label for="graph-area">Area Mode<em>*</em></label>
-              <div class="input">
-                <select name="area" class="span3">
+                <select name="area" class="form-control">
                 <?
                  $areaModes = array('none' => 'None', 'first' => 'First', 'stacked' => 'Stacked', 'all' => 'All');
                  foreach ($areaModes as $value => $text) {
@@ -48,12 +39,12 @@ if (!is_null($dashboard_id)) {
                  }
                 ?>
                 </select>
-              </div>
-            </div><!-- /clearfix -->
-            <div class="clearfix">
+            </div>
+            <div class="form-group">
               <label for="graph-range">Range<em>*</em></label>
-              <div class="input">
-                <select name="time_value" class="span3">
+              <div class="row">
+              	<div class="col-md-6">
+                <select name="time_value" class="form-control">
                 <?
                  $values = range(0,60);
                  foreach ($values as $value) {
@@ -61,9 +52,9 @@ if (!is_null($dashboard_id)) {
                  }
                 ?>
                 </select>
-              </div>
-              <div class="input">
-                <select name="unit" class="span3">
+                </div>
+                <div class="col-md-6">
+                <select name="unit" class="form-control col-xs-2">
                 <?
                  $units = array('minutes', 'hours', 'days', 'weeks', 'months', 'years');
                  foreach ($units as $value) {
@@ -71,30 +62,30 @@ if (!is_null($dashboard_id)) {
                  }
                 ?>
                 </select>
-                <div class="input">
-                	<input type="checkbox" name="starts_at_midnight" <?= ($graph->getStartsAtMidnight())?'checked="checked"':''?> value="true"> Starts at midnight
                 </div>
-              </div>
-            </div><!-- /clearfix -->
-            <div class="clearfix">
+                </div>
+            </div>
+            
+            <div class="checkbox">
+            	<label>
+           			<input type="checkbox" name="starts_at_midnight" class="form-control" <?= ($graph->getStartsAtMidnight())?'checked="checked"':''?> value="true"> Starts at midnight
+           		</label>
+           	</div>
+            <div class="form-group">
                 <label for="graph-custom-opts">Custom Options</label>
-                <div class="input">
-                  <input id="graph-custom-opts" class="span3" type="text" size="30" name="custom_opts" value="<?=$graph->encodeCustom_Opts(); ?>" />
-              </div>
-            </div><!-- /clearfix -->
+                  <input id="graph-custom-opts" class="form-control" type="text" size="30" name="custom_opts" value="<?=$graph->encodeCustom_Opts(); ?>" />
+            </div>
 	    <div class="actions">
 	      <input class="btn btn-primary" type="submit" value="Save" />
-              <a href="<?=Graph::makeURL('delete',$graph); ?>" class="btn">Delete</a>
-              <a href="<?=Dashboard::makeUrl('view',$dashboard); ?>" class="btn">View</a>
+              <a href="<?=Graph::makeURL('delete',$graph); ?>" class="btn btn-default">Delete</a>
+              <a href="<?=Dashboard::makeUrl('view',$dashboard); ?>" class="btn btn-default">View</a>
               <div class="required"><em>*</em> Required field</div>
 	      	  <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
               <input type="hidden" name="user_id" value="<?=fSession::get('user_id'); ?>" />
             </div>
-         </fieldset>
-       </div>
      </form>
     </div>
-    <div class="span8">
+    <div class="col-md-9">
     <?php if ($action == 'edit') {  ?>
         <img src="<?=Graph::drawGraph($graph,$dashboard); ?>">
     <p class="info"><a href="<?=Line::makeURL('add',$graph); ?>">Add Line</a></p>
@@ -107,39 +98,18 @@ if (!is_null($dashboard_id)) {
 	if ($number_of_lines > 1) {
 	?>
 		<script type="text/javascript">
-			function getPosition(element)
-			{
-			        var left = 0;
-			        var top = 0;
-			        // Retrieve the element
-			        var e = document.getElementById(element);
-			        // While we have a parent
-			        while (e.offsetParent != undefined && e.offsetParent != null)
-			        {
-			                // We add the parent position
-			                left += e.offsetLeft + (e.clientLeft != null ? e.clientLeft : 0);
-			                top += e.offsetTop + (e.clientTop != null ? e.clientTop : 0);
-			                e = e.offsetParent;
-			        }
-			        return new Array(left,top);
-			}
 		
 			function construct_table_hider () {
-				var new_div = $('<div>');
-				$(new_div).width($('#sortable').width()+"px")
-						  .height($('#sortable').height()+"px")
-						  .css('line-height',$('#sortable').height()+"px")
-						  .css('display','none')
-						  .attr('id','tableHider')
-						  .addClass('sortable-loader')
-						  .html('<img src="assets/img/loader.gif"/>');
-				$('table').append(new_div);
-			}
-		
-			function hide_table() {
-				var pos = getPosition('sortable');
-				$('#tableHider').css('left',pos[0]).css('top',pos[1]);
-				$('#tableHider').show();
+				var div = $("<div>");
+				div.height($("#table_container").height())
+					.width($("#table_container").width())
+					.css('line-height',$('#table_container').height()+"px")
+					.css('z-index',"100")
+					.css('display',"none")
+					.addClass('sortable-loader')
+					.attr("id","tableHider")
+					.html('<img src="assets/img/loader.gif"/>');
+				$("#table_container").prepend(div);
 			}
 		
 			$(function(){
@@ -149,7 +119,7 @@ if (!is_null($dashboard_id)) {
 					placeholder: "sortable-placeholder",
 					cancel: "#sortable .line-target",
 					update : function (event,ui){
-						hide_table();
+						$('#tableHider').show();
 						var new_weights = new Array();
 						var i = 0;
 						$('#sortable tr').each(function(){
@@ -162,7 +132,7 @@ if (!is_null($dashboard_id)) {
 			});
 		</script>
 	<?php } ?>
-    <div>
+    <div id="table_container">
 	<table class="table table-bordered table-striped">
           <thead>
           <tr>
@@ -195,14 +165,14 @@ if (!is_null($dashboard_id)) {
          <?php if ($number_of_lines > 1) {?>
 	        <td>
 	        	<?php if ($index == 0) {?>
-	        		<span class="disabled"><i class="icon-arrow-up pointer"></i></span>
+	        		<span class="disabled"><i class="glyphicon glyphicon-arrow-up pointer"></i></span>
 	        	<?php } else { ?>
-	        		<a href="<?=Line::makeURL('reorder',$line,'previous')?>" onclick="hide_table();return true;"><i class="icon-arrow-up pointer" title="Previous"></i></a>
+	        		<a href="<?=Line::makeURL('reorder',$line,'previous')?>" onclick="$('#tableHider').show();return true;"><i class="glyphicon glyphicon-arrow-up pointer" title="Previous"></i></a>
 	        	<?php } ?>
 	        	<?php if ($index == $number_of_lines-1) {?>
-	        		<span class="disabled"><i class="icon-arrow-down pointer"></i></span>
+	        		<span class="disabled"><i class="glyphicon glyphicon-arrow-down pointer"></i></span>
 	        	<?php } else { ?>
-	        		<a href="<?=Line::makeURL('reorder',$line,'next')?>" onclick="hide_table();return true;"><i class="icon-arrow-down pointer" title="Next"></i></a>
+	        		<a href="<?=Line::makeURL('reorder',$line,'next')?>" onclick="$('#tableHider').show();return true;"><i class="glyphicon glyphicon-arrow-down pointer" title="Next"></i></a>
 	        	<?php } ?>
 	        </td>
 	    <?php } ?>

@@ -17,34 +17,30 @@ if (isset($setting_type)) {
 }
 ?>
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <form action="?action=<?=$action.$query_string; ?>" method="post" class="form-horizontal">
-        <div class="main" id="main">
-          <fieldset>
-                <div class="control-group">
-	      <label for="line-friendly_name" class="control-label">Name<em>*</em></label>
-              <div class="controls">
-	        <?=$setting->encodeFriendlyName(); ?>
+          <div class="form-group">
+	      <label for="line-friendly_name" class="col-sm-2 control-label">Name<em>*</em></label>
+              <div class="col-sm-10">
+        		<?=$setting->encodeFriendlyName(); ?>
               </div>
             </div>
-            <div class="control-group">
-              <label for="line-value" class="control-label">Value<em>*</em></label>
-              <div class="controls">             
-	        <input id="line-value" class="span3" type="text" size="30" name="value" value="<?=$setting->encodeValue(); ?>" />
+            <div class="form-group">
+              <label for="line-value" class="col-sm-2 control-label">Value<em>*</em></label>
+              <div class="col-sm-10">             
+	       		 <input id="line-value" class="form-control" type="text" size="30" name="value" value="<?=$setting->encodeValue(); ?>" />
               </div>
             </div>
-        <div class="control-group actions">
-        <div class="controls">
+        <div class="form-group actions">
+        <div class="col-sm-offset-2 col-sm-10">
 	      <input class="btn btn-primary" type="submit" value="Save" />
 	       <? if($action == 'edit') { ?>
-	      <input class="btn" type="submit" name="action::delete" value="Delete" />
+	      <input class="btn btn-default" type="submit" name="action::delete" value="Delete" />
               <? } ?>
               <div class="required"><em>*</em> Required field</div>
 	      <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
             </div>
             </div>
-         </fieldset>
-       </div>       
      </form>
     </div>
   </div>

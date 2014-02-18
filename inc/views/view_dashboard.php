@@ -5,40 +5,40 @@
 //  $tmpl->set('refresh',$dashboard->getRefreshRate());
   $tmpl->place('header');
 ?>
-<div class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-inverse navbar-fixed-top">
 	<div class="navbar-inner">
-		<div class="container text-center">
+		<div class="container-fluid text-center navbar-form">
 			<a href="<?=Dashboard::makeURL('list',$dashboard->getGroupId())?>" class="btn btn-primary">Return to list</a>
-			<a href="<?=Dashboard::makeURL('edit',$dashboard)?>" class="btn">Edit this dashboard</a>
+			<a href="<?=Dashboard::makeURL('edit',$dashboard)?>" class="btn btn-default">Edit this dashboard</a>
 			<?php if ($dashboard->getRefreshRate() > 0 ) {?>
-				<a href="#" class="btn" id="disable_refresh_btn" onclick="disable_refresh();return false;">Disable refresh</a>
-		    	<a href="#" class="btn" id="enable_refresh_btn" onclick="enable_refresh();return false;" style="display:none;">Enable refresh</a>
+				<a href="#" class="btn btn-default" id="disable_refresh_btn" onclick="disable_refresh();return false;">Disable refresh</a>
+		    	<a href="#" class="btn btn-default" id="enable_refresh_btn" onclick="enable_refresh();return false;" style="display:none;">Enable refresh</a>
 		    <?php } else { ?>
-		    	<a href="#" class="btn" id="enable_refresh_btn" onclick="window.location.reload(true);">Refresh now</a>
+		    	<a href="#" class="btn btn-default" id="enable_refresh_btn" onclick="window.location.reload(true);">Refresh now</a>
 		    <?php }?>
 		
 	<?php 
 		if (($display_options_links%2)==1) {
 			// True only if its value is 1 or 3
 	?>
-		<a href="<?=fURL::replaceInQueryString("display_options_links", $display_options_links-1)?>" class="btn optionsbtn">Hide options</a>
+		<a href="<?=fURL::replaceInQueryString("display_options_links", $display_options_links-1)?>" class="btn btn-default optionsbtn">Hide options</a>
 	<?php } else { ?>
-		<a href="<?=fURL::replaceInQueryString("display_options_links", $display_options_links+1)?>" class="btn optionsbtn">Show options</a>
+		<a href="<?=fURL::replaceInQueryString("display_options_links", $display_options_links+1)?>" class="btn btn-default optionsbtn">Show options</a>
 	<?php
 		}
 		
 		if ($display_options_links > 1) {
 			// True only if its value is 2 or 3
 	?>
-		<a href="<?=fURL::replaceInQueryString("display_options_links", $display_options_links-2)?>" class="btn linksbtn">Hide links</a>
+		<a href="<?=fURL::replaceInQueryString("display_options_links", $display_options_links-2)?>" class="btn btn-default linksbtn">Hide links</a>
 	<?php } else { ?>
-		<a href="<?=fURL::replaceInQueryString("display_options_links", $display_options_links+2)?>" class="btn linksbtn">Show links</a>
+		<a href="<?=fURL::replaceInQueryString("display_options_links", $display_options_links+2)?>" class="btn btn-default linksbtn">Show links</a>
 	<?php
 		}
 	?>
 	</div>
 	</div>
-</div>
+</nav>
     <div id="options" class="<?=(($display_options_links%2)==1)?'dashboardoptions':'';?> popover fade bottom in" style="display:none;">
     	<div class="arrow"></div>
     	<div class="popover-content">
@@ -125,9 +125,9 @@
     <p>
 		<em class="text-info inline" id="explanation" style="display:none;">You can select a period on a graph to zoom in</em>
 		<?php if ($dashboard->getRefreshRate() > 0) { ?>
-			<em class="text-warning inline" id="refresh_warning" style="display:none; margin-left:10px"><i class="icon-warning-sign"></i>&nbsp;Warning : refresh is disabled</em>
+			<em class="text-warning inline" id="refresh_warning" style="display:none; margin-left:10px"><i class="glyphicon glyphicon-warning-sign"></i>&nbsp;Warning : refresh is disabled</em>
 		<?php } else {?>
-			<em class="text-warning inline" id="refresh_warning" style="margin-left:10px"><i class="icon-warning-sign"></i>&nbsp;Warning : refresh is permanently disabled.</em>
+			<em class="text-warning inline" id="refresh_warning" style="margin-left:10px"><i class="glyphicon glyphicon-warning-sign"></i>&nbsp;Warning : refresh is permanently disabled.</em>
 		<?php } ?>
     </p>
     <div class="row">
@@ -231,22 +231,6 @@
 		}
 	<?php } ?>
 
-	function getPosition(_this) {
-	        var left = 0;
-	        var top = 0;
-	        // Retrieve the element
-	        var e = _this;
-	        // While we have a parent
-	        while (e.offsetParent != undefined && e.offsetParent != null)
-	        {
-	                // We add the parent position
-	                left += e.offsetLeft + (e.clientLeft != null ? e.clientLeft : 0);
-	                top += e.offsetTop + (e.clientTop != null ? e.clientTop : 0);
-	                e = e.offsetParent;
-	        }
-	        return new Array(left,top);
-	}
-
 	// Function that extract a param from the url
 	function getParamValue(param,url) {
 		var u = url == undefined ? document.location.href : url;
@@ -342,6 +326,7 @@
 				},
 				stop : function(event, ui) {
 					$("#slide_zone").remove();
+					disable_refresh();
 					var current = ui.value;
 					// If we aren't on the border 
 					if (current > mini && current < maxi) {

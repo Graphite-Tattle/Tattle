@@ -23,7 +23,7 @@ $(document).ready(function() {
 });
 </script>
 
-<a class="small btn btn-primary" href="<?= Check::makeURL('add', $check_type);?>">Add Check</a>
+<a class="btn small btn-primary" href="<?= Check::makeURL('add', $check_type);?>">Add Check</a>
 <p class="pull-right">
 	Filter group :
 	<select id="list_of_filters">

@@ -37,9 +37,9 @@ try {
         <td><?=$subscription->prepareMethod(); ?></td>
         <td>
         	<?php if ($subscription->getStatus()) { ?>
-        		<i class="icon-warning-sign" style="margin-right:3px"></i><span>Disabled</span>
+        		<i class="glyphicon glyphicon-warning-sign" style="margin-right:3px"></i><span>Disabled</span>
         	<?php } else {?>
-        		<i class="icon-" style="margin-right:3px"></i><span>Enabled</span>
+        		<i class="glyphicon glyphicon-" style="margin-right:3px"></i><span>Enabled</span>
         	<?php } ?>
         </td>
         <td><a href="<?=Subscription::makeURL('edit', $subscription); ?>">Edit</a> |

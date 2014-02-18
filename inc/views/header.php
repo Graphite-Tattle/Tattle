@@ -77,12 +77,12 @@ if ($this->get('full_screen') && $this->get('refresh') > 0) {
 
 <?php
 if (!$this->get('full_screen')) { ?>
-   <div class="navbar navbar-inverse">
+   <nav class="navbar navbar-inverse">
       <div class="navbar-inner">
-        <div class="container">
-          <a class="brand" href="index.php">Tattle </a>
-          <div class="nav-collapse collapse">
-	          <ul class="nav">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="index.php">Tattle </a>
+          <div class="navbar-collapse collapse">
+	          <ul class="nav navbar-nav">
 	            <?
 	
 	              $current_url = '?'.fURL::getQueryString();
@@ -107,41 +107,33 @@ if (!$this->get('full_screen')) { ?>
 	}
 	?>
 	          </ul>
-	     </div>
  <?php   if (is_numeric(fSession::get('user_id'))) { ?>
- 	<ul class="nav pull-right">
- 		<li>
+ 		<p class="navbar-text navbar-right">
  			<a href="<?=User::makeUrl('edit',fSession::get('user_id'));?>">
  				<span style="color:white;">Logged in as</span>&nbsp;
  				<span style="color:#0088cc;"><?=fSession::get('user_name'); ?></span>
  			</a>
- 		</li>
- 	</ul>
+ 		</p>
     <?php } ?>
+	     </div>
 </div>
         </div>
-      </div>
+      </nav>
 <?php } ?>
 <div class="container-fluid">
 <?php
     $breadcrumbs = $this->get('breadcrumbs');
     if (is_array($breadcrumbs)) {
     echo '<ul class="breadcrumb">';
-      $crumb_count = count($breadcrumbs);
-      $crumb_counter = 1;
       foreach($breadcrumbs as $crumb) {
         echo '<li' . (isset($crumb['class']) ? ' class="' . $crumb['class'] .'"' : ' class="active"' ) .'><a href="'. $crumb['url'] . '">' . $crumb['name'] . '</a>';
-        if ($crumb_counter < $crumb_count) {
-          echo '<span class="divider">/</span></li>';
-        }
-        $crumb_counter++;
       }
      echo '</ul>';
     } ?>
 <?php
 
 if (fMessaging::check('error', fURL::get())) {
-  echo '<div class="alert alert-error">';
+  echo '<div class="alert alert-danger">';
   echo '<button type="button" class="close" data-dismiss="alert">&times;</button>';
     fMessaging::show('error', fURL::get());
   echo '</div>';

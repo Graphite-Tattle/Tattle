@@ -27,10 +27,10 @@ footer {
 	border-top: 1px solid #eee;
 }
 
-.inline {display:inline-block;}
+.inline {display:inline-block!important;}
 .no-margin{margin:0;}
 .pointer{cursor:pointer;}
-.disabled .pointer{background-image:none;cursor:default;}
+.disabled i{visibility:hidden;}
 
 /*************************
 *   PAGE view_dashboard  *
@@ -45,7 +45,7 @@ footer {
 .dashboardslinks {right:20px;left: initial;top:35px;width:200px;position: fixed;display:initial!important;max-width:initial;z-index:2000;}
 .dashboardslinks + div#graphscontainer {margin-right:220px;}
 
-#graphscontainer{margin-top : 40px;}
+#graphscontainer{margin-top : 50px;}
 
 
 .optionsbtn{position: absolute; left:4%;}
@@ -75,7 +75,7 @@ table th.last,table td.last{width: 40px;text-align: center}
 
 #table-graphs .popover{max-width: initial;}
 .sortable-loader {
-	background-color:rgba(250,250,250,0.5);
+	background-color:rgba(220,220,220,0.5);
 	background-repeat: no-repeat;
 	background-position: center center;
 	position : absolute;

@@ -9,21 +9,28 @@ $tmpl->place('header');
 <script type="text/javascript">
 	function expand_form () {
 		if ($("#check_graph").is(':hidden')) {
-			$("#check_form input[type=text],#check_form select").each(function(){
-				$(this).removeClass("span10");
-			});
-			$('#check_form').addClass("span4").removeClass("span12");
 			$('#check_form form').removeClass("form-horizontal");
+			$(".control-label").removeClass("col-sm-2");
+			$(".control-label + div").removeClass("col-sm-10");
+			$("#radio-container").removeClass("col-sm-offset-2").removeClass("col-sm-10");
+			$("#define_period .col-sm-2").removeClass("col-sm-2").addClass("col-sm-12");
+			$("#define_period .select-container").removeClass("col-sm-10");
+			$('#check_form').addClass("col-md-3").removeClass("col-md-12");
 			$("#expansion_btn").html("Hide the graph");
 			$("#check_graph").show();
+			$("#explanation").removeClass("col-sm-offset-2").removeClass("col-sm-10");
 		} else {
-			$("#check_form input[type=text],#check_form select").each(function(){
-				$(this).addClass("span10");
-			});
-			$('#check_form').addClass("span12").removeClass("span4");
 			$('#check_form form').addClass("form-horizontal");
+			$(".control-label").addClass("col-sm-2");
+			$(".control-label + div").addClass("col-sm-10");
+			$("#radio-container").addClass("col-sm-offset-2").addClass("col-sm-10");
+			$("#define_period .col-sm-12").removeClass("col-sm-12").addClass("col-sm-2");
+			$("#define_period .select-container").addClass("col-sm-10");
+			show_or_hide_filters();
+			$('#check_form').addClass("col-md-12").removeClass("col-md-3");
 			$("#expansion_btn").html("Show the graph");
 			$("#check_graph").hide();
+			$("#explanation").addClass("col-sm-offset-2 col-sm-10");
 		}
 	}
 
@@ -35,6 +42,27 @@ $tmpl->place('header');
 			$("#define_period").show();
 		}
 	}
+
+	function show_or_hide_filters() {
+		$("input[type=checkbox]").each(function(){
+			var name = $(this).attr("name");
+			var id = name.replace("no_","") + "s";
+			var checked = $(this).is(':checked');
+			if (!$(this).is(':checked')) {
+				$("#"+id).show();
+			} else {
+				$("#"+id).hide();
+			}
+			if ($('#check_form form').hasClass("form-horizontal")) {
+				if (!checked) {
+					$("#"+id+"_checkbox").removeClass("col-sm-12").addClass("col-sm-2");
+				} else {
+					$("#"+id+"_checkbox").removeClass("col-sm-2").addClass("col-sm-12");
+				}
+			}
+		});
+	}
+	
 	function compute_period () {
 		var explanation = "This check is available ";
 		if (!$("input[name=no_time_filter]").is(":checked")) {
@@ -92,33 +120,32 @@ $tmpl->place('header');
 <a href="#" id="expansion_btn" class="btn btn-primary" onclick="expand_form();return false;">Hide the graph</a>
 <?php } ?>
   <div class="row">
-    <div id="check_form" class="<?=($action == 'edit')?"span4":"span12"?>">
-      <form action="?action=<?=$action; ?>&type=<?=$check_type; ?>&check_id=<?=$check_id; ?>" method="post">
-        <div class="main" id="main">
+    <div id="check_form" class="<?=($action == 'edit')?"col-md-3":"col-md-12"?>">
+      <form action="?action=<?=$action; ?>&type=<?=$check_type; ?>&check_id=<?=$check_id; ?>" method="post" <?=($action != "edit")?"class='form-horizontal'":""?>>
           <fieldset>
           <legend class="no-margin">Main</legend>
-            <div class="control-group">
+            <div class="form-group">
               <label class="masterTooltip control-label" title="Name used to identify this check" for="check-name">Name<em>*</em></label>
-              <div class="controls">
-                <input id="check-name" type="text" size="30" name="name" value="<?=$check->encodeName(); ?>" />
+              <div>
+                <input id="check-name" class="form-control" type="text" size="30" name="name" value="<?=$check->encodeName(); ?>" />
               </div>
             </div>
-            <div class="control-group">
+            <div class="form-group">
               <label class="masterTooltip control-label" title="The path of your new Graph Target to check up on" for="check-target">Graphite Target<em>*</em></label>
-              <div class="controls">
-                <input id="check-target" type="text" size="30" name="target" value="<?=$check->encodeTarget(); ?>" />
+              <div>
+                <input id="check-target" class="form-control" type="text" size="30" name="target" value="<?=$check->encodeTarget(); ?>" />
               </div>
             </div>
-            <div class="control-group">
+            <div class="form-group">
               <label class="masterTooltip control-label" title="Number of acceptable standard deviations before an Error is triggered" for="check-error">Error: Standard Deviations<em>*</em></label>
-              <div class="controls">
-                <input id="check-error" type="text" name="error" value="<?=$check->encodeError(); ?>" />
+              <div>
+                <input id="check-error" class="form-control" type="text" name="error" value="<?=$check->encodeError(); ?>" />
               </div>
             </div>
-            <div class="control-group">
+            <div class="form-group">
               <label class="masterTooltip control-label" title="Number of acceptable standard deviations before a Warning is triggered" for="check-warn">Warn: Standard Deviations<em>*</em></label>
-              <div class="controls">
-                <input id="check-warn" type="text" name="warn" value="<?=$check->encodeWarn(); ?>" />
+              <div>
+                <input id="check-warn" class="form-control" type="text" name="warn" value="<?=$check->encodeWarn(); ?>" />
               </div>
             </div>
          </fieldset>
@@ -129,8 +156,8 @@ $tmpl->place('header');
          		$day_start = $check->getDayStart();
          		$has_period = (!empty($hour_start)) || (!empty($day_start));
          	?>
-         	<div class="control-group">
-         		<div class="controls">
+         	<div class="form-group">
+         		<div id="radio-container">
          			<label class="radio">
          				<input type="radio" 
          				name="all_the_time_or_period" 
@@ -150,7 +177,6 @@ $tmpl->place('header');
          		</div>
          	</div>
          	<div id="define_period"  <?=(!$has_period)?"style='display:none;'":""?>>
-	         	<div class="control-group">
 	         		<?php 
 	         			if ($has_period) {
 							if (!empty($hour_start)) {
@@ -181,109 +207,136 @@ $tmpl->place('header');
 							$end_day = "sat";
 						}
 	         		?>
-	         		<div class="controls">
+	         		<div class="col-sm-12" id="time_filters_checkbox">
 	         			<label class="checkbox">
 	         				<input type="checkbox" 
 	         				name="no_time_filter" 
-	         				onclick="$(this).is(':checked')?$('#time_filters').hide():$('#time_filters').show()"
+	         				onclick="show_or_hide_filters();"
 	         				<?=($has_period && empty($hour_start))?"checked='checked'":""?>
 	         				/>
 	         				Don't filter the time
 	         			</label>
 	         		</div>
-	         		<div id="time_filters" <?=($has_period && empty($hour_start))?"style='display:none;'":""?>>
-		         		<label class="control-label">Start time :</label>
-		         		<div class="controls">
-		         			<select class="span1" name="start_hr">
-		         				<?php 
-		         					for ($i=0;$i<24;$i++) {
-										fHTML::printOption(($i<10?"0":"").$i, $i,$start_hr);
-									}
-		         				?>
-		         			</select>&nbsp;:&nbsp;
-		         			<select class="span1" name="start_min">
-		         				<?php 
-		         					for ($i=0;$i<60;$i++) {
-										fHTML::printOption(($i<10?"0":"").$i, $i,$start_min);
-									}
-		         				?>
-		         			</select>
+	         		<div id="time_filters" <?=($has_period && empty($hour_start))?"style='display:none;'":""?> class="select-container">
+	         			<div class="form-group">
+			         		<div class="row">
+			         			<div class="col-md-4">
+					         		<label>Start time :</label>
+					         	</div>
+			         			<div class="col-md-4">
+				         			<select class="form-control" name="start_hr">
+				         				<?php 
+				         					for ($i=0;$i<24;$i++) {
+												fHTML::printOption(($i<10?"0":"").$i, $i,$start_hr);
+											}
+				         				?>
+				         			</select>
+			         			</div>
+			         			<div class="col-md-4">
+				         			<select class="form-control" name="start_min">
+				         				<?php 
+				         					for ($i=0;$i<60;$i++) {
+												fHTML::printOption(($i<10?"0":"").$i, $i,$start_min);
+											}
+				         				?>
+				         			</select>
+			         			</div>
+			         		</div>
 		         		</div>
-		         		<label class="control-label">End time :</label>
-		         		<div class="controls">
-		         			<select class="span1" name="end_hr">
-		         				<?php 
-		         					for ($i=0;$i<24;$i++) {
-										fHTML::printOption(($i<10?"0":"").$i, $i,$end_hr);
-									}
-		         				?>
-		         			</select>&nbsp;:&nbsp;
-		         			<select class="span1" name="end_min">
-		         				<?php 
-		         					for ($i=0;$i<60;$i++) {
-										fHTML::printOption(($i<10?"0":"").$i, $i,$end_min);
-									}
-		         				?>
-		         			</select>
+		         		<div class="form-group">
+			         		<div class="row">
+			         			<div class="col-md-4">
+			         				<label>End time :</label>
+			         			</div>
+			         			<div class="col-md-4">
+				         			<select class="form-control" name="end_hr">
+				         				<?php 
+				         					for ($i=0;$i<24;$i++) {
+												fHTML::printOption(($i<10?"0":"").$i, $i,$end_hr);
+											}
+				         				?>
+				         			</select>
+				         		</div>
+				         		<div class="col-md-4">
+				         			<select class="form-control" name="end_min">
+				         				<?php 
+				         					for ($i=0;$i<60;$i++) {
+												fHTML::printOption(($i<10?"0":"").$i, $i,$end_min);
+											}
+				         				?>
+				         			</select>
+				         		</div>
+			         		</div>
+		         		</div>
+	         		</div>
+	         	<div>
+         		<div class="col-sm-12" id="day_filters_checkbox">
+         			<label class="checkbox">
+         				<input type="checkbox" 
+         				name="no_day_filter" 
+         				onclick="show_or_hide_filters();"
+         				<?=($has_period && empty($day_start))?"checked='checked'":""?>
+         				/>
+         				Don't filter the day
+         			</label>
+         		</div>
+         		<div id="day_filters" <?=($has_period && empty($day_start))?"style='display:none;'":""?> class="select-container">
+         			<div class="form-group">
+	         			<div class="row">
+	         				<div class="col-md-4">
+			         		<label>Start day of week :</label>
+			         		</div>
+			         		<div class="col-md-8">
+			         			<select class="form-control" name="start_day">
+			         				<?php 
+			         					$days = array(
+												"Sunday" => "sun",
+			         							"Monday" => "mon",
+												"Tuesday" => "tue",
+												"Wednesday" => "wed",
+												"Thursday" => "thu",
+												"Friday" => "fri",
+												"Satursday" => "sat"
+			         					);
+			         					foreach ($days as $print => $value) {
+											echo "<option value='".$value."'".(($value == $start_day)?" selected='selected'":"").">".$print."</option>";
+										}
+			         				?>
+			         			</select>
+			         		</div>
+		         		</div>
+	         		</div>
+	         		<div class="form-group">
+		         		<div class="row">
+		         			<div class="col-md-4">
+		         				<label>End day of week :</label>
+		         			</div>
+		         			<div class="col-md-8">
+			         			<select class="form-control" name="end_day">
+			         				<?php 
+										foreach ($days as $print => $value) {
+											echo "<option value='".$value."'".(($value == $end_day)?" selected='selected'":"").">".$print."</option>";
+										}
+			         				?>
+			         			</select>
+			         		</div>
 		         		</div>
 	         		</div>
 	         	</div>
-	         	<div class="control-group">
-	         		<div class="controls">
-	         			<label class="checkbox">
-	         				<input type="checkbox" 
-	         				name="no_day_filter" 
-	         				onclick="$(this).is(':checked')?$('#day_filters').hide():$('#day_filters').show()"
-	         				<?=($has_period && empty($day_start))?"checked='checked'":""?>
-	         				/>
-	         				Don't filter the day
-	         			</label>
-	         		</div>
-	         		<div id="day_filters" <?=($has_period && empty($day_start))?"style='display:none;'":""?>>
-		         		<label class="control-label">Start day of week :</label>
-		         		<div class="controls">
-		         			<select class="span3" name="start_day">
-		         				<?php 
-		         					$days = array(
-											"Sunday" => "sun",
-		         							"Monday" => "mon",
-											"Tuesday" => "tue",
-											"Wednesday" => "wed",
-											"Thursday" => "thu",
-											"Friday" => "fri",
-											"Satursday" => "sat"
-		         					);
-		         					foreach ($days as $print => $value) {
-										echo "<option value='".$value."'".(($value == $start_day)?" selected='selected'":"").">".$print."</option>";
-									}
-		         				?>
-		         			</select>
-		         		</div>
-		         		<label class="control-label">End day of week :</label>
-		         		<div class="controls">
-		         			<select class="span3" name="end_day">
-		         				<?php 
-									foreach ($days as $print => $value) {
-										echo "<option value='".$value."'".(($value == $end_day)?" selected='selected'":"").">".$print."</option>";
-									}
-		         				?>
-		         			</select>
-		         		</div>
-		         	</div>
 	         	</div>
-	         	<div class="control-group">
-	         		<div class="controls">
-	         			<em id="explanation" class="text-info"></em>
+	         	<div class="form-group">
+	         		<div id="explanation">
+	         			<em class="text-info"></em>
 	         		</div>
 	         	</div>
 	         </div>
          </fieldset>
          <fieldset>
             <legend class="no-margin">Advanced</legend>
-            <div class="control-group">
+            <div class="form-group">
               <label class="masterTooltip control-label" title="Data will be analyized at the same time of day on a daily, weekly or monthly basis. For example, if you recognize a pattern in your data such that it looks similiar on weekly basis, choose the weekly regression type" for="check-regression_type">Regression Type<em>*</em></label>
-              <div class="controls">
-                <select name="regression_type">
+              <div>
+                <select name="regression_type" class="form-control">
               <?
                 foreach ($regression_type_array as $value => $text) {
                   fHTML::printOption($text, $value, $check->getRegressionType());
@@ -292,10 +345,10 @@ $tmpl->place('header');
               </select>
               </div>
             </div>
-            <div class="control-group">
+            <div class="form-group">
               <label class="masterTooltip control-label" title="Given the Regression Type, the number of periods to use when computing the historical analysis for your Predictive Check" for="check-number_of_regressions">Number of Regressions<em>*</em></label>
-              <div class="controls">
-                <select name="number_of_regressions">
+              <div>
+                <select name="number_of_regressions" class="form-control">
               <?
                 foreach ($number_of_regressions_array as $value => $text) {
                   fHTML::printOption($text, $value, $check->getNumberOfRegressions());
@@ -304,16 +357,16 @@ $tmpl->place('header');
               </select>
               </div>
             </div>
-            <div class="control-group">
+            <div class="form-group">
               <label class="masterTooltip control-label" title="Number of data points to use when calculating the average/median. Each data point usually spans one minute. (This is not the case if you use a function like summarize)" for="check-sample">Sample Size<em>*</em></label>
-              <div class="controls">
-                <input id="check-warn" type="text" name="sample" value="<?=$check->encodeSample(); ?>" />
+              <div>
+                <input id="check-warn" type="text" name="sample" class="form-control" value="<?=$check->encodeSample(); ?>" />
               </div>
             </div>
-            <div class="control-group">
+            <div class="form-group">
               <label class="masterTooltip control-label" title="Method that will be used to calculate the value of the check over the number of sample data points: Average or Median" for="check-baseline">Baseline<em>*</em></label>
-              <div class="controls">
-                <select name="baseline">
+              <div>
+                <select name="baseline" class="form-control">
               <?
                 foreach ($average_median_array as $value => $text) {
                   fHTML::printOption($text, $value, $check->getBaseline());
@@ -322,10 +375,10 @@ $tmpl->place('header');
               </select>
               </div>
             </div>
-            <div class="control-group">
+            <div class="form-group">
               <label class="masterTooltip control-label" title="Over will trigger an alert when the value retrieved from Graphite is greater than the warning or error threshold. Under will trigger an alert when the value retrieved from Graphite is less than the warning or the error threshold" for="check-over_under">Over/Under/Both<em>*</em></label>
-              <div class="controls">
-                <select name="over_under">
+              <div>
+                <select name="over_under" class="form-control">
                 <?
                   foreach ($over_under_both_array as $value => $text) {
                     fHTML::printOption($text, $value, $check->getOverUnder());
@@ -334,10 +387,10 @@ $tmpl->place('header');
                 </select>
               </div>
             </div>
-            <div class="control-group">
+            <div class="form-group">
              <label class="masterTooltip control-label" title="Public checks can be subscribed to by any user while private checks remain hidden from other users" for="check-visibility">Visibility<em>*</em></label>
-             <div class="controls">
-               <select name="visibility">
+             <div>
+               <select name="visibility" class="form-control">
                <?
                 foreach ($visibility_array as $value => $text) {
                     fHTML::printOption($text, $value, $check->getVisibility());
@@ -346,18 +399,18 @@ $tmpl->place('header');
                </select>
              </div>
            </div>
-           <div class="control-group">
+           <div class="form-group">
              <label class="masterTooltip control-label" title="After an alert is triggered, the number of minutes to wait before sending another one" for="check-repeat_delay">Repeat Delay<em>*</em></label>
-             <div class="controls">
+             <div>
 <?php
                 $check_delay = (is_null($check->getRepeatDelay()) ? 30 : $check->encodeRepeatDelay()); ?>
-                <input id="check-repeat_delay" type="text" size="20" name="repeat_delay" value="<?=$check_delay; ?>" />
+                <input id="check-repeat_delay" class="form-control" type="text" size="20" name="repeat_delay" value="<?=$check_delay; ?>" />
              </div>
            </div>
-           <div class="control-group">
+           <div class="form-group">
              <label class="masterTooltip control-label" title="The group to classify in" for="check-group">Group</label>
-             <div class="controls">
-            	<select name="group_id">
+             <div>
+            	<select name="group_id" class="form-control">
             		<?php 
             			foreach (Group::findAll() as $group) {
 							fHTML::printOption($group->getName(), $group->getGroupId(), ($action == 'add')?$filter_group_id:$check->getGroupId());
@@ -368,13 +421,13 @@ $tmpl->place('header');
            </div>
            </fieldset>
            <fieldset>
-             <div class="control-group actions">
+             <div class="form-group actions">
              <div class="controls">
              <input class="btn btn-primary" type="submit" value="Save" />
              <? if ($action == 'edit') { ?>
-             	<a href="<?=Check::makeURL('delete', $check_type, $check); ?>" class="btn" >Delete</a>
-             	<a href="<?=CheckResult::makeURL("list",$check)?>" class="btn">View</a>
-             	<a href="<?=Subscription::makeURL('add', $check); ?>" class="btn">Subscribe</a>
+             	<a href="<?=Check::makeURL('delete', $check_type, $check); ?>" class="btn btn-default" >Delete</a>
+             	<a href="<?=CheckResult::makeURL("list",$check)?>" class="btn btn-default">View</a>
+             	<a href="<?=Subscription::makeURL('add', $check); ?>" class="btn btn-default">Subscribe</a>
              <?php } ?>
              <div class="required"><em>*</em> Required field</div>
              <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
@@ -385,24 +438,29 @@ $tmpl->place('header');
            </div>
            </div>
          </fieldset>
-       </div>
      </form>
     </div>
-    <div id="check_graph" class="span8">
+    <div id="check_graph" class="col-md-9">
       <?php if ($action == 'edit') { ?>
         <div class="sidebar" id="sidebar">
           <fieldset>
             <p>Check : <?=$check->prepareName(); ?></p>
             <p>Target : <?=Check::constructTarget($check); ?></p>
             <p id="graphiteGraph"><?=Check::showGraph($check); ?></p>
-            <input class="btn btn-primary" type="submit" value="Reload Graph" onClick="reloadGraphiteGraph()"/>
-            <select id="graphiteDateRange" class="span3">
-              <? $dateRange = array('-12hours'   => '12 Hours', '-1days' => '1 Day', '-3days' => '3 Days', '-7days' => '7 Days', '-14days' => '14 Days', '-30days' => '30 Days', '-60days' => '60 Days');
-                foreach ($dateRange as $value => $text) {
-                  fHTML::printOption($text, $value, '-3days');
-                }
-              ?>
-            </select>
+            <div class="row">
+	        	<div class="col-md-4">
+		            <select id="graphiteDateRange" class="form-control">
+		              <? $dateRange = array('-12hours'   => '12 Hours', '-1days' => '1 Day', '-3days' => '3 Days', '-7days' => '7 Days', '-14days' => '14 Days', '-30days' => '30 Days', '-60days' => '60 Days');
+		                foreach ($dateRange as $value => $text) {
+		                  fHTML::printOption($text, $value, '-3days');
+		                }
+		              ?>
+		            </select>
+		        </div>
+	        	<div class="col-md-4">
+		            <input class="btn btn-primary" type="submit" value="Reload Graph" onClick="reloadGraphiteGraph()"/>
+		        </div>
+	        </div>
           </fieldset>
         </div>
       <?php } ?>

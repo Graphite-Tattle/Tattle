@@ -11,34 +11,30 @@ $tmpl->place('header');
         <p class="info">There are currently no Tattle checks. Add a <a href="<?=Check::makeURL('add', 'threshold'); ?>">threshold</a> based or a <a href="<?=Check::makeURL('add', 'predictive'); ?>">predictive</a> based check now.</p>
         <?php
   } ?>
-<fieldset>
-	<div class="span8">
+<div class="row">
+	<div class="col-md-8">
 	    <div style="padding-bottom:15px;">
 	        <span>Name : <?=$check->prepareName(); ?></span> |
 	        <span>Target : <?=Check::constructTarget($check); ?></span>
 	    </div>
 	    <span><?=Check::showGraph($check,true,'-48hours',620,true); ?></span>
 	</div>
-	<div class="span4">
+	<div class="col-md-4">
 		<form method="POST" action="<?=CheckResult::makeURL('notifyAll',$check)?>" class="form-horizontal">
 			<fieldset>
 				<legend>Mail everyone</legend>
 				<em class="text-info" style="margin-bottom:10px;display:block;">Send a mail to all the people who subscribe to this check</em>
-				<div class="control-group">
+				<div class="form-group">
 					<label class="control-label" for="subject">Subject&nbsp;*</label>
-					<div class="controls">
-						<input type="text" id="subject" name="subject_mail" value='Message about : "<?=$check->getName();?>"'/>
-					</div>
+					<input type="text" id="subject" class="form-control" name="subject_mail" value='Message about : "<?=$check->getName();?>"'/>
 				</div>
-				<div class="control-group">
+				<div class="form-group">
 					<label class="control-label" for="content">Content&nbsp;*</label>
-					<div class="controls">
-						<textarea id="content" name="content_mail"></textarea>
-					</div>
+					<textarea id="content" class="form-control" name="content_mail"></textarea>
 				</div>
 				<input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
-				<div class="control-group actions">
-					<div class="controls">
+				<div class="form-group actions">
+					<div>
 						<input type="submit" 
 						value="Send this mail" 
 						class="btn btn-primary" 
@@ -49,9 +45,9 @@ $tmpl->place('header');
 			</fieldset>
 		</form>
 	</div>
-</fieldset>
-<a class="btn" href="<?=Check::makeURL('edit', $check->getType(),$check)?>">Edit check</a>
-<a href="<?=Subscription::makeURL('add', $check); ?>" class="btn">Subscribe</a>
+</div>
+<a class="btn btn-default" href="<?=Check::makeURL('edit', $check->getType(),$check)?>">Edit check</a>
+<a href="<?=Subscription::makeURL('add', $check); ?>" class="btn btn-default">Subscribe</a>
 <?php
   try {
     $check_results->tossIfEmpty();

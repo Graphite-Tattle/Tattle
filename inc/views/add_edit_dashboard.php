@@ -22,26 +22,19 @@ if (isset($dashboard_id)) {
 	});
 </script>
   <div class="row">
-    <div class="span4">
-      <form class="form-stacked" action="?action=<?=$action.$query_string; ?>" method="post">
-        <div class="main" id="main">
-          <fieldset>
-                <div class="clearfix">
-	      <label for="dashboard-name">Name<em>*</em></label>
-              <div class="input">
-	        <input id="dashboard-name" class="span3" type="text" size="30" name="name" value="<?=$dashboard->encodeName(); ?>" />
-              </div>
+    <div class="col-md-3">
+      <form action="?action=<?=$action.$query_string; ?>" method="post">
+          <div class="form-group">
+		      <label for="dashboard-name">Name<em>*</em></label>
+		        <input id="dashboard-name" class="form-control" type="text" size="30" name="name" value="<?=$dashboard->encodeName(); ?>" />
             </div><!-- /clearfix -->
-            <div class="clearfix">
+            <div class="form-group">
               <label for="dashboard-description">Description<em>*</em></label>
-              <div class="input">             
-                 <textarea class="span3" id="dashboard-description" name="description" rows="3"><?=$dashboard->encodeDescription(); ?></textarea>
-              </div>
-            </div><!-- /clearfix -->
-            <div class="clearfix">
+                 <textarea class="form-control" id="dashboard-description" name="description" rows="3"><?=$dashboard->encodeDescription(); ?></textarea>
+            </div>
+            <div class="form-group">
               <label for="dashboard-columns">Columns<em>*</em></label>
-              <div class="input">
-                <select name="columns" class="span3">
+                <select name="columns" class="form-control">
                 <?
                  $columns = array('0'=>'0','1' => '1', '2' => '2', '3' => '3');
                  foreach ($columns as $value => $text) {
@@ -49,58 +42,45 @@ if (isset($dashboard_id)) {
                  }
                 ?>
                 </select>            
-              </div>
-            </div><!-- /clearfix -->
-        <div class="clearfix">
+            </div>
+        <div class="form-group">
               <label for="dashboard-graph_width">Graph Width<em>*</em></label>
-              <div class="input">             
-                 <input id="dashboard-graph_width" class="span3" type="text" size="30" name="graph_width" value="<?=$dashboard->encodeGraphWidth(); ?>" />
-              </div>
-            </div><!-- /clearfix -->
-        <div class="clearfix">
+                 <input id="dashboard-graph_width" class="form-control" type="text" size="30" name="graph_width" value="<?=$dashboard->encodeGraphWidth(); ?>" />
+            </div>
+        <div class="form-group">
               <label for="dashboard-graph_height">Graph Height<em>*</em></label>
-              <div class="input">             
-                 <input id="dashboard-graph_height"  class="span3" type="text" size="30" name="graph_height" value="<?=$dashboard->encodeGraphHeight(); ?>" />
-            </div><!-- /clearfix -->           
+                 <input id="dashboard-graph_height"  class="form-control" type="text" size="30" name="graph_height" value="<?=$dashboard->encodeGraphHeight(); ?>" />
             </div>
-            <div class="clearfix">
+            <div class="form-group">
               <label for="dashboard-background_color">Background Color<em>*</em></label>
-              <div class="input">             
-                  <input id="dashboard-background_color" class="span3" type="text" size="30" name="background_color" value="<?=$dashboard->encodeBackgroundColor(); ?>" />
-              </div>
-            </div><!-- /clearfix -->            
-	    <div class="clearfix">
-             <label for="dashboard-refresh_rate">Refresh Rate<em>*</em> (in seconds)</label>
-             <div class="input">
-               <input id="dashboard-refresh_rate" class="span3" type="text" size="30" name="refresh_rate" value="<?=$dashboard->getRefreshRate(); ?>" />
-             </div>
+                  <input id="dashboard-background_color" class="form-control" type="text" size="30" name="background_color" value="<?=$dashboard->encodeBackgroundColor(); ?>" />
             </div>
-            <div class="clearfix">
+	    <div class="form-group">
+             <label for="dashboard-refresh_rate">Refresh Rate<em>*</em> (in seconds)</label>
+               <input id="dashboard-refresh_rate" class="form-control" type="text" size="30" name="refresh_rate" value="<?=$dashboard->getRefreshRate(); ?>" />
+            </div>
+            <div class="form-group">
             	<label for="dashboard-group">Group</label>
-            	<div class="input">
-            		<select name="group_id">
+            		<select name="group_id" class="form-control">
             			<?php 
             				foreach (Group::findAll() as $group) {
 								fHTML::printOption($group->getName(), $group->getGroupId(), ($action == 'add')?$filter_group_id:$dashboard->getGroupId());
 							}
             			?>
             		</select>
-            	</div>
             </div>
             <div class="actions">
 	      <input class="btn btn-primary" type="submit" value="Save" />
-              <input class="btn" type="submit" name="action::delete" value="Delete" onclick="return confirm('Do you really want to delete this dashboard ?');" />
-              <a href="<?=Dashboard::makeUrl('view',$dashboard); ?>" class="btn">View</a>
-              <a href="<?=Dashboard::makeURL('export', $dashboard); ?>" target="_blank" class="btn">Export</a>
+              <input class="btn btn-default" type="submit" name="action::delete" value="Delete" onclick="return confirm('Do you really want to delete this dashboard ?');" />
+              <a href="<?=Dashboard::makeUrl('view',$dashboard); ?>" class="btn btn-default">View</a>
+              <a href="<?=Dashboard::makeURL('export', $dashboard); ?>" target="_blank" class="btn btn-default">Export</a>
               <div class="required"><em>*</em> Required field</div>
 	      <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
               <input type="hidden" name="user_id" value="<?=fSession::get('user_id'); ?>" />
             </div>
-         </fieldset>
-       </div>       
      </form>
     </div>
-    <div class="span8">   
+    <div class="col-md-9">   
    <? if ($action == 'edit') { ?>
    <p class="info"><a href="<?=Graph::makeURL('add',$dashboard); ?>">Add Graph</a></p>
  <?php
@@ -112,39 +92,17 @@ if (isset($dashboard_id)) {
 	if ($number_of_graphs > 1) {
 	?>
 		<script type="text/javascript">
-			function getPosition(element)
-			{
-			        var left = 0;
-			        var top = 0;
-			        // Retrieve the element
-			        var e = document.getElementById(element);
-			        // While we have a parent
-			        while (e.offsetParent != undefined && e.offsetParent != null)
-			        {
-			                // We add the parent position
-			                left += e.offsetLeft + (e.clientLeft != null ? e.clientLeft : 0);
-			                top += e.offsetTop + (e.clientTop != null ? e.clientTop : 0);
-			                e = e.offsetParent;
-			        }
-			        return new Array(left,top);
-			}
-		
 			function construct_table_hider () {
-				var new_div = $('<div>');
-				$(new_div).width($('#sortable').width()+"px")
-						  .height($('#sortable').height()+"px")
-						  .css('line-height',$('#sortable').height()+"px")
-						  .css('display','none')
-						  .attr('id','tableHider')
-						  .addClass('sortable-loader')
-						  .html('<img src="assets/img/loader.gif"/>');
-				$('table').append(new_div);
-			}
-		
-			function hide_table() {
-				var pos = getPosition('sortable');
-				$('#tableHider').css('left',pos[0]).css('top',pos[1]);
-				$('#tableHider').show();
+				var div = $("<div>");
+				div.height($("#table_container").height())
+					.width($("#table_container").width())
+					.css('line-height',$('#table_container').height()+"px")
+					.css('z-index',"100")
+					.css('display',"none")
+					.addClass('sortable-loader')
+					.attr("id","tableHider")
+					.html('<img src="assets/img/loader.gif"/>');
+				$("#table_container").prepend(div);
 			}
 		
 			function hide_popover(){
@@ -169,7 +127,7 @@ if (isset($dashboard_id)) {
 					cancel: "#sortable .popover",
 					start : hide_popover,
 					update : function (event,ui){
-						hide_table();
+						$('#tableHider').show();
 						var new_weights = new Array();
 						var i = 0;
 						$('#sortable tr').each(function(){
@@ -182,7 +140,7 @@ if (isset($dashboard_id)) {
 			});
 		</script>
 	<?php }?>
-    <div>
+    <div id="table_container">
 	<table class="table table-bordered table-striped" id="table-graphs">
           <thead>
           <tr>
@@ -236,14 +194,14 @@ if (isset($dashboard_id)) {
         <?php if ($number_of_graphs > 1) {?>
 	        <td>
 	        	<?php if ($index == 0) {?>
-	        		<span class="disabled"><i class="icon-arrow-up pointer"></i></span>
+	        		<span class="disabled"><i class="glyphicon glyphicon-arrow-up pointer"></i></span>
 	        	<?php } else { ?>
-	        		<a href="<?=Graph::makeURL('reorder',$graph,'previous')?>" onclick="hide_table();return true;"><i class="icon-arrow-up pointer" title="Previous"></i></a>
+	        		<a href="<?=Graph::makeURL('reorder',$graph,'previous')?>" onclick="$('#tableHider').show();return true;"><i class="glyphicon glyphicon-arrow-up pointer" title="Previous"></i></a>
 	        	<?php } ?>
 	        	<?php if ($index == $number_of_graphs-1) {?>
-	        		<span class="disabled"><i class="icon-arrow-down pointer"></i></span>
+	        		<span class="disabled"><i class="glyphicon glyphicon-arrow-down pointer"></i></span>
 	        	<?php } else { ?>
-	        		<a href="<?=Graph::makeURL('reorder',$graph,'next')?>" onclick="hide_table();return true;"><i class="icon-arrow-down pointer" title="Next"></i></a>
+	        		<a href="<?=Graph::makeURL('reorder',$graph,'next')?>" onclick="$('#tableHider').show();return true;"><i class="glyphicon glyphicon-arrow-down pointer" title="Next"></i></a>
 	        	<?php } ?>
 	        </td>
 	    <?php } ?>

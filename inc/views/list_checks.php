@@ -48,7 +48,6 @@ $(document).ready(function() {
     <th><?=fCRUD::printSortableColumn('baseline','Baseline'); ?></th>
     <th class="masterTooltip" title="Over will trigger an alert when the value retrieved from Graphite is greater than the warning or error threshold. Under will trigger an alert when the value retrieved from Graphite is less than the warning or the error threshold"><?=fCRUD::printSortableColumn('over_under','Over/Under'); ?></th>
     <th class="masterTooltip" title="Public checks can be subscribed to by any user while private checks remain hidden from other users"><?=fCRUD::printSortableColumn('visiblity','Visibility'); ?></th>
-    <th>Action</th>
        </tr></thead><tbody>    
 	<?php
 	$first = TRUE;
@@ -66,10 +65,6 @@ $(document).ready(function() {
         <td><?=$check->prepareBaseline(); ?></td>
         <td><?=$over_under_array[$check->getOver_Under()]; ?></td>
         <td><?=$visibility_array[$check->getVisibility()]; ?></td>
-        <td><?=$check->prepareName() . '<br/><a href="' . CheckResult::makeUrl('list',$check) . '">View';?></a> | <?php if (fSession::get('user_id') == $check->getUserId() || fAuthorization::checkAuthLevel('admin')) { 
-                    echo '<a href="' . Check::makeURL('edit', $check_type, $check) . '">Edit</a> |'; 
-                  } ?>
-        <a href="<?=Subscription::makeURL('add', $check); ?>">Subscribe</a></td>
         </tr>
     <?php } ?>
     </tbody></table>

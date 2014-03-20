@@ -1,12 +1,7 @@
 <?
-// Fake SSL because Loadbalancer does SSL-Offload
-// TODO: Ideally use something like HTTP_X_FORWARDED_PROTO and HTTP_X_FORWARDED_PORT
-//       and incorporate into inc/flourish/fURL.php's getDomain method
-$_SERVER['HTTPS'] = 'on';
-$_SERVER['SERVER_PORT'] = 443;
-
 // Include main class loading config file
 define('TATTLE_ROOT', str_replace(array('ajax'),'',dirname($_SERVER['SCRIPT_FILENAME'])));
+// define('TATTLE_ROOT', str_replace(array('ajax'),'',getcwd()));
 $web_root = dirname($_SERVER['PHP_SELF']);
 if ($web_root != '/') {
   $web_root .= '/';

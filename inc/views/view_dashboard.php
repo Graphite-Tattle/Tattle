@@ -327,7 +327,9 @@
 				},
 				stop : function(event, ui) {
 					$("#slide_zone").remove();
-					disable_refresh();
+					<?php if ($dashboard->getRefreshRate() > 0) { ?>
+						disable_refresh();
+					<?php } ?>
 					var current = ui.value;
 					// If we aren't on the border 
 					if (current > mini && current < maxi) {

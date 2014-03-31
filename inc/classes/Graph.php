@@ -83,6 +83,7 @@ class Graph extends fActiveRecord
               $link .= $obj->getCustom_Opts() . '&';
           }
         }
+        $link = $link . "&drawNullAsZero=true";
        return $link;
 	}
 	

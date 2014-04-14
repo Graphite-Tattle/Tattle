@@ -18,12 +18,36 @@ try {
 	?>
 
 <script type="text/javascript">
-$(document).ready(function() {
-  attachTooltips();
-});
+    function filterChecks() {
+            var filter_text = $("#filter_text").val();
+            var type = '<?= $check_type?>';
+            var filter_group_id = <?= $filter_group_id?>;
+            $.get(
+                'inc/views/list_filtered_checks.php', 
+                {
+                    filter_text: filter_text, 
+                    type: type,
+                    filter_group_id: filter_group_id
+                }, 
+                function (data) {
+                    $("#filtered_checks").html(data);
+                },
+                'html'
+                );
+    }
+    $(document).ready(function() {
+        attachTooltips();
+ 
+        $("#filter_text").keyup(function(){
+            filterChecks();
+        });
+    });
 </script>
 
 <a class="btn small btn-primary" href="<?= Check::makeURL('add', $check_type);?>">Add Check</a>
+<div class="form-group inline" style="padding-left: 200px; width:500px">
+        <input type="text" class="form-control" placeholder="Search In Checks" id="filter_text" autofocus="autofocus">
+</div>
 <p class="pull-right">
 	Filter group :
 	<select id="list_of_filters">
@@ -37,38 +61,48 @@ $(document).ready(function() {
 		?>
 	</select>
 </p>
-<table class="table table-bordered table-striped">
-          <thead>
-		<tr>
-    <th><?=fCRUD::printSortableColumn('name','Name'); ?></th>
-    <th class="masterTooltip" title="Graph Target that will be checked in Graphite"><?=fCRUD::printSortableColumn('target','Target'); ?></th>
-    <th class="masterTooltip" title="The threshold level at which a Warning will be triggered"><?=fCRUD::printSortableColumn('warn','Warn'); ?></th>
-    <th class="masterTooltip" title="The threshold level at which an Error will be triggered"><?=fCRUD::printSortableColumn('error','Error'); ?></th>
-    <th class="masterTooltip" title="Number of data points to use when calculating the moving average. Each data point spans one minute"><?=fCRUD::printSortableColumn('sample','Sample'); ?></th>
-    <th><?=fCRUD::printSortableColumn('baseline','Baseline'); ?></th>
-    <th class="masterTooltip" title="Over will trigger an alert when the value retrieved from Graphite is greater than the warning or error threshold. Under will trigger an alert when the value retrieved from Graphite is less than the warning or the error threshold"><?=fCRUD::printSortableColumn('over_under','Over/Under'); ?></th>
-    <th class="masterTooltip" title="Public checks can be subscribed to by any user while private checks remain hidden from other users"><?=fCRUD::printSortableColumn('visiblity','Visibility'); ?></th>
-       </tr></thead><tbody>    
-	<?php
-	$first = TRUE;
-	foreach ($checks as $check) {
-	?>
-    	<tr>
-        <td><?=$check->prepareName() . '<br/><a href="' . CheckResult::makeUrl('list',$check) . '">View';?></a> | <?php if (fSession::get('user_id') == $check->getUserId() || fAuthorization::checkAuthLevel('admin')) { 
-                    echo '<a href="' . Check::makeURL('edit', $check_type, $check) . '"> Edit</a> |'; 
-                  } ?>
-        <a href="<?=Subscription::makeURL('add', $check); ?>">Subscribe</a></td>
-        <td style="max-width:300px; overflow:scroll;"><?=$check->prepareTarget(); ?></td>
-        <td><?=$check->prepareWarn(); ?></td>
-        <td><?=$check->prepareError(); ?></td>
-        <td><?=$check->prepareSample(); ?></td>
-        <td><?=$check->prepareBaseline(); ?></td>
-        <td><?=$over_under_array[$check->getOver_Under()]; ?></td>
-        <td><?=$visibility_array[$check->getVisibility()]; ?></td>
-        </tr>
-    <?php } ?>
-    </tbody></table>
-    <?
+<br></br>
+<div id="filtered_checks">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th><?= fCRUD::printSortableColumn('name', 'Name'); ?></th>
+                <th class="masterTooltip" title="Graph Target that will be checked in Graphite"><?= fCRUD::printSortableColumn('target', 'Target'); ?></th>
+                <th class="masterTooltip" title="The threshold level at which a Warning will be triggered"><?= fCRUD::printSortableColumn('warn', 'Warn'); ?></th>
+                <th class="masterTooltip" title="The threshold level at which an Error will be triggered"><?= fCRUD::printSortableColumn('error', 'Error'); ?></th>
+                <th class="masterTooltip" title="Number of data points to use when calculating the moving average. Each data point spans one minute"><?= fCRUD::printSortableColumn('sample', 'Sample'); ?></th>
+                <th><?= fCRUD::printSortableColumn('baseline', 'Baseline'); ?></th>
+                <th class="masterTooltip" title="Over will trigger an alert when the value retrieved from Graphite is greater than the warning or error threshold. Under will trigger an alert when the value retrieved from Graphite is less than the warning or the error threshold"><?= fCRUD::printSortableColumn('over_under', 'Over/Under'); ?></th>
+                <th class="masterTooltip" title="Public checks can be subscribed to by any user while private checks remain hidden from other users"><?= fCRUD::printSortableColumn('visiblity', 'Visibility'); ?></th>
+                <th>Action</th>
+            </tr></thead>
+        <tbody>    
+            <?php
+            $first = TRUE;
+            foreach ($checks as $check) {
+                ?>
+                <tr>
+                    <td><?= '<a href="' . CheckResult::makeUrl('list', $check) . '">' . $check->prepareName(); ?></a></td>    
+                    <td style="max-width:300px; overflow:scroll;"><?= $check->prepareTarget(); ?></td>
+                    <td><?= $check->prepareWarn(); ?></td>
+                    <td><?= $check->prepareError(); ?></td>
+                    <td><?= $check->prepareSample(); ?></td>
+                    <td><?= $check->prepareBaseline(); ?></td>
+                    <td><?= $over_under_array[$check->getOver_Under()]; ?></td>
+                    <td><?= $visibility_array[$check->getVisibility()]; ?></td>
+                    <td><?php
+                        if (fSession::get('user_id') == $check->getUserId()) {
+                            echo '<a href="' . Check::makeURL('edit', $check_type, $check) . '">Edit</a> |';
+                        }
+                        ?>
+                        <a href="<?= Subscription::makeURL('add', $check); ?>">Subscribe</a></td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+</div>
+    <?php
+    
     //check to see if paging is needed
     $total_pages = ceil($checks->count(TRUE) / $GLOBALS['PAGE_SIZE']);
     if ($total_pages > 1) {

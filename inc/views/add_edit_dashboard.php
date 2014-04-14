@@ -19,6 +19,8 @@ if (isset($dashboard_id)) {
 				html : true
 			});
 		});
+                
+                $('.badge').tooltip();
 	});
 </script>
   <div class="row">
@@ -82,6 +84,9 @@ if (isset($dashboard_id)) {
     </div>
     <div class="col-md-9">   
    <? if ($action == 'edit') { ?>
+   <div class="form-group inline" style="width:500px">
+        <input type="text" class="form-control" placeholder="Search In Graphs" id="filter_text" autofocus="autofocus">
+    </div>
    <p class="info"><a href="<?=Graph::makeURL('add',$dashboard); ?>">Add Graph</a></p>
  <?php
    try {
@@ -110,7 +115,23 @@ if (isset($dashboard_id)) {
 					$(this).popover('hide');
 				});
 			}
-		
+                        
+                        function filterGraphs() {
+                                var filter_text = $("#filter_text").val();
+                                var dashboard_id = <?= $dashboard_id?>;
+                                $.get(
+                                    'inc/views/list_filtered_graphs.php', 
+                                    {
+                                        filter_text: filter_text, 
+                                        dashboard_id: dashboard_id
+                                    }, 
+                                    function (data) {
+                                        $("#filtered_graphs").html(data);
+                                    },
+                                    'html'
+                                    );
+                        } 
+                        
 			$(function(){
 				construct_table_hider();
 				
@@ -137,79 +158,94 @@ if (isset($dashboard_id)) {
 						$(location).attr('href','<?=Graph::makeURL('drag_reorder')?>'+new_weights.join(","));
 					}
 				});
+                                
+                                $("#filter_text").keyup(function(){
+                                        filterGraphs();
+                                });
 			});
 		</script>
 	<?php }?>
     <div id="table_container">
-	<table class="table table-bordered table-striped" id="table-graphs">
-          <thead>
-          <tr>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Vtitle</th>
-          <th>Area</th>
-          <th>Action</th>
-          <?php if ($number_of_graphs > 1) {?>
-          	<th>Reorder&nbsp;*</th>
-          <?php }?>
-          </tr>    
-          </thead>
-          <tbody<?= ($number_of_graphs > 1)?' id="sortable"':'';?>>
-	<?php
-	$first = TRUE;
-	$index = 0;
-	foreach ($graphs as $graph) {
-		?>
-    	<tr id="<?=$graph->getGraphId()?>">
-        <td><?=$graph->prepareName(); ?></td>
-        <td><?=$graph->prepareDescription(); ?></td>
-        <td><?=$graph->prepareVtitle(); ?></td>
-        <td><?=$graph->prepareArea(); ?></td>        
-        <td><a href="<?=Graph::makeURL('edit', $graph); ?>">Edit</a> |
-        <a href="<?=Graph::makeURL('delete', $graph); ?>">Delete</a> |
-        <form id="form_clone_<?=(int)$graph->getGraphId(); ?>" method="post" action="<?=Graph::makeURL('clone', $graph); ?>" style="display: initial;">
-        	<a href="#" onclick="$('#form_clone_<?=(int)$graph->getGraphId(); ?>').submit(); return false;">Clone</a>
-        	<input type="hidden" name="token" value="<?=fRequest::generateCSRFToken("/graphs.php"); ?>" />
-        </form> |
-        <div id="form_clone_into_<?=(int)$graph->getGraphId(); ?>" style="display:none;">
-        <form id="" method="post" action="<?=Graph::makeURL('clone_into', $graph); ?>" class="inline no-margin">
-        	<input type="hidden" name="token" value="<?=fRequest::generateCSRFToken("/graphs.php"); ?>" />
-        	Select destination : 
-        	<select name="dashboard_dest_id">
-        		<?php 
-        			foreach (Dashboard::findAll() as $dashboard_dest) {
-						if ($dashboard_dest->prepareDashboardId() != $graph->prepareDashboardId()) {
-        		?>
-        			<option value="<?=(int)$dashboard_dest->getDashboardId(); ?>"><?=$dashboard_dest->prepareName() ?></option>
-        		<?php 
-        				}
-        			}
-        		?>
-        	</select>
-        	<input type="submit" value="Clone !" class="btn btn-primary"/>
-        </form>
+        <div id="filtered_graphs">
+            <table class="table table-bordered table-striped" id="table-graphs">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Vtitle</th>
+                        <th>Area</th>
+                        <th>Action</th>
+                        <?php if ($number_of_graphs > 1) { ?>
+                        <th>Reorder&nbsp;*</th>
+                        <?php } ?>
+                    </tr>    
+                </thead>
+                <tbody<?= ($number_of_graphs > 1)?' id="sortable"':''; ?>>
+                    <?php
+                    $first = TRUE;
+                    $index = 0;
+                    foreach ($graphs as $graph) {
+                    $number_of_lines = 0;
+                    $lines = Line::findAll($graph->getGraphId());
+                    $number_of_lines = $number_of_lines + $lines->count();
+                    ?>
+                    <tr id="<?= $graph->getGraphId() ?>">
+                        <td class="highlight">
+                            <?= $graph->prepareName(); ?>
+                            <div class="inline pull-right">
+                                <span class="badge" style="width: 30px" data-toggle="tooltip" data-placement="left" title="Number of lines passed through the filter"><?= $number_of_lines ?></span>
+                            </div>
+                        </td>
+                        <td class="highlight"><?= $graph->prepareDescription(); ?></td>
+                        <td class="highlight"><?= $graph->prepareVtitle(); ?></td>
+                        <td class="highlight"><?= $graph->prepareArea(); ?></td>        
+                        <td><a href="<?= Graph::makeURL('edit', $graph); ?>">Edit</a> |
+                            <a href="<?= Graph::makeURL('delete', $graph); ?>">Delete</a> |
+                            <form id="form_clone_<?= (int) $graph->getGraphId(); ?>" method="post" action="<?= Graph::makeURL('clone', $graph); ?>" style="display: initial;">
+                                <a href="#" onclick="$('#form_clone_<?= (int) $graph->getGraphId(); ?>').submit(); return false;">Clone</a>
+                                <input type="hidden" name="token" value="<?= fRequest::generateCSRFToken("/graphs.php"); ?>" />
+                            </form> |
+                            <div id="form_clone_into_<?= (int) $graph->getGraphId(); ?>" style="display:none;">
+                                <form id="" method="post" action="<?= Graph::makeURL('clone_into', $graph); ?>" class="inline no-margin">
+                                    <input type="hidden" name="token" value="<?= fRequest::generateCSRFToken("/graphs.php"); ?>" />
+                                    Select destination : 
+                                    <select name="dashboard_dest_id">
+                                        <?php
+                                        foreach (Dashboard::findAll() as $dashboard_dest) {
+                                        if ($dashboard_dest->prepareDashboardId() != $graph->prepareDashboardId()) {
+                                        ?>
+                                        <option value="<?= (int) $dashboard_dest->getDashboardId(); ?>"><?= $dashboard_dest->prepareName() ?></option>
+                                        <?php
+                                        }
+                                        }
+                                        ?>
+                                    </select>
+                                    <input type="submit" value="Clone !" class="btn btn-primary"/>
+                                </form>
+                            </div>
+                            <a href="#" id="<?= (int) $graph->getGraphId(); ?>" class="btn_popover">Clone into</a>
+                        </td>
+                        <?php if ($number_of_graphs > 1) { ?>
+                        <td>
+                            <?php if ($index == 0) { ?>
+                            <span class="disabled"><i class="glyphicon glyphicon-arrow-up pointer"></i></span>
+                            <?php } else { ?>
+                            <a href="<?= Graph::makeURL('reorder', $graph, 'previous') ?>" onclick="$('#tableHider').show();return true;"><i class="glyphicon glyphicon-arrow-up pointer" title="Previous"></i></a>
+                            <?php } ?>
+                            <?php if ($index == $number_of_graphs-1) { ?>
+                            <span class="disabled"><i class="glyphicon glyphicon-arrow-down pointer"></i></span>
+                            <?php } else { ?>
+                            <a href="<?= Graph::makeURL('reorder', $graph, 'next') ?>" onclick="$('#tableHider').show();return true;"><i class="glyphicon glyphicon-arrow-down pointer" title="Next"></i></a>
+                            <?php } ?>
+                        </td>
+                        <?php } ?>
+                    </tr>
+                    <?php
+                    $index++;
+                    }
+                    ?>
+                </tbody></table>
         </div>
-        <a href="#" id="<?=(int)$graph->getGraphId(); ?>" class="btn_popover">Clone into</a>
-        </td>
-        <?php if ($number_of_graphs > 1) {?>
-	        <td>
-	        	<?php if ($index == 0) {?>
-	        		<span class="disabled"><i class="glyphicon glyphicon-arrow-up pointer"></i></span>
-	        	<?php } else { ?>
-	        		<a href="<?=Graph::makeURL('reorder',$graph,'previous')?>" onclick="$('#tableHider').show();return true;"><i class="glyphicon glyphicon-arrow-up pointer" title="Previous"></i></a>
-	        	<?php } ?>
-	        	<?php if ($index == $number_of_graphs-1) {?>
-	        		<span class="disabled"><i class="glyphicon glyphicon-arrow-down pointer"></i></span>
-	        	<?php } else { ?>
-	        		<a href="<?=Graph::makeURL('reorder',$graph,'next')?>" onclick="$('#tableHider').show();return true;"><i class="glyphicon glyphicon-arrow-down pointer" title="Next"></i></a>
-	        	<?php } ?>
-	        </td>
-	    <?php } ?>
-        </tr>
-    <?php
-    	$index++;
-		 } ?>
-    </tbody></table>
     <?php if ($number_of_graphs > 1) {?>
     	<p class="text-info"><em>* You can also use "drag and drop" to reorder the graphs.</em></p>
     <?php } ?>

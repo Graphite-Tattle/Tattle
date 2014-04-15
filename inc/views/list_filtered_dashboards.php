@@ -5,10 +5,10 @@ include '../includes.php';
 include TATTLE_ROOT . '/inc/functions.php';
 include TATTLE_ROOT . '/inc/config.php';
 $filter_text = fRequest::get('filter_text', 'string');
-if (!isset($dashboard_id)) {
-    $dashboard_id = fRequest::get('filter_group_id', 'integer');
-    if (empty($dashboard_id) || ($dashboard_id < 0)) {
-        $dashboard_id = -1;
+if (!isset($filter_group_id)) {
+    $filter_group_id = fRequest::get('filter_group_id', 'integer');
+    if (empty($filter_group_id) || ($filter_group_id < 0)) {
+        $filter_group_id = -1;
     }
 }
 ?>
@@ -16,7 +16,7 @@ if (!isset($dashboard_id)) {
     $('.badge').tooltip();
     var filter = $("#filter_text").val();
     var reg = new RegExp(filter, "i");
-    $(".description").each(function() {
+    $("#filtered_dashboards .description").each(function() {
         if (filter != '') {
             if ($(this).html().match(reg) != null) {
                 $(this).addClass('success');
@@ -26,7 +26,7 @@ if (!isset($dashboard_id)) {
         }
     });
 
-    $(".name a").each(function() {
+    $("#filtered_dashboards .name a").each(function() {
         if (filter != '') {
             if ($.trim($(this).html()).match(reg) != null) {
                 $(this).parent().addClass('success');
@@ -54,60 +54,23 @@ if (!isset($dashboard_id)) {
         <tbody>
             <?php
             $first = TRUE;
-            if ($dashboard_id == -1) {
+            if ($filter_group_id == -1) {
                 $dashboards = Dashboard::findAll();
             } else {
-                $dashboards = Dashboard::findAllByFilter($dashboard_id);
+                $dashboards = Dashboard::findAllByFilter($filter_group_id);
             }
-            /* Create an empty set of Dashboards */
-            $dashboard_with_filtered_graphs_and_lines = $dashboards->slice(0, 0);
 
             /* Filter Graphs */
             foreach ($dashboards as $dashboard) {
-                $graphs = Graph::findAll($dashboard->getDashboardId());
+                $dashboard_id = $dashboard->getDashboardId();
+                $graphs = Graph::findAll($dashboard_id);
                 $number_of_lines = 0;
                 foreach ($graphs as $graph) {
-                    $lines = Line::findAll($graph->getGraphId());
-                    if (isset($filter_text) && $filter_text != '') {
-                        $lines = $lines->filter(array('getTarget|getAlias~' => $filter_text));
-                    }
-                    $number_of_lines = $number_of_lines + $lines->count();
+                    $number_of_lines = $number_of_lines + Line::countAllByFilter($graph->getGraphId(), $filter_text);
                 }
-                if (isset($filter_text) && $filter_text != '') {
-                    $graphs = $graphs->filter(array('getName|getArea|getVtitle|getDescription~' => $filter_text));
-                }
-                $number_of_graphs = $graphs->count();
-                if ($number_of_graphs > 0 || $number_of_lines > 0) {
-                    $dashboard_with_filtered_graphs_and_lines = $dashboard_with_filtered_graphs_and_lines->merge($dashboard);
-                }
-            }
-            /* Filter Dashboards */
-            if (isset($filter_text) && $filter_text != '') {
-                $filtered_dashboards = $dashboards->filter(array('getName|getDescription~' => $filter_text));
-            } else {
-                $filtered_dashboards = $dashboards;
-            }
-
-            /* Merge the two sets of Dashboards */
-            $filtered_dashboards = $filtered_dashboards->merge($dashboard_with_filtered_graphs_and_lines);
-            /* Remove all duplicate Dashboards after the merge */
-            $filtered_dashboards = $filtered_dashboards->unique();
-
-            foreach ($filtered_dashboards as $dashboard) {
-                $graphs = Graph::findAll($dashboard->getDashboardId());
-                $number_of_lines = 0;
-                foreach ($graphs as $graph) {
-                    $lines = Line::findAll($graph->getGraphId());
-                    if (isset($filter_text) && $filter_text != '') {
-                        $lines = $lines->filter(array('getTarget|getAlias~' => $filter_text));
-                    }
-                    $number_of_lines = $number_of_lines + $lines->count();
-                }
-                if (isset($filter_text) && $filter_text != '') {
-                    $graphs = $graphs->filter(array('getName|getArea|getVtitle|getDescription~' => $filter_text));
-                }
-                $number_of_graphs = $graphs->count();
-                ?>
+                $number_of_graphs = Graph::countAllByFilter($dashboard_id, $filter_text);
+            ?>
+            <?php if ( preg_match('/'.$filter_text.'/i', $dashboard->getName()) || preg_match('/'.$filter_text.'/i', $dashboard->getDescription()) || $number_of_graphs > 0 || $number_of_lines > 0 ) {?> 
                 <tr>
                     <td class="name">
                         <a href="<?= Dashboard::makeURL('view', $dashboard); ?>">
@@ -140,6 +103,7 @@ if (!isset($dashboard_id)) {
                     </td>
                     <td class="last"><input type="checkbox" name="id_mass_export[]" class="no-margin input-dashboard" value="<?= $dashboard->getDashboardId() ?>" /></td>
                 </tr>
+                <?php }?>
             <?php } ?>
         </tbody>
     </table>

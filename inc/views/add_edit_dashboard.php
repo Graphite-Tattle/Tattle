@@ -97,6 +97,7 @@ if (isset($dashboard_id)) {
 	if ($number_of_graphs > 1) {
 	?>
 		<script type="text/javascript">
+                        var last_filter;
 			function construct_table_hider () {
 				var div = $("<div>");
 				div.height($("#table_container").height())
@@ -118,21 +119,35 @@ if (isset($dashboard_id)) {
                         
                         function filterGraphs() {
                                 var filter_text = $("#filter_text").val();
-                                var dashboard_id = <?= $dashboard_id?>;
-                                $.get(
-                                    'inc/views/list_filtered_graphs.php', 
-                                    {
-                                        filter_text: filter_text, 
-                                        dashboard_id: dashboard_id
-                                    }, 
-                                    function (data) {
-                                        $("#filtered_graphs").html(data);
-                                    },
-                                    'html'
-                                    );
+                                if (last_filter && last_filter == filter_text) {
+                                        $("#unfiltered_graphs").hide();
+                                        $("#filtered_graphs").show();
+                                } else {    
+                                    if (filter_text.length > 2) {
+                                            var dashboard_id = <?= $dashboard_id?>;
+                                            $.get(
+                                                'inc/views/list_filtered_graphs.php', 
+                                                {
+                                                    filter_text: filter_text, 
+                                                    dashboard_id: dashboard_id
+                                                }, 
+                                                function (data) {
+                                                    $("#unfiltered_graphs").hide();
+                                                    $("#filtered_graphs").html(data);
+                                                    $("#filtered_graphs").show();
+                                                },
+                                                'html'
+                                                );
+                                            last_filter = $("#filter_text").val();
+                                    } else {
+                                            $("#unfiltered_graphs").show();
+                                            $("#filtered_graphs").hide();
+                                    }
+                                }
                         } 
                         
 			$(function(){
+                                var timeout;
 				construct_table_hider();
 				
 				$('.btn_popover').each(function(){
@@ -160,13 +175,18 @@ if (isset($dashboard_id)) {
 				});
                                 
                                 $("#filter_text").keyup(function(){
-                                        filterGraphs();
+                                        if (timeout) {
+                                            clearTimeout(timeout);
+                                            timeout = setTimeout(function() {filterGraphs();}, 1000);
+                                        } else {
+                                            timeout = setTimeout(function() {filterGraphs();}, 1000);
+                                        }
                                 });
 			});
 		</script>
 	<?php }?>
     <div id="table_container">
-        <div id="filtered_graphs">
+        <div id="unfiltered_graphs">
             <table class="table table-bordered table-striped" id="table-graphs">
                 <thead>
                     <tr>
@@ -185,16 +205,10 @@ if (isset($dashboard_id)) {
                     $first = TRUE;
                     $index = 0;
                     foreach ($graphs as $graph) {
-                    $number_of_lines = 0;
-                    $lines = Line::findAll($graph->getGraphId());
-                    $number_of_lines = $number_of_lines + $lines->count();
                     ?>
                     <tr id="<?= $graph->getGraphId() ?>">
                         <td class="highlight">
                             <?= $graph->prepareName(); ?>
-                            <div class="inline pull-right">
-                                <span class="badge" style="width: 30px" data-toggle="tooltip" data-placement="left" title="Number of lines passed through the filter"><?= $number_of_lines ?></span>
-                            </div>
                         </td>
                         <td class="highlight"><?= $graph->prepareDescription(); ?></td>
                         <td class="highlight"><?= $graph->prepareVtitle(); ?></td>
@@ -246,6 +260,7 @@ if (isset($dashboard_id)) {
                     ?>
                 </tbody></table>
         </div>
+        <div id="filtered_graphs"></div>
     <?php if ($number_of_graphs > 1) {?>
     	<p class="text-info"><em>* You can also use "drag and drop" to reorder the graphs.</em></p>
     <?php } ?>

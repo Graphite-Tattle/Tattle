@@ -21,6 +21,15 @@ class Graph extends fActiveRecord
           );
 	}
 	
+        static public function countAllByFilter($dashboard_id, $filter) {
+            return fRecordSet::tally(
+            __CLASS__,
+            array(
+                'dashboard_id=' =>$dashboard_id,
+                'name|vtitle|description~' => $filter
+            )
+            );
+        }
     static public function makeURL($type, $obj=NULL, $move=NULL)
 	{
 		switch ($type)

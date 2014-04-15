@@ -4,6 +4,7 @@ $tmpl->set('breadcrumbs',$breadcrumbs);
 $tmpl->place('header');
 ?>
 <script type="text/javascript">
+        var last_filter;    
 	function test_file_present () {
 		if ($("#fileInput").val() == '') {
 				alert("You have to select a file first.");
@@ -22,20 +23,35 @@ $tmpl->place('header');
         
         function filterDashboards() {
                 var filter_text = $("#filter_text").val();
-                var filter_group_id = <?= $filter_group_id?>;
-                $.get(
-                    'inc/views/list_filtered_dashboards.php', 
-                    {
-                        filter_text: filter_text, 
-                        filter_group_id:filter_group_id
-                    }, 
-                    function (data) {
-                        $("#filtered_dashboards").html(data);
-                    },
-                    'html'
-                    );
+                if (last_filter && last_filter == filter_text) {
+                        $("#unfiltered_dashboards").hide();
+                        $("#filtered_dashboards").show();
+                } else {    
+                    if (filter_text.length > 2) {
+                            $("#unfiltered_dashboards").hide();
+                            $('#loader_filter').show();
+                            var filter_group_id = <?= $filter_group_id?>;
+                            $.get(
+                                'inc/views/list_filtered_dashboards.php', 
+                                {
+                                    filter_text: filter_text, 
+                                    filter_group_id:filter_group_id
+                                }, 
+                                function (data) {
+                                    $("#filtered_dashboards").show();
+                                    $("#filtered_dashboards").html(data);
+                                },
+                                'html'
+                                );
+                            last_filter = $("#filter_text").val();
+                    } else {
+                            $("#unfiltered_dashboards").show();
+                            $("#filtered_dashboards").hide();
+                    }
+                }
         }
 	$(function(){
+                var timeout;
 		$('.input-dashboard').click(function(){
 			if ($(this).is(":checked")) {
 				$($(this).closest('tr')).addClass('highlighted');
@@ -49,7 +65,12 @@ $tmpl->place('header');
 		});
                 
                 $("#filter_text").keyup(function(){
-			filterDashboards();
+                    if (timeout) {
+                        clearTimeout(timeout);
+                        timeout = setTimeout(function() {filterDashboards();}, 1000);
+                    } else {
+                        timeout = setTimeout(function() {filterDashboards();}, 1000);
+                    }
 		});
                 
                 $('.badge').tooltip();
@@ -85,7 +106,7 @@ try {
 			?>
 		</select>
 	</div>
-        <div id="filtered_dashboards">
+        <div id="unfiltered_dashboards">
             <form method="POST" id="form_mass_export" action="<?= Dashboard::makeURL('mass_export'); ?>" target="_blank">
                 <table class="table table-bordered table-striped">
                     <thead>
@@ -103,23 +124,12 @@ try {
                         <?php
                         $first = TRUE;
                         foreach ($dashboards as $dashboard) {
-                            $graphs = Graph::findAll($dashboard->getDashboardId()); 
-                            $number_of_lines = 0;
-                            foreach($graphs as $graph) {
-                                $lines = Line::findAll($graph->getGraphId());
-                                $number_of_lines = $number_of_lines + $lines->count();
-                            }
-                            $number_of_graphs = $graphs->count();
                         ?>
                         <tr>
                             <td>
                                 <a href="<?= Dashboard::makeURL('view', $dashboard); ?>">
                                     <?= $dashboard->prepareName(); ?>
                                 </a>
-                                <div class="inline pull-right">
-                                    <span class="badge" style="width: 30px" data-toggle="tooltip" data-placement="left" title="Number of graphs passed through the filter"><?= $number_of_graphs ?></span>
-                                    <span class="badge" style="width: 30px" data-toggle="tooltip" data-placement="right" title="Number of lines passed through the filter"><?= $number_of_lines ?></span>
-                                </div>
                             </td>
                             <td><?= $dashboard->prepareDescription(); ?></td>
                             <td>
@@ -145,6 +155,9 @@ try {
                         <?php } ?>
                     </tbody></table>
             </form>
+        </div>
+        <div id="filtered_dashboards">
+            <img id="loader_filter" src="assets/img/loader2.gif" style="margin-left:5px; display:none;">
         </div>
     <?
 } catch (fEmptySetException $e) {

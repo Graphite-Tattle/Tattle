@@ -36,10 +36,16 @@ try {
                 );
     }
     $(document).ready(function() {
+        var timeout;
         attachTooltips();
  
         $("#filter_text").keyup(function(){
-            filterChecks();
+            if (timeout) {
+                clearTimeout(timeout);
+                timeout = setTimeout(function() {filterChecks();}, 1000);
+            } else {
+                timeout = setTimeout(function() {filterChecks();}, 1000);
+            }
         });
     });
 </script>

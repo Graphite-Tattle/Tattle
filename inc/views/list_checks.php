@@ -18,28 +18,48 @@ try {
 	?>
 
 <script type="text/javascript">
+    var last_filter;
     function filterChecks() {
             var filter_text = $("#filter_text").val();
-            var type = '<?= $check_type?>';
-            var filter_group_id = <?= $filter_group_id?>;
-            $.get(
-                'inc/views/list_filtered_checks.php', 
-                {
-                    filter_text: filter_text, 
-                    type: type,
-                    filter_group_id: filter_group_id
-                }, 
-                function (data) {
-                    $("#filtered_checks").html(data);
-                },
-                'html'
-                );
+            if (last_filter && last_filter == filter_text) {
+                    $("#unfiltered_checks").hide();
+                    $("#filtered_checks").show();
+            } else {    
+                if (filter_text.length > 2) {
+                        var type = '<?= $check_type?>';
+                        var filter_group_id = <?= $filter_group_id?>;
+                        $.get(
+                            'inc/views/list_filtered_checks.php', 
+                            {
+                                filter_text: filter_text, 
+                                type: type,
+                                filter_group_id: filter_group_id
+                            }, 
+                            function (data) {
+                                $("#unfiltered_checks").hide();
+                                $("#filtered_checks").html(data);
+                                $("#filtered_checks").show();
+                            },
+                            'html'
+                            );
+                        last_filter = $("#filter_text").val();
+                } else {
+                        $("#unfiltered_checks").show();
+                        $("#filtered_checks").hide();
+                }
+            }
     }
     $(document).ready(function() {
+        var timeout;
         attachTooltips();
  
         $("#filter_text").keyup(function(){
-            filterChecks();
+            if (timeout) {
+                clearTimeout(timeout);
+                timeout = setTimeout(function() {filterChecks();}, 1000);
+            } else {
+                timeout = setTimeout(function() {filterChecks();}, 1000);
+            }
         });
     });
 </script>
@@ -62,7 +82,7 @@ try {
 	</select>
 </p>
 <br></br>
-<div id="filtered_checks">
+<div id="unfiltered_checks">
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -100,7 +120,6 @@ try {
             <?php } ?>
         </tbody>
     </table>
-</div>
     <?php
     
     //check to see if paging is needed
@@ -128,6 +147,8 @@ try {
           </li>
         </ul>
       </div>
+</div>
+<div id="filtered_checks"></div>
     <?php } 
 } catch (fEmptySetException $e) {
 	?>

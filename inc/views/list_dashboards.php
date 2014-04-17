@@ -91,7 +91,7 @@ try {
                     <img id="loader" src="assets/img/loader2.gif" style="margin-left:5px; display:none;">
 		</p>
 	</form>
-        <div class="form-group inline" style="width:500px">
+        <div class="form-group inline" style="width:500px; margin-bottom: -10px">
             <input type="text" class="form-control" placeholder="Search In Dashboards, Graphs AND Lines" id="filter_text" autofocus="autofocus">
         </div>
         <img id="loader_filter" src="assets/img/loader2.gif" style="margin-left:5px; display:none;">

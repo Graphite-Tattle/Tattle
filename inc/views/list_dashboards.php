@@ -27,9 +27,10 @@ $tmpl->place('header');
                         $("#unfiltered_dashboards").hide();
                         $("#filtered_dashboards").show();
                 } else {    
-                    if (filter_text.length > 2) {
+                    if ($.trim(filter_text).length > 2) {
                             $("#unfiltered_dashboards").hide();
-                            $('#loader_filter').show();
+                            $("#filtered_dashboards").hide();
+                            $('#loader_filter').show(); 
                             var filter_group_id = <?= $filter_group_id?>;
                             $.get(
                                 'inc/views/list_filtered_dashboards.php', 
@@ -91,8 +92,9 @@ try {
 		</p>
 	</form>
         <div class="form-group inline" style="width:500px">
-            <input type="text" class="form-control" placeholder="Search In Dashboards AND Graphs" id="filter_text" autofocus="autofocus">
+            <input type="text" class="form-control" placeholder="Search In Dashboards, Graphs AND Lines" id="filter_text" autofocus="autofocus">
         </div>
+        <img id="loader_filter" src="assets/img/loader2.gif" style="margin-left:5px; display:none;">
 	<div class="pull-right">
 		<span>Filter group :</span>
 		<select id="list_of_filters">
@@ -157,7 +159,6 @@ try {
             </form>
         </div>
         <div id="filtered_dashboards">
-            <img id="loader_filter" src="assets/img/loader2.gif" style="margin-left:5px; display:none;">
         </div>
     <?
 } catch (fEmptySetException $e) {

@@ -35,6 +35,7 @@ if (!isset($filter_group_id)) {
             }
         }
     });
+    $('#loader_filter').hide(); 
 </script>
 <form method="POST" id="form_mass_export" action="<?= Dashboard::makeURL('mass_export'); ?>" target="_blank">
     <table class="table table-bordered table-striped">
@@ -70,7 +71,7 @@ if (!isset($filter_group_id)) {
                 }
                 $number_of_graphs = Graph::countAllByFilter($dashboard_id, $filter_text);
             ?>
-            <?php if ( preg_match('/'.$filter_text.'/i', $dashboard->getName()) || preg_match('/'.$filter_text.'/i', $dashboard->getDescription()) || $number_of_graphs > 0 || $number_of_lines > 0 ) {?> 
+            <?php if ( $number_of_graphs > 0 || $number_of_lines > 0 || preg_match('/'.$filter_text.'/i', $dashboard->getName()) || preg_match('/'.$filter_text.'/i', $dashboard->getDescription()) ) {?> 
                 <tr>
                     <td class="name">
                         <a href="<?= Dashboard::makeURL('view', $dashboard); ?>">

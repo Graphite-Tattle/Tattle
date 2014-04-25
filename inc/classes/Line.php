@@ -21,7 +21,17 @@ class Line extends fActiveRecord
           );
 	}   
     
-    static public function makeURL($type, $obj=NULL, $move=NULL)
+        static public function countAllByFilter($graph_id, $filter) {
+            return fRecordSet::tally(
+            __CLASS__,
+            array(
+                'graph_id=' =>$graph_id,
+                'target|alias~' => $filter
+            )
+            );
+        }
+        
+        static public function makeURL($type, $obj=NULL, $move=NULL)
 	{
 		switch ($type)
 		{

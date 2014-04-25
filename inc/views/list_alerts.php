@@ -6,8 +6,8 @@ $tmpl->place('header');
 try {
         $results->tossIfNoRows();
 	?>
-<span class="span10">
-  <table class="zebra-striped">
+<span class="col-md-12">
+  <table class="table table-bordered table-striped">
           <thead>
     <tr>    
     <th>Check</th>

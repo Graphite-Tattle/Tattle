@@ -29,6 +29,7 @@ if (isset($_SERVER['argc'])) {
 } elseif ($debug = fRequest::get('debug','boolean')) {
   $debug = true;
 }
+//$debug = true; // FIXME
 
 if ($debug) {
   print "debug enabled";
@@ -74,26 +75,79 @@ foreach ($checks as $check) {
     }
     // If It's been more then the Repeat Delay or the Status has changed
     if (($next_check->lt($end) && $result != 0) || $check->getLastCheckStatus() != $result) {
-      fCore::debug("Send Notification \n",FALSE);
-      fCore::debug("State :" . $result . ":\n",FALSE);
-      $check_result = new CheckResult();
-      $check_result->setCheckId($check->getCheckId());
-      $check_result->setStatus($result);
-      $check_result->setValue($check_value);
-      $check_result->setState(0);
-      $check->setLastCheckStatus($result);
-      $check->setLastCheckValue($check_value);
-      $check->setLastCheckTime($end);
-      $check_result->store();
-      $check->store();
-      $subscriptions = Subscription::findAll($check->getCheckId());
-      foreach ($subscriptions as $subscription) {
-        $notify_function = $subscription->getMethod();
-        if (function_exists($notify_function) && $subscription->getStatus() == 0 ){
-         $notify_result = $notify_function($check,$check_result,$subscription);
-         $number_of_emails += 1;
-        }
-      }
+    	
+    	// Check if it's in the period
+    	$notify = TRUE;
+    	$hour_start = $check->getHourStart();
+    	$day_start = $check->getDayStart();
+    	if (!empty($hour_start)) {
+    		$hour_end = $check->getHourEnd();
+    		$current_time = $end->date("H:i");
+    		if (compare_hours($hour_start, $hour_end) < 0) {
+    			// In this case $hour_start is lower than $hour_end
+    			// For example from 6 AM to 9 AM
+    			// The current time must be between these two hours 
+    			$notify =  (compare_hours($hour_start, $current_time) > -1) && (compare_hours($hour_end, $current_time) < 1);
+    		} else {
+    			// In this case $hour_start is greater than $hour_end
+    			// For example from 10 PM to 6 AM of the next day
+    			// The current time must be either lower
+    			// or greater than these two hours
+    			$notify =  ((compare_hours($hour_start, $current_time) > -1) && (compare_hours($hour_end, $current_time) > -1))
+    					|| ((compare_hours($hour_start, $current_time) < 1) && (compare_hours($hour_end, $current_time) < 1));
+    		}
+    	}
+    	// If notify is already FALSE, it doesn't matter which day we are
+    	if ($notify) {
+    		if (!empty($day_start)) {
+			    $days = array(
+			    	"sun" => 0,
+			    	"mon" => 1,
+			    	"tue" => 2,
+			    	"wed" => 3,
+			    	"thu" => 4,
+			    	"fri" => 5,
+			    	"sat" => 6	
+			    );
+			    $day_end = $check->getDayEnd();
+			    $current_day = $end->date("w");
+			    if ($days[$day_start] < $days[$day_end]) {
+			    	// In this case $day_start is lower than $day_end
+			    	// For example from tuesday to friday
+			    	// The current day must be between these two days
+			    	$notify = ($days[$day_start] >= $current_day) && ($days[$day_end] <= $current_day) ;
+			    } else {
+			    	// In this case $day_start is greater than $day_end
+			    	// For example from satursday to monday of the next week
+			    	// The current day must be either lower
+			    	// or greater than these two days
+			    	$notify =  (($days[$day_start] >= $current_day) && ($days[$day_end] >= $current_day))
+		    	 			|| (($days[$day_start] <= $current_day) && ($days[$day_end] <= $current_day));
+			    }
+    		}
+    	}
+	     if ($notify) {
+		      fCore::debug("Send Notification \n",FALSE);
+		      fCore::debug("State :" . $result . ":\n",FALSE);
+		      $check_result = new CheckResult();
+		      $check_result->setCheckId($check->getCheckId());
+		      $check_result->setStatus($result);
+		      $check_result->setValue($check_value);
+		      $check_result->setState(0);
+		      $check->setLastCheckStatus($result);
+		      $check->setLastCheckValue($check_value);
+		      $check->setLastCheckTime($end);
+		      $check_result->store();
+		      $check->store();
+		      $subscriptions = Subscription::findAll($check->getCheckId());
+		      foreach ($subscriptions as $subscription) {
+		        $notify_function = $subscription->getMethod();
+		        if (function_exists($notify_function) && $subscription->getStatus() == 0 ){
+		         $notify_result = $notify_function($check,$check_result,$subscription);
+		         $number_of_emails += 1;
+		        }
+		      }
+	     }
     } else {
       fCore::debug("Skip Notification \n",FALSE);
     }

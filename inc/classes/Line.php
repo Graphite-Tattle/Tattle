@@ -17,11 +17,21 @@ class Line extends fActiveRecord
        return fRecordSet::build(
           __CLASS__,
           array('graph_id=' =>$graph_id),
-          array()
+          array('weight' => 'asc')
           );
 	}   
     
-    static public function makeURL($type, $obj=NULL)
+        static public function countAllByFilter($graph_id, $filter) {
+            return fRecordSet::tally(
+            __CLASS__,
+            array(
+                'graph_id=' =>$graph_id,
+                'target|alias~' => $filter
+            )
+            );
+        }
+        
+        static public function makeURL($type, $obj=NULL, $move=NULL)
 	{
 		switch ($type)
 		{
@@ -37,6 +47,10 @@ class Line extends fActiveRecord
 				return 'lines.php?action=list&line_id=' . (int)$obj->getLineId();
 			case 'clone':
 				return 'lines.php?action=clone&line_id=' . (int)$obj->getLineId();
+			case 'reorder':
+				return 'lines.php?action=reorder&line_id=' . $obj->getLineId() . '&move=' . $move;
+			case 'drag_reorder':
+				return 'lines.php?action=reorder&drag_order=';
 		}	
 	}
 	
@@ -59,7 +73,24 @@ class Line extends fActiveRecord
 		$line->setTarget($line_to_clone->getTarget());
 		$line->setColor($line_to_clone->getColor());
 		$line->setGraphId($graph_id);
+		$line->setWeight($line_to_clone->getWeight());
 		$line->store();
+	}
+	
+	static public function import_from_array_to_graph($input,$graph_id)
+	{
+		$result = true;
+		if (!empty($input)) {
+			$columns_to_ignore = array('line_id','graph_id');
+			$new_line = fActiveRecord::array_to_dbentry($input, __CLASS__,$columns_to_ignore);
+			if ($new_line !== NULL) {
+				$new_line->setGraphId($graph_id);
+				$new_line->store();
+			} else {
+				$result = false;
+			}
+		}
+		return $result;
 	}
     
 }

@@ -1085,6 +1085,11 @@ class fTimestamp
 		$timezone = ($timezone !== NULL) ? $timezone : $this->timezone;
 		return new fTimestamp($this->format($format), $timezone);
 	}
+	
+	
+	public function date ($format) {
+		return date($format,$this->timestamp);
+	}
 }
 
 

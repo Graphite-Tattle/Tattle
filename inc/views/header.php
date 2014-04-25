@@ -39,7 +39,7 @@ if ($this->get('addeditdocready')) { ?>
 if (!$this->get('full_screen')) { ?>
     <style type="text/css">
       body {
-        padding-top: 60px;
+        /*padding-top: 60px;*/
       }
     </style>
 <?php } ?>
@@ -77,69 +77,72 @@ if ($this->get('full_screen') && $this->get('refresh') > 0) {
 
 <?php
 if (!$this->get('full_screen')) { ?>
-   <div class="topbar">
-      <div class="topbar-inner">
+   <nav class="navbar navbar-inverse">
+      <div class="navbar-inner">
         <div class="container-fluid">
-          <a class="brand" href="index.php">Tattle </a>
-          <ul class="nav">
-            <?
-
-              $current_url = '?'.fURL::getQueryString();
-              echo '<li' . ($current_url == '' ? ' class="active"' : '') . '><a href="index.php">Alerts</a></li>'. "\n";
-              $threshold_check_list = Check::makeURL('list', 'threshold');
-              echo '<li' . ($current_url == $threshold_check_list ? ' class="active"' : '') . '><a href="' . $threshold_check_list . '" >Threshold Checks</a></li>' . "\n";
-              $predictive_check_list = Check::makeURL('list', 'predictive');
-              echo '<li' . ($current_url == $predictive_check_list ? ' class="active"' : '') . '><a href="' . $predictive_check_list . '" >Predictive Checks</a></li>' . "\n";
-              $subscription_list = Subscription::makeURL('list');
-              echo '<li' . ($current_url == $subscription_list ? ' class="active"' : '') .'><a href="' . $subscription_list . '" >Subscriptions</a></li>' . "\n";
-              $dashboard_list = Dashboard::makeURL('list');
-              echo '<li' . ($current_url == $dashboard_list ? ' class="active"' : '') . '><a href="' . $dashboard_list . '">Dashboards</a></li>';
-              $setting_list = Setting::makeURL('list','user');
-              echo '<li' . ($current_url == $setting_list ? ' class="active"' : '') . '><a href="' . $setting_list . '" >Settings</a></li>' . "\n";
-if (fAuthorization::checkAuthLevel('admin')) {
-              $setting_list = Setting::makeURL('list','system');
-              echo '<li' . ($current_url == $setting_list ? ' class="active"' : '') . '><a href="' . $setting_list . '" >System Settings</a></li>' . "\n";
-              $user_list = User::makeURL('list');
-              echo '<li><a href="' . User::makeURL('list') . '" >Users</a></li>';
-}
-?>
-          </ul>
+          <a class="navbar-brand" href="index.php">Tattle </a>
+          <div class="navbar-collapse collapse">
+	          <ul class="nav navbar-nav">
+	            <?
+	
+	              $current_url = '?'.fURL::getQueryString();
+	              echo '<li' . (fURL::is_menu_active('index') ? ' class="active"' : '') . '><a href="index.php">Alerts</a></li>'. "\n";
+	              $threshold_check_list = Check::makeURL('list', 'threshold');
+	              echo '<li' . (fURL::is_menu_active('check','type=threshold') ? ' class="active"' : '') . '><a href="' . $threshold_check_list . '" >Threshold Checks</a></li>' . "\n";
+	              $predictive_check_list = Check::makeURL('list', 'predictive');
+	              echo '<li' . (fURL::is_menu_active('check','type=predictive') ? ' class="active"' : '') . '><a href="' . $predictive_check_list . '" >Predictive Checks</a></li>' . "\n";
+	              $subscription_list = Subscription::makeURL('list');
+	              echo '<li' . (fURL::is_menu_active('subscription') ? ' class="active"' : '') .'><a href="' . $subscription_list . '" >Subscriptions</a></li>' . "\n";
+	              $dashboard_list = Dashboard::makeURL('list');
+	              echo '<li' . (fURL::is_menu_active('dashboard') ? ' class="active"' : '') . '><a href="' . $dashboard_list . '">Dashboards</a></li>';
+	              $group_list = Group::makeURL('list');
+	              echo '<li' . (fURL::is_menu_active('group') ? ' class="active"' : '') . '><a href="' . $group_list . '">Groups</a></li>';
+	              $setting_list = Setting::makeURL('list','user');
+	              echo '<li' . (fURL::is_menu_active('setting','type=user') ? ' class="active"' : '') . '><a href="' . $setting_list . '" >Settings</a></li>' . "\n";
+	if (fAuthorization::checkAuthLevel('admin')) {
+	              $setting_list = Setting::makeURL('list','system');
+	              echo '<li' . (fURL::is_menu_active('setting','type=system') ? ' class="active"' : '') . '><a href="' . $setting_list . '" >System Settings</a></li>' . "\n";
+	              $user_list = User::makeURL('list');
+	              echo '<li' . (fURL::is_menu_active('user') ? ' class="active"' : '') . '><a href="' . User::makeURL('list') . '" >Users</a></li>';
+	}
+	?>
+	          </ul>
  <?php   if (is_numeric(fSession::get('user_id'))) { ?>
- <p class="pull-right">
-     Logged in as <a href="<?=User::makeUrl('edit',fSession::get('user_id'));?>"><?=fSession::get('user_name'); ?></a>
-</p>
+ 		<p class="navbar-text navbar-right">
+ 			<a href="<?=User::makeUrl('edit',fSession::get('user_id'));?>">
+ 				<span style="color:white;">Logged in as</span>&nbsp;
+ 				<span style="color:#0088cc;"><?=fSession::get('user_name'); ?></span>
+ 			</a>
+ 		</p>
     <?php } ?>
+	     </div>
 </div>
         </div>
-      </div>
+      </nav>
 <?php } ?>
 <div class="container-fluid">
 <?php
     $breadcrumbs = $this->get('breadcrumbs');
     if (is_array($breadcrumbs)) {
     echo '<ul class="breadcrumb">';
-      $crumb_count = count($breadcrumbs);
-      $crumb_counter = 1;
       foreach($breadcrumbs as $crumb) {
         echo '<li' . (isset($crumb['class']) ? ' class="' . $crumb['class'] .'"' : ' class="active"' ) .'><a href="'. $crumb['url'] . '">' . $crumb['name'] . '</a>';
-        if ($crumb_counter < $crumb_count) {
-          echo '<span class="divider">/</span></li>';
-        }
-        $crumb_counter++;
       }
      echo '</ul>';
     } ?>
 <?php
 
 if (fMessaging::check('error', fURL::get())) {
-  echo '<div class="alert-message error">';
+  echo '<div class="alert alert-danger">';
+  echo '<button type="button" class="close" data-dismiss="alert">&times;</button>';
     fMessaging::show('error', fURL::get());
   echo '</div>';
 }
 
 
 if (fMessaging::check('success', fURL::get())) {
-  echo '<div class="alert-message success">';
+  echo '<div class="alert alert-success">';
+  echo '<button type="button" class="close" data-dismiss="alert">&times;</button>';
     fMessaging::show('success', fURL::get());
   echo '</div>';
 }

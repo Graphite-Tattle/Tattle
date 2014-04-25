@@ -40,8 +40,14 @@ $GLOBALS['ALLOW_HTTP_AUTH'] = false;
 // Number of elements per page (checks, alerts, subscriptions)
 $GLOBALS['PAGE_SIZE'] = 15;
 
+// Global variable for groups
+$GLOBALS['DEFAULT_GROUP_ID'] = 1;
+
 // Locale settings
 $GLOBALS['TIMEZONE'] = 'America/New_York';
+
+// The offset time for the threshold alerts
+$GLOBALS['ALERTS_TIME_OFFSET'] = 1;
 
 // Allow loading GLOBAL overrides
 if(file_exists(  TATTLE_ROOT . "/inc/config.override.php" ) ) {

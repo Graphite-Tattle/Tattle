@@ -30,6 +30,7 @@ CREATE TABLE `dashboards` (
   `graph_height` int(11) NOT NULL DEFAULT '300',
   `graph_width` int(11) NOT NULL DEFAULT '300',
   `refresh_rate` int(11) NOT NULL DEFAULT 0,
+  `group_id` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`dashboard_id`),
   UNIQUE KEY `user_id` (`user_id`,`name`)
 ) CHARSET=utf8;
@@ -53,6 +54,11 @@ CREATE TABLE `checks` (
   `type` varchar(255) NOT NULL,
   `regression_type` varchar(255) DEFAULT NULL,
   `number_of_regressions` int(11) DEFAULT NULL,
+  `group_id` int(11) NOT NULL DEFAULT '1',
+  `hour_start` varchar(5) DEFAULT NULL,
+  `hour_end` varchar(5) DEFAULT NULL,
+  `day_start` varchar(3) DEFAULT NULL,
+  `day_end` varchar(3) DEFAULT NULL,
   PRIMARY KEY (`check_id`),
   UNIQUE KEY `user_id` (`user_id`,`name`)
 ) CHARSET=utf8;
@@ -80,6 +86,7 @@ CREATE TABLE `graphs` (
   `time_value` int(11) NOT NULL DEFAULT '2',
   `unit` varchar(10) NOT NULL DEFAULT 'hours',
   `custom_opts` varchar(1000) NULL,
+  `starts_at_midnight` TINYINT(1) DEFAULT 0,
   PRIMARY KEY (`graph_id`),
   UNIQUE KEY `dashboard_id` (`dashboard_id`,`name`)
 ) CHARSET=utf8;
@@ -90,6 +97,7 @@ CREATE TABLE `lines` (
   `target` varchar(1000) NOT NULL DEFAULT '',
   `alias` varchar(255) DEFAULT NULL,
   `graph_id` int(11) DEFAULT NULL,
+  `weight` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`line_id`)
 ) CHARSET=utf8;
 
@@ -105,3 +113,12 @@ CREATE TABLE `subscriptions` (
   KEY `check_id` (`check_id`),
   KEY `user_id` (`user_id`)
 ) CHARSET=utf8;
+
+CREATE TABLE `groups` (
+  `group_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` varchar(1000) NOT NULL,
+  PRIMARY KEY (`group_id`),
+  KEY `name` (`name`)
+) CHARSET=utf8;
+INSERT INTO groups VALUES (1, 'Default group', 'This group is the default group. It can\'t be deleted nor edited.');

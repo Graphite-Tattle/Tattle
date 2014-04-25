@@ -15,20 +15,53 @@ if ('edit' == $action) {
   try {
     $user = new User($user_id);
     if (fRequest::isPost()) {
-      $user->populate();
-      if ($GLOBALS['ALLOW_HTTP_AUTH'] && ($user->getUserId() != 1)) {
-        $password = 'basic_auth';
-      } else {
-        $password = fCryptography::hashPassword($user->getPassword());
-        $user->setPassword($password);
-      }
-      fRequest::validateCSRFToken(fRequest::get('token'));
-      $user->store();
-			
-      fMessaging::create('affected', User::makeUrl('list'), $user->getUsername());
-      fMessaging::create('success',  User::makeUrl('list'), 
-                         'The user ' . $user->getUsername(). ' was successfully updated');
-      fURL::redirect( User::makeUrl('list'));	
+    	$session_user = new User(fSession::get('user_id'));
+    	if (fSession::get('user_id') == $user->getUserId() || fAuthorization::checkAuthLevel('admin')) {
+	    	$valid_pass = fCryptography::checkPasswordHash(
+	    			fRequest::get('password'),
+	    			$session_user->getPassword()
+	    	);
+	    	if ($valid_pass) {
+		      $has_error = false;
+		      $password = "";
+		      if (fRequest::get('change_password','boolean')) {
+		      	$new_password = fRequest::get('new_password');
+		      	$confirm_password = fRequest::get('confirm_password');
+		      	if ($new_password != $confirm_password) {
+		      		fMessaging::create('error', fURL::get(),"The two passwords don't match, the changes was not applied.");
+		      		$has_error = true;
+		      	} else {
+		      		if ($new_password == "") {
+		      			fMessaging::create('error', fURL::get(),"An empty password is forbidden, the changes was not applied.");
+		      			$has_error = true;
+		      		} else {
+			      		$password = fCryptography::hashPassword($new_password);
+		      		}
+		      	}
+		      } else {
+			      if ($GLOBALS['ALLOW_HTTP_AUTH'] && ($user->getUserId() != 1)) {
+			        $password = 'basic_auth';
+			      } else {
+			        $password = $user->getPassword();
+			      }
+		      }
+		      $user->populate();
+		      $user->setPassword($password);
+		      fRequest::validateCSRFToken(fRequest::get('token'));
+		      if (!$has_error) {
+			      $user->store();
+						
+			      fMessaging::create('affected', "/".User::makeUrl('list'), $user->getUsername());
+			      fMessaging::create('success',  "/".User::makeUrl('list'), 
+			                         'The user "' . $user->getUsername(). '" was successfully updated');
+			      fURL::redirect( User::makeUrl('list'));	
+		      }
+	    	} else {
+	    		fMessaging::create('error', fURL::get(),'The given password is wrong, the changes was not applied.');
+	    	}
+    	} else {
+    		fMessaging::create('error', fURL::get(),"You don't have the right to modify this user");
+    	}
     }
   } catch (fNotFoundException $e) {
     fMessaging::create('error',  User::makeUrl('list'),
@@ -46,22 +79,37 @@ if ('edit' == $action) {
   if (fRequest::isPost()) {	
     try {
       $user->populate();
+      $has_error = false;
       if ($GLOBALS['ALLOW_HTTP_AUTH']) {
         $password = 'basic_auth';
       } else {
-        $password = fCryptography::hashPassword($user->getPassword());
+      	$new_password = fRequest::get('new_password');
+      	$confirm_password = fRequest::get('confirm_password');
+      	if ($new_password != $confirm_password) {
+      		fMessaging::create('error', fURL::get(),"The two passwords don't match, the user was not created.");
+      		$has_error = true;
+      	} else {
+      		if ($new_password == "") {
+      			fMessaging::create('error', fURL::get(),"An empty password is forbidden, the user was not created.");
+      			$has_error = true;
+      		} else {
+      			$password = fCryptography::hashPassword($new_password);
+      		}
+      	}
      }
-      $user->setPassword($password);			
       fRequest::validateCSRFToken(fRequest::get('token'));
-      $user->store();
-      if ($user->getUserId() == 1){
-        $user->setRole('admin');
-        $user->store();
-      }			
-      fMessaging::create('affected', User::makeURL('login'), $user->getUsername());
-      fMessaging::create('success', User::makeURL('login'), 
-                         'The user ' . $user->getUsername() . ' was successfully created');
-      fURL::redirect(User::makeURL('login'));
+      if (!$has_error) {
+	      $user->setPassword($password);			
+	      $user->store();
+	      if ($user->getUserId() == 1){
+	        $user->setRole('admin');
+	        $user->store();
+	      }			
+	      fMessaging::create('affected', User::makeURL('login'), $user->getUsername());
+	      fMessaging::create('success', User::makeURL('login'), 
+	                         'The user ' . $user->getUsername() . ' was successfully created');
+	      fURL::redirect(User::makeURL('login'));
+      }
     } catch (fExpectedException $e) {
       fMessaging::create('error', fURL::get(), $e->getMessage());	
     }	
@@ -81,19 +129,21 @@ if ('edit' == $action) {
   include VIEW_PATH . '/add_edit_user_settings.php';
  
 } elseif ('delete' == $action) {
+ $class_name = 'User';
  try {
-    $user = new User($user_id);
+	$obj = new User($user_id);
+	$delete_text = 'Are you sure you want to delete user : <strong>'. $obj->getUsername() . '</strong>?';
     if (fRequest::isPost()) {
       fRequest::validateCSRFToken(fRequest::get('token'));
-      $user->delete();
-      fMessaging::create('success', User::makeUrl('edit',$user),
-                         'The user ' . $user->getName() . ' was successfully deleted');
-      fURL::redirect(User::makeUrl('edit',$user));
+      $obj->delete();
+      fMessaging::create('success', "/".User::makeUrl('list'),
+                         'The user ' . $obj->getUsername() . ' was successfully deleted');
+      fURL::redirect(User::makeUrl('list'));
     }
   } catch (fNotFoundException $e) {
-    fMessaging::create('error', User::makeUrl('edit',$user),
-                       'The line requested could not be found');
-    fURL::redirect(User::makeUrl('edit',$user));
+    fMessaging::create('error', "/".User::makeUrl('list'),
+                       'The requested user could not be found');
+    fURL::redirect(User::makeUrl('list'));
   } catch (fExpectedException $e) {
     fMessaging::create('error', fURL::get(), $e->getMessage());
   }

@@ -7,7 +7,7 @@ try {
 	$subscriptions->tossIfEmpty();
 	$affected = fMessaging::retrieve('affected', fURL::get());
 	?>
-	<table class="zebra-striped">
+	<table class="table table-bordered table-striped">
           <thead>
           <tr>    
           <th>Check</th>
@@ -25,9 +25,23 @@ try {
 	?>
     	<tr>
         <td><?=$check->prepareName(); ?></td>
-        <td><?=$status_array[$subscription->prepareThreshold()]; ?></td>
+        <td>
+        	<?php $status_sub = $status_array[$subscription->prepareThreshold()]; 
+        		if ( 'Error' == $status_sub ) {
+        	?>
+        		<span class="text-error"><?=$status_sub ?></span>
+        	<?php } else {?>
+        		<span class="text-warning"><?=$status_sub ?></span>
+        	<?php } ?>
+        </td>
         <td><?=$subscription->prepareMethod(); ?></td>
-        <td><?=($subscription->getStatus() ? 'Disabled' : 'Enabled'); ?></td>
+        <td>
+        	<?php if ($subscription->getStatus()) { ?>
+        		<i class="glyphicon glyphicon-warning-sign" style="margin-right:3px"></i><span>Disabled</span>
+        	<?php } else {?>
+        		<i class="glyphicon glyphicon-" style="margin-right:3px"></i><span>Enabled</span>
+        	<?php } ?>
+        </td>
         <td><a href="<?=Subscription::makeURL('edit', $subscription); ?>">Edit</a> |
         <a href="<?=Subscription::makeURL('delete', $subscription); ?>">Delete</a></td>
         </tr>

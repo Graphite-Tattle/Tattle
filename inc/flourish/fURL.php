@@ -260,6 +260,40 @@ class fURL
 	 * @return fURL
 	 */
 	private function __construct() { }
+	
+	
+	static public function is_menu_active ($menu_to_active,$type=NULL)
+	{
+		$menu_included_in = array(
+				'result.php' => 'index',
+				'graphs.php' => 'dashboard',
+				'lines.php' => 'dashboard',
+				'groups.php' => 'group',
+		);
+		$result = FALSE;
+	
+		$current_url = fURL::get();
+		$pos_last_slash = strrpos($current_url, "/");
+		$url_to_check = substr($current_url,$pos_last_slash + 1,strlen($current_url) - $pos_last_slash);
+	
+		if (in_array($url_to_check,array_keys($menu_included_in))) {
+			$corresponding_menu = $menu_included_in[$url_to_check];
+			if ($menu_to_active == $corresponding_menu) {
+				$result = TRUE;
+			}
+		} else {
+			// If it isn't in the array, we try to test manually
+			if ($url_to_check == ($menu_to_active.".php")) {
+				$result = TRUE;
+			}
+		}
+	
+		if (!empty($type)) {
+			$result = $result && (strpos(fURL::getQueryString(), $type) !== FALSE);
+		}
+	
+		return $result;
+	}
 }
 
 

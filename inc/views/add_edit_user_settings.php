@@ -13,8 +13,8 @@ if (isset($plugin_settings[$plugin]) && is_array($plugin_settings[$plugin]['sett
 
 ?>
   <div class="row">
-    <div class="span6">
-      <form action="?" method="post">
+    <div class="col-md-6">
+      <form action="?" method="post" class="form-horizontal">
         <div class="main" id="main">
           <ul class="tabs">
           <?php foreach($plugin_settings as $plugin_name => $plugin_config) {
@@ -24,35 +24,35 @@ if (isset($plugin_settings[$plugin]) && is_array($plugin_settings[$plugin]['sett
               } 
            } ?></ul> 
           <fieldset>
-                <div class="clearfix">
-	      <label for="line-alias">Alias<em>*</em></label>
-              <div class="input">
-	        <input id="line-alias" class="span3" type="text" size="30" name="alias" value="<?=$line->encodeAlias(); ?>" />
+                <div class="form-group">
+	      <label for="line-alias" class="control-label">Alias<em>*</em></label>
+              <div class="controls">
+	        <input id="line-alias" class="col-md-3" type="text" size="30" name="alias" value="<?=$line->encodeAlias(); ?>" />
               </div>
-            </div><!-- /clearfix -->
-            <div class="clearfix">
-              <label for="line-target">Target<em>*</em></label>
-              <div class="input">             
-	        <input id="line-target" class="span3" type="text" size="30" name="target" value="<?=$line->encodeTarget(); ?>" />
+            </div>
+            <div class="form-group">
+              <label for="line-target" class="control-label">Target<em>*</em></label>
+              <div class="controls">             
+	        <input id="line-target" class="col-md-3" type="text" size="30" name="target" value="<?=$line->encodeTarget(); ?>" />
               </div>
-            </div><!-- /clearfix -->
-            <div class="clearfix">
-              <label for="line-color">Line Color<em>*</em></label>
-              <div class="input">             
-                  <input id="line-color" class="span3" type="text" size="30" name="color" value="<?=$line->encodeColor(); ?>" />
+            </div>
+            <div class="form-group">
+              <label for="line-color" class="control-label">Line Color<em>*</em></label>
+              <div class="controls">             
+                  <input id="line-color" class="col-md-3" type="text" size="30" name="color" value="<?=$line->encodeColor(); ?>" />
               </div>
-            </div><!-- /clearfix -->                  
-        <div class="actions">
-	      <input class="btn primary" type="submit" value="Save" />
-              <input class="btn" type="submit" name="action::delete" value="Delete" />
+            </div>
+        <div class="form-group actions">
+        <div class="controls">
+	      <input class="btn btn-primary" type="submit" value="Save" />
+              <input class="btn btn-default" type="submit" name="action::delete" value="Delete" />
               <div class="required"><em>*</em> Required field</div>
 	      <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
+            </div>
             </div>
          </fieldset>
        </div>       
      </form>
-    </div>
-    <div class="span10"> 
     </div>
   </div>
 </form>

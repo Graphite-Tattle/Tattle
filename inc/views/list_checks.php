@@ -38,7 +38,7 @@ $(document).ready(function() {
                     echo '<a href="' . Check::makeURL('edit', $check_type, $check) . '"> Edit</a> |'; 
                   } ?>
         <a href="<?=Subscription::makeURL('add', $check); ?>">Subscribe</a></td>
-        <td style="max-width:300px; overflow:scroll;"><?=$check->prepareTarget(); ?></td>
+        <td class="masterTooltip" style="max-width:300px; overflow:scroll;text-overflow: ellipsis;" title="<?=$check->prepareTarget(); ?>"><?=$check->prepareTarget(); ?></td>
         <td><?=$check->prepareWarn(); ?></td>
         <td><?=$check->prepareError(); ?></td>
         <td><?=$check->prepareSample(); ?></td>

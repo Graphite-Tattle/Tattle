@@ -58,7 +58,7 @@ class Graph extends fActiveRecord
 
     	static function drawGraph($obj=NULL,$parent=NULL)
 	{
-        $link = $GLOBALS['GRAPHITE_URL'].'/render/?';
+        $link = $GLOBALS['GRAPHITE_URL'].'/render/?drawNullAsZero=true&';
         $lines = Line::findAll($obj->getGraphId());
         foreach($lines as $line) {
            $link .= 'target=';
@@ -92,7 +92,6 @@ class Graph extends fActiveRecord
               $link .= $obj->getCustom_Opts() . '&';
           }
         }
-        $link = $link . "&drawNullAsZero=true";
        return $link;
 	}
 	

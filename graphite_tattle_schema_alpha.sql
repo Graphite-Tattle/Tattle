@@ -48,7 +48,7 @@ CREATE TABLE `checks` (
   `over_under` int(11) NOT NULL DEFAULT '0',
   `enabled` varchar(45) NOT NULL DEFAULT '1',
   `last_check_status` int(11) DEFAULT NULL,
-  `last_check_value` int(11) DEFAULT NULL,
+  `last_check_value` bigint(20) DEFAULT NULL,
   `last_check_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `repeat_delay` int(11) NOT NULL DEFAULT '60',
   `type` varchar(255) NOT NULL,

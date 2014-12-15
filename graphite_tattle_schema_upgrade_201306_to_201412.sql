@@ -11,3 +11,5 @@ ALTER TABLE checks ADD COLUMN `day_end` varchar(3) DEFAULT NULL;
 
 ALTER TABLE graphs ADD COLUMN `starts_at_midnight` TINYINT(1) DEFAULT 0;
 
+ALTER TABLE checks MODIFY COLUMN last_check_value bigint;
+

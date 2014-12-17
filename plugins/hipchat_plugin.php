@@ -48,7 +48,7 @@ function hipchat_notify($check, $check_result, $subscription) {
 
     $data = array(
         'color' => $color,
-        'notify' =>  ()( sys_var('hipchat_notify') == 'true' ) ? true : false),
+        'notify' =>  ((sys_var('hipchat_notify') == 'true' ) ? true : false),
         'message_format' => 'html',
         'message' => "<b>" . $check->prepareName() . "</b><br />The check returned {$check_result->prepareValue()}<br />View Alert Details : <a href=\"" . $url . "\">" . $url . "</a>"
 	  );

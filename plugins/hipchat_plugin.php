@@ -2,6 +2,7 @@
 
 plugin_listener('plugin_settings', 'hipchat_settings');
 plugin_listener('send_methods', 'hipchat_send_methods');
+plugin_listener('plugin_user_settings', 'hipchat_user_settings');
 
 function hipchat_settings() {
     return array(

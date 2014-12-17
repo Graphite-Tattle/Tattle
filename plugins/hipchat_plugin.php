@@ -26,11 +26,35 @@ function hipchat_settings() {
 	);
 }
 
-function hipchat_send_methods() {
-      return array('hipchat_notify' => 'HipChat');
+function hipchat_user_settings() {
+  return array(
+    'hipchat_user' => array(
+      'friendly_name' => 'HipChat @ metion name',
+      'default' => '',
+      'type' => 'string'
+    )
+  );
 }
 
+function hipchat_send_methods() {
+      return array(
+        'hipchat_notify' => 'HipChat Group',
+        'hipchat_user_notify' => 'HipChat User'
+      );
+}
+
+// Message is being sent to the global HipChat Group
 function hipchat_notify($check, $check_result, $subscription) {
+    return hipchat_master_notify($check, $check_result, $subscription, false);
+}
+
+// Message is being sent to the user via @Mention
+function hipchat_user_notify($check, $check_result, $subscription) {
+  return hipchat_master_notify($check, $check_result, $subscription, true);
+}
+
+// Actuall send the message
+function hipchat_master_notify($check, $check_result, $subscription,$toUser=true) {
     global $status_array;
 	  global $debug;
 
@@ -50,10 +74,10 @@ function hipchat_notify($check, $check_result, $subscription) {
         'color' => $color,
         'notify' =>  ((sys_var('hipchat_notify') == 'true' ) ? true : false),
         'message_format' => 'html',
-        'message' => "<b>" . $check->prepareName() . "</b><br />The check returned {$check_result->prepareValue()}<br />View Alert Details : <a href=\"" . $url . "\">" . $url . "</a>"
+        'message' => "<b>" . $check->prepareName() . "</b><br />The check returned: {$check_result->getValue()}<br />View Alert Details : <a href=\"" . $url . "\">" . $url . "</a>"
 	  );
 
-    if ($debug) {
+    if ($debug && $toUser == false) {
 			$url = 'https://api.hipchat.com/v2/room?auth_token=' . sys_var('hipchat_apikey');
 		  $c = curl_init();
 		  curl_setopt($c, CURLOPT_URL, $url);
@@ -64,7 +88,11 @@ function hipchat_notify($check, $check_result, $subscription) {
 		  fCore::debug("Data: " . print_r($data, true) . "\n", FALSE);
     }
 
-    $url = 'https://api.hipchat.com/v2/room/' . strtolower(sys_var('hipchat_room')) . '/notification?auth_token=' . sys_var('hipchat_apikey');
+    if ( $toUser == false ) {
+      $url = 'https://api.hipchat.com/v2/room/' . strtolower(sys_var('hipchat_room')) . '/notification?auth_token=' . sys_var('hipchat_apikey');
+    } else {
+      $url = 'https://api.hipchat.com/v2/user/' .usr_var('hipchat_user', $subscription->getUserId()). '/message?auth_token=' . sys_var('hipchat_apikey');
+    }
     fCore::debug("HipChat Calling: $url", FALSE);
   	$c = curl_init();
   	curl_setopt($c, CURLOPT_URL, $url);

@@ -17,7 +17,7 @@ class Graph extends fActiveRecord
        return fRecordSet::build(
           __CLASS__,
           array('dashboard_id=' =>$dashboard_id),
-          array('weight' => 'asc')
+          array('weight,graph_id' => 'asc')
           );
 	}
 	

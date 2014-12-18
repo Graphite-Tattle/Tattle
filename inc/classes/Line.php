@@ -17,7 +17,7 @@ class Line extends fActiveRecord
        return fRecordSet::build(
           __CLASS__,
           array('graph_id=' =>$graph_id),
-          array('weight' => 'asc')
+          array('weight,line_id' => 'asc')
           );
 	}   
     

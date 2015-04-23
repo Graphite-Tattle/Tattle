@@ -6,7 +6,7 @@ $tmpl->place('header');
 
 try {
 	?>
-<table class="zebra-striped">
+<table class="table table-bordered table-striped">
           <thead>
 		<tr>
     <th>Name</th>

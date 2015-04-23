@@ -17,11 +17,20 @@ class Graph extends fActiveRecord
        return fRecordSet::build(
           __CLASS__,
           array('dashboard_id=' =>$dashboard_id),
-          array('weight' => 'asc')
+          array('weight,graph_id' => 'asc')
           );
 	}
-
-    static public function makeURL($type, $obj=NULL)
+	
+        static public function countAllByFilter($dashboard_id, $filter) {
+            return fRecordSet::tally(
+            __CLASS__,
+            array(
+                'dashboard_id=' =>$dashboard_id,
+                'name|vtitle|description~' => $filter
+            )
+            );
+        }
+    static public function makeURL($type, $obj=NULL, $move=NULL)
 	{
 		switch ($type)
 		{
@@ -37,13 +46,19 @@ class Graph extends fActiveRecord
 				return 'graphs.php?action=list&graph_id=' . (int)$obj->getGraphId();
 			case 'clone':
 				return 'graphs.php?action=clone&graph_id=' . (int)$obj->getGraphId();
+			case 'clone_into':
+				return 'graphs.php?action=clone_into&graph_id=' . (int)$obj->getGraphId();
+			case 'reorder':
+				return 'graphs.php?action=reorder&graph_id=' . $obj->getGraphId() . '&move=' . $move;
+			case 'drag_reorder':
+				return 'graphs.php?action=reorder&drag_order=';
 
 		}
 	}
 
     	static function drawGraph($obj=NULL,$parent=NULL)
 	{
-        $link = $GLOBALS['GRAPHITE_URL'].'/render/?';
+        $link = $GLOBALS['GRAPHITE_URL'].'/render/?drawNullAsZero=true&';
         $lines = Line::findAll($obj->getGraphId());
         foreach($lines as $line) {
            $link .= 'target=';
@@ -71,7 +86,7 @@ class Graph extends fActiveRecord
               $link .= 'areaMode=' . $obj->getArea() .'&';
           }
           if ($obj->getTime_Value() != '' && $obj->getUnit() != '') {
-              $link .= 'from=-' . $obj->getTime_Value() . $obj->getUnit() . '&';
+              $link .= 'from=' . ($obj->getStartsAtMidnight()?'midnight':'') . '-' . $obj->getTime_Value() . $obj->getUnit() . '&';
           }
           if ($obj->getCustom_Opts() != '') {
               $link .= $obj->getCustom_Opts() . '&';
@@ -100,6 +115,7 @@ class Graph extends fActiveRecord
 		$graph->setTimeValue($graph_to_clone->getTimeValue());
 		$graph->setUnit($graph_to_clone->getUnit());
 		$graph->setCustomOpts($graph_to_clone->getCustomOpts());
+		$graph->setStartsAtMidnight($graph_to_clone->getStartsAtMidnight());
 		$graph->store();
 			
 		// Clone of the lines
@@ -109,5 +125,59 @@ class Graph extends fActiveRecord
 		}
 	}
 
+	public function export_in_json ()
+	{
+		$graph_id = $this->getGraphId();
+		$json_env = parent::export_in_json();
+		
+		// Find all the lines of this graph
+		$lines = Line::findAll($graph_id);
+		$json_lines_array = array();
+		foreach ($lines as $line_in_graph) {
+			// Export them in JSON
+			$json_lines_array[] = $line_in_graph->export_in_json();
+		}
+		// Implode them
+		$json_lines = "\"lines\":[";
+		if (!empty($json_lines_array)) {
+			$json_lines .= implode(",", $json_lines_array);
+		}
+		$json_lines .= "]";
+		
+		// Erase the last } of the json
+		$json_env[strlen($json_env)-1] = ",";
+		// Concat the graph with its lines
+		$json_env .= ($json_lines . "}");
+		
+		return $json_env;
+	}
+	
+	public function has_y_axis_title () {
+		$title = $this->getVtitle();
+		return (!empty($title));
+	}
+	
+	static public function import_from_array_to_dashboard($input,$dashboard_id)
+	{
+		$result = true;
+		if (!empty($input)) {
+			$columns_to_ignore = array('graph_id','dashboard_id','lines');
+			$new_graph = fActiveRecord::array_to_dbentry($input, __CLASS__,$columns_to_ignore);
+			if ($new_graph !== NULL) {
+				$new_graph->setDashboardId($dashboard_id);
+				$new_graph->store();
+				if (in_array('lines', array_keys($input))) {
+					$new_graph_id = $new_graph->getGraphId();
+					foreach ($input['lines'] as $line) {
+						$result_line = (Line::import_from_array_to_graph($line, $new_graph_id));
+						$result = $result && $result_line;
+					}
+				}
+			} else {
+				$result = false;
+			}
+		}
+		return $result;
+	}
 
 }

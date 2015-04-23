@@ -29,6 +29,27 @@ class Check extends fActiveRecord
         $page
       );
     }
+    
+    /**
+     * Returns all checks on the system that matches the group id
+     *
+     * @param  string  $type         The type of check to return 'threshold', 'predictive'
+     * @param  string  $sort_column  The column to sort by
+     * @param  string  $sort_dir     The direction to sort the column
+     * @param  int     $limit        The max number of records to show
+     * @param  int     $page         The offset
+     * @return fRecordSet  An object containing all meetups
+     */
+    static function findAllByGroupId($type, $group_id, $sort_column = 'name', $sort_dir = 'desc', $limit=NULL, $page=NULL)
+    {
+    	return fRecordSet::build(
+    			__CLASS__,
+    			array('type=' => $type,'group_id=' => $group_id,'enabled=' => true,'user_id=|visibility=' => array(fSession::get('user_id'),0)),
+    			array($sort_column => $sort_dir),
+    			$limit,
+    			$page
+    	);
+    }
 
     /**
     * Returns a target based on check type
@@ -38,14 +59,11 @@ class Check extends fActiveRecord
     */
     static public function constructTarget($check)
     {
-      if($check->getType() == 'threshold') {
-        if($check->getBaseline() == 'average') {
-          return 'movingAverage(' . $check->prepareTarget() . ',' . $check->getSample() . ')';
-        } elseif($check->getBaseline() == 'median') {
-          return 'movingMedian(' . $check->prepareTarget() . ',' . $check->getSample() . ')';
-        }
+      if($check->getSample() != '1') {
+        return 'movingAverage(' . $check->prepareTarget() . ',' . $check->getSample() . ')';
+      } else {
+	    return $check->prepareTarget();
       }
-      return $check->prepareTarget();
     }
 
 
@@ -81,7 +99,12 @@ class Check extends fActiveRecord
       $checkIdFieldValue = '';
 
       if (!is_null($obj)) {
-        $checkIdFieldValue = '&check_id=' . (int)$obj->getCheckId();
+      	if (is_numeric($obj)) {
+      		// If it's numeric, we're building an URL filtered by group
+      		$checkIdFieldValue = '&filter_group_id=' . $obj;
+      	} else {
+	        $checkIdFieldValue = '&check_id=' . (int)$obj->getCheckId();
+      	}
       }
 
       return $baseURLExtension . $actionFieldValue . $typeFieldValue . $checkIdFieldValue;
@@ -137,8 +160,13 @@ class Check extends fActiveRecord
           $target = urlencode($target);
           $check_url = $GLOBALS['PROCESSOR_GRAPHITE_URL'] . '/render/?' .
             'target=' . $target .
-            '&from=-'. $obj->prepareSample() . 'minutes' .
             '&format=json';
+          if ($GLOBALS['ALERTS_TIME_OFFSET'] > 0) {
+          	$check_url .= "&from=-" . ($obj->getSample() + $GLOBALS['ALERTS_TIME_OFFSET']) . "minutes"
+          				. "&until=-" . $GLOBALS['ALERTS_TIME_OFFSET'] ."minutes";
+          } else {
+	            $check_url .= '&from=-'. $obj->prepareSample() . 'minutes';
+          }
         }
         $json_data = @file_get_contents($check_url);
         if ($json_data) {

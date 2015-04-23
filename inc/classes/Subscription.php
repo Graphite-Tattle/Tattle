@@ -11,7 +11,7 @@ class Subscription extends fActiveRecord
 	 * @param  string  $sort_dir     The direction to sort the column
 	 * @return fRecordSet  An object containing all meetups
 	 */
-	static function findAll($check_id=NULL,$user_id=NULL,$limit=NULL, $page=NULL)
+	static function findAll($check_id=NULL,$user_id=NULL,$limit=NULL, $page=NULL, $only_alt_mail=FALSE)
 	{
         $filter = array();
         if (!is_null($check_id) && is_numeric($check_id)){
@@ -19,6 +19,9 @@ class Subscription extends fActiveRecord
         }
         if (!is_null($user_id) && is_numeric($user_id)) {
             $filter['user_id='] = $user_id;
+        }
+        if ($only_alt_mail) {
+        	$filter['method='] = 'email_plugin_alt_notify';
         }
 		return fRecordSet::build(
           __CLASS__,

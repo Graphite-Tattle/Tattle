@@ -10,6 +10,82 @@
 	font-size:12px Arial;
 }
 
-.inline {
-	display:inline-block;
+.actions{
+	background: #f5f5f5;
+	margin-top: 18px;
+	margin-bottom: 18px;
+	padding: 17px 20px 18px 20px;
+	border-top: 1px solid #ddd;
+	-webkit-border-radius: 0 0 3px 3px;
+	-moz-border-radius: 0 0 3px 3px;
+	border-radius: 0 0 3px 3px;
+}
+
+footer {
+	margin-top: 17px;
+	padding-top: 17px;
+	border-top: 1px solid #eee;
+}
+
+.inline {display:inline-block!important;}
+.no-margin{margin:0;}
+.pointer{cursor:pointer;}
+.disabled i{visibility:hidden;}
+
+/*************************
+*   PAGE view_dashboard  *
+**************************/
+.dashboardoptions {top:35px;left:20px;width:200px;position: fixed;display:initial!important;max-width:initial;z-index:2000;}
+.dashboardoptions + div + div#graphscontainer {margin-left:220px;}
+.dashboardoptions .sized-div {max-height:150px;overflow:hidden;overflow-x:hidden;overflow-y:auto;overflow:-moz-scrollbars-vertical;}
+.dashboardoptions hr {margin : 10px 0;}
+.dashboardoptions table, .dashboardoptions tr, .dashboardoptions td {border:0;margin:0;padding:0;}
+.dashboardoptions .colorname{text-align:right; padding-right:2px;}
+
+.dashboardslinks {right:20px;left: initial;top:35px;width:200px;position: fixed;display:initial!important;max-width:initial;z-index:2000;}
+.dashboardslinks + div#graphscontainer {margin-right:220px;}
+
+#graphscontainer{margin-top : 50px;}
+
+
+.optionsbtn{position: absolute; left:4%;}
+.linksbtn{position: absolute;right:4%;}
+.graphbtn{margin-bottom:15px;margin-top:5px;}
+
+#time_selector{border:2px solid;border-color: red;border-bottom: 0;border-top: 0;background-color:rgba(255,153,0,0.5);position:absolute;z-index:300;}
+.ui-slider-handle {display:none;}
+#slide_zone{
+	border:2px solid;
+	border-color: red;
+	border-bottom: 0;
+	border-top: 0;
+	background-color:rgba(255,153,0,0.5);
+	position:absolute;
+	z-index:300;
+}
+.slider{border:0!important; margin-bottom:10px;}
+/***************/
+
+/*************************
+*   PAGE list_dashboard  *
+**************************/
+table th.last,table td.last{width: 40px;text-align: center}
+.table-striped tbody tr.highlighted td{background: #FFCA3A!important;}
+/***************/
+
+#table-graphs .popover{max-width: initial;}
+.sortable-loader {
+	background-color:rgba(220,220,220,0.5);
+	background-repeat: no-repeat;
+	background-position: center center;
+	position : absolute;
+	text-align: center;
+	vertical-align: middle;
+}
+#sortable{cursor:row-resize;}
+#sortable .line-target{cursor:text;}
+#sortable .popover{cursor:auto;}
+.table-striped tbody tr.sortable-placeholder td{
+	height : 50px;
+	background-color:rgba(180,255,255,0.2)!important;
 }

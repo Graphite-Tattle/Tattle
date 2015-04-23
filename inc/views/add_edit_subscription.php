@@ -41,14 +41,12 @@ if (isset($subscription_id)) {
   }
 </script>
   <div class="row">
-    <div class="span4">
+    <div class="col-md-4">
       <form class="form-stacked" action="?action=<?=$action.$query_string; ?>" method="post">
-        <div class="main" id="main">
-          <fieldset>
-            <div class="clearfix">
+            <div class="form-group">
               <label for="check-threshold">Alert State<em>*</em></label>
               <div class="input">
-                <select name="threshold" class="span3">
+                <select name="threshold" class="form-control">
                 <?
               // We want to standardize on using the same global array, but not allow subscribing to the OK state
                 $tmp_status_array = $status_array;
@@ -59,11 +57,11 @@ if (isset($subscription_id)) {
                 ?>
                 </select>
               </div>
-            </div><!-- /clearfix -->
-            <div class="clearfix">
+            </div>
+            <div class="form-group">
               <label for="check-method">Send Method<em>*</em></label>
               <div class="input">
-                <select name="method" class="span3">
+                <select name="method" class="form-control">
                 <?
                   foreach ($send_methods as $value => $text) {
                     fHTML::printOption($text, $value, $subscription->getMethod());
@@ -71,11 +69,11 @@ if (isset($subscription_id)) {
                 ?>
                 </select>
               </div>
-            </div><!-- /clearfix -->
-            <div class="clearfix">
+            </div>
+            <div class="form-group">
               <label for="check-status">Status<em>*</em></label>
               <div class="input">
-                <select name="status" class="span3">
+                <select name="status" class="form-control">
                 <?
                  $statuses = array('0'   => 'Enabled', '1' => 'Disabled');
                  foreach ($statuses as $value => $text) {
@@ -84,33 +82,37 @@ if (isset($subscription_id)) {
                 ?>
                 </select>
               </div>
-            </div><!-- /clearfix -->
+            </div>
             <div class="actions">
-              <input class="btn primary" type="submit" value="Save" />
+              <input class="btn btn-primary" type="submit" value="Save" />
               <?php if ($action == 'edit') { ?>
-                 <a class="btn" href="<?=Subscription::makeUrl('delete',$subscription); ?>">Delete</a>
+                 <a class="btn btn-default" href="<?=Subscription::makeUrl('delete',$subscription); ?>">Delete</a>
               <?php } ?>
               <div class="required"><em>*</em> Required field</div>
               <input type="hidden" name="token" value="<?=fRequest::generateCSRFToken(); ?>" />
               <input type="hidden" name="user_id" value="<?=fSession::get('user_id'); ?>" />
             </div>
-         </fieldset>
-       </div>
      </form>
     </div>
-    <div class="span10">
+    <div class="col-md-8">
       <fieldset>
         <p>Check : <?=$check->prepareName(); ?></p>
         <p>Target : <?=Check::constructTarget($check); ?></p>
         <p id="graphiteGraph"><?=Check::showGraph($check); ?></p>
-        <input class="btn primary" type="submit" value="Reload Graph" onClick="reloadGraphiteGraph()"/>
-        <select id="graphiteDateRange" class="span3">
-          <? $dateRange = array('-12hours'   => '12 Hours', '-1days' => '1 Day', '-3days' => '3 Days', '-7days' => '7 Days', '-14days' => '14 Days', '-30days' => '30 Days', '-60days' => '60 Days');
-            foreach ($dateRange as $value => $text) {
-              fHTML::printOption($text, $value, '-3days');
-            }
-          ?>
-        </select>
+        <div class="row">
+        	<div class="col-md-4">
+		        <select id="graphiteDateRange" class="form-control">
+		          <? $dateRange = array('-12hours'   => '12 Hours', '-1days' => '1 Day', '-3days' => '3 Days', '-7days' => '7 Days', '-14days' => '14 Days', '-30days' => '30 Days', '-60days' => '60 Days');
+		            foreach ($dateRange as $value => $text) {
+		              fHTML::printOption($text, $value, '-3days');
+		            }
+		          ?>
+	        	</select>
+	        </div>
+        	<div class="col-md-4">
+	        	<input class="btn btn-primary" type="submit" value="Reload Graph" onClick="reloadGraphiteGraph()"/>
+	        </div>
+	     </div>
       </fieldset>
     </div>
   </div>

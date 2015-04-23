@@ -103,7 +103,7 @@ try {
                 ?>
                 <tr>
                     <td><?= '<a href="' . CheckResult::makeUrl('list', $check) . '">' . $check->prepareName(); ?></a></td>    
-                    <td style="max-width:300px; overflow:scroll;"><?= $check->prepareTarget(); ?></td>
+                    <td class="masterTooltip" style="max-width:300px; overflow:scroll;text-overflow: ellipsis;" title="<?=$check->prepareTarget(); ?>"><?= $check->prepareTarget(); ?></td>
                     <td><?= $check->prepareWarn(); ?></td>
                     <td><?= $check->prepareError(); ?></td>
                     <td><?= $check->prepareSample(); ?></td>

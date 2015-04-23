@@ -68,7 +68,10 @@ Installation and Configuration
 
 * Create a logs folder which is writable by your webserver user
 
-* Setup cronjob to to run processor.php. This file can be run either as a cli or through the web server. (cli maybe required depending on your plugins and their required permissions)
+* Setup cronjob to to run processor.php. This script can be theoricaly run either as a cli or through the web server. Even though cli maybe required depending on your plugins and their required permissions, it has been reported to be easier to configure through the web server, e.g. with such a crontab entry:
+    ```
+    * * * * * curl 127.0.0.1/Graphite-Tattle/processor.php
+    ```
 
 * Register via the web interface. (The first user registered is the admin currently prior to us implementing any roles, and other permissions)
 

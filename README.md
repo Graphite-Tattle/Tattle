@@ -53,7 +53,7 @@ Installation and Configuration
 
 * Create a session storage folder for flourishlib
 
-* Create a file called inc/config.override.php so that upgrades don't blow away your config
+* Create a file called inc/config.override.php so that upgrades don't blow away your config, you can check inc/config.php content for other available settings:
 
     ```
     <?
@@ -62,9 +62,8 @@ Installation and Configuration
     $GLOBALS['DATABASE_USER'] = 'dbuser';
     $GLOBALS['DATABASE_PASS'] = 'dbpass';
     $GLOBALS['GRAPHITE_URL'] = 'http://graph';
+    ?>
     ```
-
-* Edit inc/config.php with the correct settings (Examples db password)
 
 * Create a logs folder which is writable by your webserver user
 

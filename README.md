@@ -121,12 +121,12 @@ How to Contribute
 
 You're interested in contributing to Tattle? Sweet!
 
-fork Tattle from here: http://github.com/wayfair/Graphite-Tattle
+fork Tattle from here: http://github.com/Graphite-Tattle/Tattle
 
 1. Clone your fork
 2. Hackit up
 3. Push the branch up to GitHub
-4. Send a pull request to the wayfair/Graphite-Tattle project.
+4. Send a pull request to the Graphite-Tattle/Tattle project.
 
 We'll do our best to get your changes in as soon as possible!
 
@@ -143,6 +143,6 @@ We'll do our best to get your changes in as soon as possible!
 Contributors
 ---------------------
 In lieu of a list of contributors, check out the commit history for the project:
-https://github.com/wayfair/Graphite-Tattle/graphs/contributors
-Though special shout out to [jpatapoff](https://github.com/jpatapoff/Graphite-Tattle) since he helped a lot, but his commits weren't attributed due to manually merging
+https://github.com/Graphite-Tattle/Tattle/graphs/contributors
+Though special shout out to [jpatapoff](https://github.com/jpatapoff/Graphite-Tattle) since he helped a lot, but his commits weren't attributed due to manually merging and to [f80](https://github.com/f80) who did all his commits with an email address no longer associated to his account.
 

@@ -158,9 +158,10 @@ class Check extends fActiveRecord
 	  $target = Check::constructTarget($obj);
           $target = str_replace("&quot;","\"",$target);
           $target = urlencode($target);
-          $check_url = $GLOBALS['PROCESSOR_GRAPHITE_URL'] . '/render/?' .
-            'target=' . $target .
-            '&format=json';
+          $check_url = $GLOBALS['PROCESSOR_GRAPHITE_URL'];
+          if ($check_url == "")
+             $check_url = $GLOBALS['GRAPHITE_URL'];
+          $check_url = "$check_url/render/?target=$target&format=json";
           if ($GLOBALS['ALERTS_TIME_OFFSET'] > 0) {
           	$check_url .= "&from=-" . ($obj->getSample() + $GLOBALS['ALERTS_TIME_OFFSET']) . "minutes"
           				. "&until=-" . $GLOBALS['ALERTS_TIME_OFFSET'] ."minutes";

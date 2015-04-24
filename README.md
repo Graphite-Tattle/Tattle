@@ -45,7 +45,7 @@ Installation Requirements
 * [Flourishlib][flourishlib] for the PHP framework
 * [bootstrap][bootstrap] for the HTML/CSS framework
 * http access to a [graphite][graphite] or [ganglia][ganglia] installation
-
+* php-curl for some alerting modules
 
 Installation and Configuration
 -----------------------------

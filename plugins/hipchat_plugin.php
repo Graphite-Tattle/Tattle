@@ -21,7 +21,7 @@ function hipchat_settings() {
 		'hipchat_ok_color' => array('friendly_name' => 'Hipchat Color for OK',
                                     'default' => 'green',
                                     'type' => 'string'),
-		'hipchat_notify' => array('friendly_name' => 'Should this trigger Notifications?',
+		'hipchat_notify' => array('friendly_name' => 'Hipchat Plugin Enabled',
                                     'default' => true,
                                     'type' => 'bool')
 	);
@@ -30,7 +30,7 @@ function hipchat_settings() {
 function hipchat_user_settings() {
   return array(
     'hipchat_user' => array(
-      'friendly_name' => 'HipChat @ metion name',
+      'friendly_name' => 'HipChat @ mention name',
       'default' => '',
       'type' => 'string'
     )
@@ -58,6 +58,10 @@ function hipchat_user_notify($check, $check_result, $subscription) {
 function hipchat_master_notify($check, $check_result, $subscription,$toUser=true) {
     global $status_array;
 	  global $debug;
+
+    if(!is_callable('curl_init')){
+        fCore::debug("!!! WARNING !!! function curl_init() not found, probably php-curl is not installed");
+    }
 
     $state = $status_array[$check_result->getStatus()];
 

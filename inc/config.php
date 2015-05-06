@@ -16,6 +16,7 @@ $GLOBALS['TATTLE_DOMAIN'] = 'http://localhost';
 $GLOBALS['PRIMARY_SOURCE'] = 'GRAPHITE'; //Currently can be GRAPHITE or GANGLIA
 $GLOBALS['GRAPHITE_URL'] = 'http://localhost:8000';
 $GLOBALS['PROCESSOR_GRAPHITE_URL'] = ''; // defaults to GRAPHITE_URL
+$GLOBALS['GRAPHITE_AUTOCOMPLETE_RECURSIVE'] = false;
 $GLOBALS['GANGLIA_URL'] = 'http://localhost:8000/ganglia2';
 
 // Graph Styling

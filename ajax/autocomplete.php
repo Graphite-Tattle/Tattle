@@ -9,10 +9,21 @@ if ($GLOBALS['PRIMARY_SOURCE'] == 'GANGLIA') {
     print $json;
   }
 } else {
-  $dir = new fDirectory($GLOBALS['WHISPER_DIR']);
   $path = str_replace('.', '/' ,fRequest::get('term','string'));
-  $directories = $dir->scanRecursive($path. '*');
   $return_arr = array();
+  if ($GLOBALS['GRAPHITE_AUTOCOMPLETE_RECURSIVE'] == true) {
+    $dir = new fDirectory($GLOBALS['WHISPER_DIR']);
+    $directories = $dir->scanRecursive($path. '*');
+  } else {
+    $searchPattern = "*";
+    if (!file_exists($GLOBALS['WHISPER_DIR'] . $path)) {
+      $dirParts = explode("/", $path);
+      $searchPattern = array_pop($dirParts) . $searchPattern;
+      $path = implode("/", $dirParts);
+    } 
+    $dir = new fDirectory($GLOBALS['WHISPER_DIR'] . $path);
+    $directories = $dir->scan($searchPattern);
+  }
   foreach ($directories as $directory) {
     $return_arr[] = array('value' => str_replace('.wsp','',str_replace('/','.',str_replace($GLOBALS['WHISPER_DIR'],'',$directory->getPath()))));
   }

@@ -14,6 +14,8 @@ Concepts
 ### Subscriptions
   A Subscription is a users signing up for to be alerted by a plugin if the Check reaches the Error or Warning state. A user can have multiple subscriptions to an alert based on different threshold and plugins. (Example : SMS for Error, and Email for Warning)
 
+  There are several subscriptions means available out of the shelf: e-mail through SMTP, IRC through IRCcat, HipChat, PagerDuty, PushOver. In addition, it's quite easy to write your own plugin for other notification means.
+
 ### Alerts
   An Alert is the signal that the Check either passed it's defined Error or Warning threshold, or it's returned to the OK state from being in a bad state. The frequency of Alerts is defined by the Repeat Delay (in minutes), which can't be less than the frequency of the processing cronjob.
 

@@ -19,15 +19,15 @@ if (!is_null($dashboard_id)) {
       <form action="?action=<?=$action.$query_string; ?>" method="post" class="form-stacked">
             <div class="form-group">
               <label for="graph-name">Name<em>*</em></label>
-                <input id="graph-name" class="form-control" type="text" size="30" name="name" value="<?=$graph->encodeName(); ?>" />
+                <input id="graph-name" class="form-control" type="text" size="30" name="name" value="<?=$graph->encodeName(); ?>" placeholder="graph name (and title)" />
             </div>
             <div class="form-group">
-              <label for="graph-description">Description<em>*</em></label>
+              <label for="graph-description">Description</label>
                  <textarea class="form-control" id="graph-description" name="description" rows="3"><?=$graph->encodeDescription(); ?></textarea>
             </div>
             <div class="form-group">
-              <label for="graph-vtitle">Y-Axis Title<em>*</em></label>
-              <input id="graph-vtitle" class="form-control" type="text" size="30" name="vtitle" value="<?=$graph->encodeVtitle(); ?>" />
+              <label for="graph-vtitle">Y-Axis Title</label>
+              <input id="graph-vtitle" class="form-control" type="text" size="30" name="vtitle" value="<?=$graph->encodeVtitle(); ?>" placeholder="e.g.: requests/s" />
             </div>
             <div class="form-group">
               <label for="graph-area">Area Mode<em>*</em></label>
@@ -73,7 +73,7 @@ if (!is_null($dashboard_id)) {
            	</div>
             <div class="form-group">
                 <label for="graph-custom-opts">Custom Options</label>
-                  <input id="graph-custom-opts" class="form-control" type="text" size="30" name="custom_opts" value="<?=$graph->encodeCustom_Opts(); ?>" />
+                  <input id="graph-custom-opts" class="form-control" type="text" size="30" name="custom_opts" value="<?=$graph->encodeCustom_Opts(); ?>" placeholder="options appended to the url e.g.: yMin=0&hideLegend=false" />
             </div>
 	    <div class="actions">
 	      <input class="btn btn-primary" type="submit" value="Save" />

@@ -28,10 +28,10 @@ if (isset($dashboard_id)) {
       <form action="?action=<?=$action.$query_string; ?>" method="post">
           <div class="form-group">
 		      <label for="dashboard-name">Name<em>*</em></label>
-		        <input id="dashboard-name" class="form-control" type="text" size="30" name="name" value="<?=$dashboard->encodeName(); ?>" />
+		        <input id="dashboard-name" class="form-control" type="text" size="30" name="name" value="<?=$dashboard->encodeName(); ?>" placeholder="dashboard name (and title)" />
             </div><!-- /clearfix -->
             <div class="form-group">
-              <label for="dashboard-description">Description<em>*</em></label>
+              <label for="dashboard-description">Description</label>
                  <textarea class="form-control" id="dashboard-description" name="description" rows="3"><?=$dashboard->encodeDescription(); ?></textarea>
             </div>
             <div class="form-group">
@@ -58,7 +58,7 @@ if (isset($dashboard_id)) {
                   <input id="dashboard-background_color" class="form-control" type="text" size="30" name="background_color" value="<?=$dashboard->encodeBackgroundColor(); ?>" />
             </div>
 	    <div class="form-group">
-             <label for="dashboard-refresh_rate">Refresh Rate<em>*</em> (in seconds)</label>
+             <label for="dashboard-refresh_rate">Refresh Rate (in seconds)</label>
                <input id="dashboard-refresh_rate" class="form-control" type="text" size="30" name="refresh_rate" value="<?=$dashboard->getRefreshRate(); ?>" />
             </div>
             <div class="form-group">

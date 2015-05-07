@@ -21,7 +21,7 @@ if (isset($graph_id) && $action != 'edit') {
     <div class="col-md-6">
       <form action="?action=<?=$action.$query_string; ?>" method="post" class="form-horizontal">
            <div class="form-group">
-	        <label for="line-alias" class="col-sm-2 control-label">Alias<em>*</em></label>
+	        <label for="line-alias" class="col-sm-2 control-label">Alias</label>
               <div class="col-sm-10">
 	       		<input id="line-alias" class="form-control" type="text" size="30" name="alias" value="<?=$line->encodeAlias(); ?>" />
               </div>

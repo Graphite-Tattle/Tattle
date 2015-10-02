@@ -81,25 +81,29 @@ foreach ($checks as $check) {
     	$hour_start = $check->getHourStart();
     	$day_start = $check->getDayStart();
     	if (!empty($hour_start)) {
+		fCore::debug("Evaluating alert time window.");
     		$hour_end = $check->getHourEnd();
     		$current_time = $end->date("H:i");
-    		if (compare_hours($hour_start, $hour_end) < 0) {
+    		if (compare_hours($hour_start, $hour_end) <= 0) {
     			// In this case $hour_start is lower than $hour_end
     			// For example from 6 AM to 9 AM
     			// The current time must be between these two hours 
-    			$notify =  (compare_hours($hour_start, $current_time) > -1) && (compare_hours($hour_end, $current_time) < 1);
+    			$notify =  (compare_hours($hour_start, $current_time) <= 0) && (compare_hours($current_time, $hour_end) <= 0);
     		} else {
     			// In this case $hour_start is greater than $hour_end
     			// For example from 10 PM to 6 AM of the next day
-    			// The current time must be either lower
-    			// or greater than these two hours
-    			$notify =  ((compare_hours($hour_start, $current_time) > -1) && (compare_hours($hour_end, $current_time) > -1))
-    					|| ((compare_hours($hour_start, $current_time) < 1) && (compare_hours($hour_end, $current_time) < 1));
+    			// The current time must be outside the interval
+                        $notify = (compare_hours($hour_start, $current_time) <= 0 || (compare_hours($current_time, $hour_end) <= 0));
     		}
-    	}
+		if (!$notify) {
+			fCore::debug("Won't notify because the alert is not curently active (active only for hours between "
+				.$hour_start." and ".$hour_end." and current time is ".$current_time.")");
+		}
+	}
     	// If notify is already FALSE, it doesn't matter which day we are
     	if ($notify) {
     		if (!empty($day_start)) {
+			fCore::debug("Evaluating alert day of week window.".$day_start." ".$check->getDayEnd()." ".$end->date("w"));
 			    $days = array(
 			    	"sun" => 0,
 			    	"mon" => 1,
@@ -111,21 +115,23 @@ foreach ($checks as $check) {
 			    );
 			    $day_end = $check->getDayEnd();
 			    $current_day = $end->date("w");
-			    if ($days[$day_start] < $days[$day_end]) {
+			    if ($days[$day_start] <= $days[$day_end]) {
 			    	// In this case $day_start is lower than $day_end
 			    	// For example from tuesday to friday
 			    	// The current day must be between these two days
-			    	$notify = ($days[$day_start] >= $current_day) && ($days[$day_end] <= $current_day) ;
+			    	$notify = ($days[$day_start] <= $current_day) && ($current_day <= $days[$day_end]) ;
 			    } else {
 			    	// In this case $day_start is greater than $day_end
 			    	// For example from satursday to monday of the next week
-			    	// The current day must be either lower
-			    	// or greater than these two days
-			    	$notify =  (($days[$day_start] >= $current_day) && ($days[$day_end] >= $current_day))
-		    	 			|| (($days[$day_start] <= $current_day) && ($days[$day_end] <= $current_day));
+			    	// The current day must be outside the interval
+				$notify = ($days[$day_start] <= $current_day) || ($current_day <= $days[$day_end]);
 			    }
-    		}
-    	}
+			if (!$notify) {
+				fCore::debug("Won't notify because the alert is not curently active (active only for days between "
+					.$days[$day_start]." and ".$days[$day_end]." and we are ".$current_day.")");
+			}
+		}
+	}
 	     if ($notify) {
 		      fCore::debug("Send Notification \n",FALSE);
 		      fCore::debug("State :" . $result . ":\n",FALSE);
@@ -147,9 +153,9 @@ foreach ($checks as $check) {
 		         $number_of_emails += 1;
 		        }
 		      }
-	     }
+             }
     } else {
-      fCore::debug("Skip Notification \n",FALSE);
+      fCore::debug("Skip Notification because check status did not change\n",FALSE);
     }
   }
   else {

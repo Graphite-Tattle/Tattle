@@ -2963,7 +2963,7 @@ abstract class fActiveRecord
 		$output = "{";
 		$values = $this->values;
 		foreach(array_keys($values) as $key) {
-			$output .= '"'.(isset($key)?$key:'').'":"'.(isset($values[$key])?$values[$key]:'').'",';
+			$output .= (isset($key)?json_encode($key):'""').':'.(isset($values[$key])?json_encode($values[$key]):'""').',';
 		}
 		if (strlen($output) > 1) {
 			$output[strlen($output)-1] = "}";

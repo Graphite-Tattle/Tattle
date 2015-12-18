@@ -83,10 +83,10 @@ $tmpl->place('header');
     $total_pages = ceil($check_results->count(TRUE) / $GLOBALS['PAGE_SIZE']);
     if ($total_pages > 1) {
       $prev_class = 'previous';
-      $current_link = "?action=$action&check_id=$check_id";
-      $prev_link = $current_link . '&page=' . ($page_num - 1);
+      $prev_link = fURL::replaceInQueryString('page', $page_num -1 );
       $next_class = 'next';
-      $next_link = $current_link . '&page=' . ($page_num + 1);
+      $next_link = fURL::replaceInQueryString('page', $page_num + 1);
+      $current_link = "?action=$action&check_id=$check_id";
       if ($page_num == 1) {
         $prev_class .= ' disabled';
         $prev_link = '#';

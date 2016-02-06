@@ -79,6 +79,18 @@ Installation and Configuration
 
 If you are on EL6 or a recent Fedora , make sure your php.ini has short_open_tag = off commented or you will get bogus output.
 
+Vagrant / Quickstart
+-------------------
+* One easy way to play around with Tattle is to use our new vagrant box based on [homestead](https://laravel.com/docs/5.2/homestead).
+
+* All you really need to do is [follow the directions](https://laravel.com/docs/5.2/homestead#first-steps) and then run `vagrant up`.
+
+* Then add **192.168.20.10  tattle.local** to your /etc/hosts file
+
+* Then you can visit your local version at [http://tattle.local](http://tattle.local). It [looks like this](/screenshots/tattle-vagrant.png).
+
+* This is very new and running php 7 so please report any issues
+
 Dashboard Cleanurls
 -----------
 If you have apache, with mod_rewrite enabled and allow .htaccess files you can try the new Clean Dashboard urls.

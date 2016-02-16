@@ -1,6 +1,15 @@
 <?
 
+function subarray_nonnull_median($data_array) {
+  $nonnull = subarray_removenulls($data_array);
+  return subarray_median($nonnull);
+}
+
 function subarray_median($data_array) {
+  if (empty($data_array)) {
+    return 0;
+  }
+
   foreach ($data_array as $value) {
     $temp_array[] = $value[0];
   }
@@ -73,7 +82,15 @@ function plugin_listener($hook,$function){
   $GLOBALS['hooks'][$hook][] = $function;
 }
 
+function subarray_nonnull_average($data_array) {
+  $nonnull = subarray_removenulls($data_array);
+  return subarray_average($data_array);
+}
+
 function subarray_average($data_array) {
+  if (empty($data_array)) {
+    return 0;
+  }
   $count = count($data_array);
   $total = '';
   foreach ($data_array as $value) {
@@ -93,6 +110,31 @@ function average($data_array) {
   return $average;
 }
 
+function subarray_removenulls($data_array) {
+  $result = array();
+  foreach ($data_array as $value) {
+    if ($value[0] !== null) {
+      $result[] = $value;
+    }
+  }
+  return $result;
+}
+
+/**
+ * Like subarray_endvalue, but ignores nulls
+ *
+ * @param array $data_array Array of something
+ * @return mixed the first item of the last item in the array
+ */
+function subarray_nonnull_endvalue($data_array) {
+    if ( is_array($data_array) ) {
+        $nonnull = subarray_removenulls($data_array);
+        return subarray_endvalue($nonnull);
+    } else {
+        return false;
+    }
+}
+
 /**
  * Returns the first item of the last item
  *
@@ -101,11 +143,19 @@ function average($data_array) {
  */
 function subarray_endvalue($data_array) {
     if ( is_array($data_array) ) {
+        if (empty($data_array)) {
+          return false;
+        }
         $lastDataPoint = end($data_array);
         return($lastDataPoint[0]);
     } else {
         return false;
     }
+}
+
+function subarray_nonnull_standard_deviation($data_array) {
+  $nonnull = subarray_removenulls($data_array);
+  return subarray_standard_deviation($nonnull);
 }
 
 function subarray_standard_deviation($data_array) {

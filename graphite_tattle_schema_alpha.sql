@@ -110,7 +110,7 @@ CREATE TABLE `subscriptions` (
   `status` int(11) NOT NULL DEFAULT '0',
   `frequency` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`subscription_id`),
-  KEY `check_id` (`check_id`),
+  UNIQUE KEY `user_method` (`check_id`, `user_id`, `method`),
   KEY `user_id` (`user_id`)
 ) CHARSET=utf8;
 

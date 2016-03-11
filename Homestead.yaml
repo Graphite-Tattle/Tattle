@@ -1,0 +1,37 @@
+---
+box: laravel/homestead-7
+ip: "192.168.10.20"
+memory: 2048
+cpus: 1
+hostname: tattle
+name: tattle
+provider: virtualbox
+
+authorize: ~/.ssh/id_rsa.pub
+
+keys:
+    - ~/.ssh/id_rsa
+
+folders:
+    - map: "."
+      to: "/home/vagrant/tattle"
+
+sites:
+    - map: tattle.local
+      to: "/home/vagrant/tattle"
+
+databases:
+    - tattle
+
+# blackfire:
+#     - id: foo
+#       token: bar
+#       client-id: foo
+#       client-token: bar
+
+# ports:
+#     - send: 50000
+#       to: 5000
+#     - send: 7777
+#       to: 777
+#       protocol: udp

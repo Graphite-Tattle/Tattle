@@ -1,3 +1,11 @@
-logs/
-inc/config.override.php
+# General ######################################################################
+.vagrant
 *~
+
+## Language and Framework Specific #############################################
+
+# Tattle
+inc/config.override.php
+
+# PHP
+vendor/

@@ -81,13 +81,19 @@ If you are on EL6 or a recent Fedora , make sure your php.ini has short_open_tag
 
 Vagrant / Quickstart
 -------------------
-* One easy way to play around with Tattle is to use our new vagrant box based on [homestead](https://laravel.com/docs/5.2/homestead).
+* One easy way to play around with Tattle is to use our new vagrant box based on [homestead](https://laravel.com/docs/5.2/homestead)
 
-* All you really need to do is [follow the directions](https://laravel.com/docs/5.2/homestead#first-steps) and then run `vagrant up`.
+* You need to have [php](http://php.net/downloads.php) and [composer](https://getcomposer.org/doc/00-intro.md) installed and working
 
-* Then add **192.168.20.10  tattle.local** to your /etc/hosts file
+* Run composer in the root of the project to install the dependencies into the vendor directory
 
-* Then you can visit your local version at [http://tattle.local](http://tattle.local). It [looks like this](/screenshots/tattle-vagrant.png).
+* Install Vagrant and VirtualBox 5.x as [detailed in homestead first steps](https://laravel.com/docs/5.2/homestead#first-steps)
+
+* Run `vagrant up`
+
+* Add **192.168.10.20  tattle.local** to your /etc/hosts file
+
+* Then you can visit your local version at [http://tattle.local](http://tattle.local). It [looks like this](/screenshots/tattle-vagrant.png)
 
 * This is very new and running php 7 so please report any issues
 

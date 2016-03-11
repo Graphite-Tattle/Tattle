@@ -41,7 +41,8 @@ service php7.0-fpm reload;
 echo
 echo "Final reminders #########################################################"
 echo "Add this line to your /etc/hosts file to access the vagrant tattle website from localhost:"
-echo "192.168.20.10   tattle.local"
+echo "192.168.10.20   tattle.local"
 echo ""
-echo "Then you can just visit http://tattle.local in your browser" 
+echo "Then you can just visit http://tattle.local in your browser"
+echo "Note: You must not have another web server running on port 80 which would need to be stopped first"
 exit; # exit sudo

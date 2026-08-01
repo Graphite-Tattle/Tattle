@@ -178,7 +178,7 @@ if ('delete' == $action) {
 		
 	} else {
 		$url_redirect = Dashboard::makeURL('list');
-		fMessaging::create("success", "/dashboard.php","An error occured and the lines couldn't be reordered");
+		fMessaging::create("success", "/dashboard.php","An error occurred and the lines couldn't be reordered");
 	}
 
 
